@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smile Dental Group</title>
+    <meta name="description" content="Smile Dental Group provides gentle, professional dental care — braces, implants, whitening and general dentistry. Book your appointment today.">
+
+    <!-- Font Awesome (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Our own stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     1. NAVIGATION BAR  (two rows: top bar + menu bar)
+     ========================================================== -->
+<header class="site-header">
+
+    <!-- ---------- TOP ROW: logo + icons + book button ---------- -->
+    <div class="nav-top">
+        <div class="container nav-top-inner">
+
+            <!-- Logo (left).
+                 TO REPLACE: put your PNG at images/logo.png
+                 The text next to it is the fallback / wordmark. -->
+            <a href="index.html" class="logo">
+                <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-text">
+                    <span class="logo-name">Smile Dental Group</span>
+                    <span class="logo-tagline">Gentle care, lasting smiles</span>
+                </span>
+            </a>
+
+            <!-- Icons + main call-to-action (right) -->
+            <div class="nav-actions">
+                <button class="icon-btn" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <a href="#" class="icon-btn" aria-label="My account">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <a href="#appointment" class="btn btn-primary btn-book">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Book Appointment</span>
+                </a>
+
+                <!-- Hamburger — only visible on mobile -->
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---------- BOTTOM ROW: centered menu ---------- -->
+    <nav class="nav-bottom" id="mainNav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="#about">About</a></li>
+                <li><a href="#doctors">Our Doctors</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#locate">Locate Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+
+
+<!-- ==========================================================
+     2. HERO SECTION
+     ========================================================== -->
+<section class="hero">
+    <div class="container hero-inner">
+
+        <!-- Left: message + buttons -->
+        <div class="hero-copy">
+            <p class="eyebrow"><i class="fa-solid fa-tooth"></i> Trusted by 12,000+ patients</p>
+
+            <h1>Your Trusted Partner in Dental Care<br></h1>
+
+            <p class="hero-text">
+                From routine check-ups to full smile makeovers, our team combines
+                modern technology with genuinely gentle care — so every visit feels
+                calm, clear and comfortable.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#appointment" class="btn btn-primary btn-lg">
+                    <i class="fa-regular fa-calendar-check"></i> Book an Appointment
+                </a>
+                <a href="#services" class="btn btn-outline btn-lg">
+                    Explore Our Services <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Small reassurance strip -->
+            <ul class="hero-points">
+                <li><i class="fa-solid fa-circle-check"></i> Same-day emergency slots</li>
+                <li><i class="fa-solid fa-circle-check"></i> Transparent pricing</li>
+                <li><i class="fa-solid fa-circle-check"></i> Open 7 days</li>
+            </ul>
+        </div>
+
+        
+        <div class="hero-visual">
+            <img src="images/hero-image.jpg" alt="Happy patient" class="hero-photo">
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     3. TRUST / KEY BENEFITS  (4 cards)
+     ========================================================== -->
+<section class="section benefits" id="about">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Why patients trust us</p>
+            <h2>Care you can feel good about</h2>
+        </div>
+
+        <div class="grid grid-4">
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                <h3>Experienced Professionals</h3>
+                <p>Our dentists average 12+ years in practice and train continuously in the latest techniques.</p>
+            </article>
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h3>Patient-Centred Care</h3>
+                <p>We explain every option in plain language, so you always decide with full confidence.</p>
+            </article>
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-microscope"></i></div>
+                <h3>Modern Technology</h3>
+                <p>Digital scanning, low-dose imaging and same-day crowns mean faster, more precise treatment.</p>
+            </article>
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-mug-saucer"></i></div>
+                <h3>Comfortable Environment</h3>
+                <p>Calm, quiet clinics designed to put nervous patients at ease from the moment they arrive.</p>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     4. WHY CHOOSE SMILE DENTAL GROUP
+     ========================================================== -->
+<section class="section why">
+    <div class="container why-inner">
+
+        <!-- Left: image placeholder.
+             TO REPLACE: <img src="images/team.jpg" alt="Our team" class="why-photo"> -->
+        <div class="why-visual">
+            <img src="images/dental team.webp" alt="Our Team" class="why-photo">
+            <div class="why-badge">
+                <strong>20+</strong>
+                <span>Years serving<br>our community</span>
+            </div>
+        </div>
+
+        <!-- Right: reasons -->
+        <div class="why-copy">
+            <p class="section-label">Why choose us</p>
+            <h2>More than a clinic — a long-term dental partner</h2>
+            <p class="lead">
+                Plenty of clinics can clean your teeth. We're built around the parts
+                patients say matter most: honest advice, no rushed appointments and a
+                team that remembers you.
+            </p>
+
+            <ul class="why-list">
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                        <h4>One team, your whole family</h4>
+                        <p>General, cosmetic and orthodontic care under one roof — no bouncing between clinics.</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                        <h4>Clear costs before we begin</h4>
+                        <p>You receive a written treatment plan with prices upfront. No surprises on the invoice.</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                        <h4>Gentle with anxious patients</h4>
+                        <p>Extra time, numbing options and a stop-anytime signal — dental fear is taken seriously here.</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                        <h4>Appointments that fit real life</h4>
+                        <p>Evening and weekend slots, plus same-day emergency care when something can't wait.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <a href="#appointment" class="btn btn-primary">Book a Consultation</a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     5. OUR SERVICES  (6 cards + view all)
+     ========================================================== -->
+<section class="section services" id="services">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Our services</p>
+            <h2>Complete dental care, all in one place</h2>
+            <p class="section-sub">Whatever your smile needs, there's a specialist here for it.</p>
+        </div>
+
+        <div class="grid grid-3">
+
+            <article class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-teeth"></i></div>
+                <h3>Braces &amp; Invisalign</h3>
+                <p>Straighten your teeth with traditional braces or near-invisible clear aligners.</p>
+                <a href="#" class="link-arrow">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-tooth"></i></div>
+                <h3>General Dentistry</h3>
+                <p>Check-ups, scaling, polishing and fillings to keep problems small — or prevent them.</p>
+                <a href="#" class="link-arrow">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <h3>Teeth Whitening</h3>
+                <p>Safe in-clinic and take-home whitening for a brighter smile in as little as one visit.</p>
+                <a href="#" class="link-arrow">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <h3>Dental Implants</h3>
+                <p>Permanent, natural-looking replacements for missing teeth that restore full bite strength.</p>
+                <a href="#" class="link-arrow">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-crown"></i></div>
+                <h3>Crowns &amp; Bridges</h3>
+                <p>Protect damaged teeth and close gaps with custom-made, colour-matched restorations.</p>
+                <a href="#" class="link-arrow">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-teeth-open"></i></div>
+                <h3>Dentures</h3>
+                <p>Comfortable full and partial dentures, fitted and adjusted until they feel right.</p>
+                <a href="#" class="link-arrow">Learn more <i class="fa-solid fa-arrow-right"></i></a>
+            </article>
+
+        </div>
+
+        <div class="section-cta">
+            <a href="#" class="btn btn-outline btn-lg">View All Services <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     6. OUR DOCTORS  (3 cards)
+     Each card is identical in structure — copy one to add a doctor.
+     ========================================================== -->
+<section class="section doctors" id="doctors">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Our team</p>
+            <h2>Meet the people behind your smile</h2>
+            <p class="section-sub">Experienced, approachable and genuinely happy to answer your questions.</p>
+        </div>
+
+        <div class="grid grid-3">
+
+            <!-- DOCTOR CARD 1 -->
+            <article class="doctor-card">
+                <!-- TO REPLACE: <img src="images/doctor-1.jpg" alt="Dr. Amelia Tan" class="doctor-photo"> -->
+                <div class="doctor-photo-placeholder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>images/doctor-1.jpg</span>
+                </div>
+                <div class="doctor-info">
+                    <h3>Dr. Amelia Tan</h3>
+                    <p class="doctor-role">Orthodontist &middot; Braces &amp; Invisalign</p>
+                    <p class="doctor-bio">
+                        Fourteen years aligning smiles, with a special interest in adult
+                        clear-aligner treatment and early-intervention care for children.
+                    </p>
+                    <ul class="doctor-social">
+                        <li><a href="#" aria-label="Email Dr. Amelia Tan"><i class="fa-regular fa-envelope"></i></a></li>
+                        <li><a href="#" aria-label="LinkedIn profile"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- DOCTOR CARD 2 -->
+            <article class="doctor-card">
+                <!-- TO REPLACE: <img src="images/doctor-2.jpg" alt="Dr. Marcus Lee" class="doctor-photo"> -->
+                <div class="doctor-photo-placeholder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>images/doctor-2.jpg</span>
+                </div>
+                <div class="doctor-info">
+                    <h3>Dr. Marcus Lee</h3>
+                    <p class="doctor-role">Implantologist &middot; Restorative Dentistry</p>
+                    <p class="doctor-bio">
+                        Focuses on implants, crowns and full-mouth rehabilitation, and is
+                        known for talking patients calmly through every step.
+                    </p>
+                    <ul class="doctor-social">
+                        <li><a href="#" aria-label="Email Dr. Marcus Lee"><i class="fa-regular fa-envelope"></i></a></li>
+                        <li><a href="#" aria-label="LinkedIn profile"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- DOCTOR CARD 3 -->
+            <article class="doctor-card">
+                <!-- TO REPLACE: <img src="images/doctor-3.jpg" alt="Dr. Priya Nair" class="doctor-photo"> -->
+                <div class="doctor-photo-placeholder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>images/doctor-3.jpg</span>
+                </div>
+                <div class="doctor-info">
+                    <h3>Dr. Priya Nair</h3>
+                    <p class="doctor-role">General &amp; Family Dentistry</p>
+                    <p class="doctor-bio">
+                        Sees patients of every age, from first check-ups to senior care,
+                        with a gentle approach that anxious patients ask for by name.
+                    </p>
+                    <ul class="doctor-social">
+                        <li><a href="#" aria-label="Email Dr. Priya Nair"><i class="fa-regular fa-envelope"></i></a></li>
+                        <li><a href="#" aria-label="LinkedIn profile"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                    </ul>
+                </div>
+            </article>
+
+        </div>
+
+        <div class="section-cta">
+            <a href="#" class="btn btn-primary btn-lg">Meet Our Doctors <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     7. PATIENT TESTIMONIALS  (3 cards)
+     ========================================================== -->
+<section class="section testimonials">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Patient stories</p>
+            <h2>What our patients say</h2>
+        </div>
+
+        <div class="grid grid-3">
+
+            <article class="testimonial-card">
+                <div class="stars" aria-label="5 out of 5 stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="quote">
+                    "I've avoided dentists for years. They talked me through everything
+                    before touching anything — I actually booked my next visit on the way out."
+                </p>
+                <div class="patient">
+                    <div class="patient-avatar">JL</div>
+                    <div>
+                        <strong>Jasmine Lim</strong>
+                        <span>Invisalign patient</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="testimonial-card">
+                <div class="stars" aria-label="5 out of 5 stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="quote">
+                    "Two implants, zero drama. The price I was quoted was the price I paid,
+                    and the follow-up calls made me feel properly looked after."
+                </p>
+                <div class="patient">
+                    <div class="patient-avatar">RK</div>
+                    <div>
+                        <strong>Ryan Koh</strong>
+                        <span>Dental implants</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="testimonial-card">
+                <div class="stars" aria-label="4 out of 5 stars">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                </div>
+                <p class="quote">
+                    "We bring all three kids here. The team is patient with them and
+                    somehow makes a check-up feel like a treat rather than a chore."
+                </p>
+                <div class="patient">
+                    <div class="patient-avatar">SM</div>
+                    <div>
+                        <strong>Sarah Menon</strong>
+                        <span>Family dentistry</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     8. APPOINTMENT CTA  (stands out — dark band)
+     ========================================================== -->
+<section class="cta-band" id="appointment">
+    <div class="container cta-inner">
+        <div class="cta-copy">
+            <p class="section-label light">Ready when you are</p>
+            <h2>Book your appointment today</h2>
+            <p>
+                Most new patients are seen within 48 hours. Tell us what you need and
+                we'll match you with the right dentist — no obligation, no pressure.
+            </p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-white btn-lg">
+                    <i class="fa-regular fa-calendar-check"></i> Book Appointment
+                </a>
+                <a href="tel:+6561234567" class="btn btn-ghost btn-lg">
+                    <i class="fa-solid fa-phone"></i> +65 6123 4567
+                </a>
+            </div>
+        </div>
+
+        <ul class="cta-points">
+            <li><i class="fa-solid fa-bolt"></i> Same-day emergency care</li>
+            <li><i class="fa-solid fa-shield-heart"></i> Insurance &amp; CHAS accepted</li>
+            <li><i class="fa-solid fa-clock"></i> Evening &amp; weekend slots</li>
+        </ul>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     9. LOCATION PREVIEW  (4 info cards + map placeholder)
+     ========================================================== -->
+<section class="section locate" id="locate">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Visit us</p>
+            <h2>Find your nearest clinic</h2>
+        </div>
+
+        <div class="locate-inner">
+
+            <!-- 2 x 2 info cards -->
+            <div class="grid grid-2 info-grid">
+
+                <article class="info-card">
+                    <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <h3>Clinic Address</h3>
+                    <p>
+                        123 Orchard Road<br>
+                        #05-12 Smile Building<br>
+                        Singapore 238888
+                    </p>
+                </article>
+
+                <article class="info-card">
+                    <div class="info-icon"><i class="fa-regular fa-clock"></i></div>
+                    <h3>Opening Hours</h3>
+                    <p>
+                        Mon – Fri: 9:00am – 8:00pm<br>
+                        Saturday: 9:00am – 5:00pm<br>
+                        Sunday: 10:00am – 2:00pm
+                    </p>
+                </article>
+
+                <article class="info-card">
+                    <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                    <h3>Phone</h3>
+                    <p>
+                        <a href="tel:+6561234567">+65 6123 4567</a><br>
+                        WhatsApp: +65 9123 4567
+                    </p>
+                </article>
+
+                <article class="info-card">
+                    <div class="info-icon"><i class="fa-regular fa-envelope"></i></div>
+                    <h3>Email</h3>
+                    <p>
+                        <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a><br>
+                        We reply within one working day.
+                    </p>
+                </article>
+
+            </div>
+
+            <!-- Map placeholder.
+                 TO REPLACE: delete the div below and paste your Google Maps
+                 <iframe> here (keep class="map-frame" on it). -->
+            <div class="map-placeholder">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <p>Map goes here</p>
+                <span>Paste your Google Maps embed code in place of this box</span>
+            </div>
+
+        </div>
+
+        <div class="section-cta">
+            <a href="#" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-diamond-turn-right"></i> Get Directions
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     10. FOOTER
+     ========================================================== -->
+<footer class="site-footer">
+    <div class="container footer-inner">
+
+        <!-- Column 1: brand -->
+        <div class="footer-col footer-brand">
+            <a href="index.html" class="logo logo-footer">
+                <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-name">Smile Dental Group</span>
+            </a>
+            <p>
+                Gentle, modern dental care for every generation of your family.
+                Serving our community for over 20 years.
+            </p>
+            <ul class="social-links">
+                <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Column 2: quick links -->
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#doctors">Our Doctors</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#locate">Locate Us</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 3: contact -->
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 4: appointment -->
+        <div class="footer-col">
+            <h4>Appointment</h4>
+            <p>Book online in under two minutes, or call us during opening hours.</p>
+            <a href="#appointment" class="btn btn-primary btn-block">
+                <i class="fa-regular fa-calendar-check"></i> Book Appointment
+            </a>
+            <p class="footer-hours">Mon – Fri 9am–8pm &middot; Sat 9am–5pm</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Smile Dental Group. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ==========================================================
+     Small script: opens / closes the menu on mobile
+     ========================================================== -->
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle the menu open/closed when the hamburger is clicked
+    menuToggle.addEventListener('click', function () {
+        const isOpen = mainNav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+        menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close the menu again after a link is tapped
+    document.querySelectorAll('.nav-menu a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mainNav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', false);
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -179,10 +179,10 @@ ul { list-style: none; }
     font-weight: 700;
     letter-spacing: .12em;
     text-transform: uppercase;
-    color: var(--teal-500);
+    color: var(--blue-500);
     margin-bottom: 12px;
 }
-.section-label.light { color: var(--mint-200); }
+.section-label.light { color: var(--blue-100); }
 
 .section-sub { margin-top: 14px; color: var(--body); }
 
@@ -280,7 +280,7 @@ ul { list-style: none; }
     color: var(--blue-700);
 }
 
-/* the main conversion button — deliberately the loudest thing up here */
+/* main conversion button */
 .btn-book { margin-left: 6px; }
 
 .menu-toggle { display: none; }   /* shown on mobile only */
@@ -317,6 +317,58 @@ ul { list-style: none; }
 }
 .nav-menu a:hover { color: var(--blue-700); }
 .nav-menu a:hover::after { width: 100%; }
+
+
+/* --- "About" dropdown (opens on click) --- */
+.has-dropdown { position: relative; }
+
+/* the small arrow next to the word About */
+.dropdown-toggle i {
+    font-size: .7rem;
+    margin-left: 6px;
+    transition: transform .25s ease;
+}
+.has-dropdown.open .dropdown-toggle i { 
+    transform: rotate(180deg); }
+
+/* the panel itself.
+   display:none means the links take up NO space at all until the
+   script adds .open — they never affect the height of the navbar. */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 12px;
+    min-width: 190px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 8px;
+    z-index: 120;
+}
+/* clicking About (or its arrow) reveals the panel with a short fade + slide */
+.has-dropdown.open .dropdown {
+    display: block;
+    animation: dropdown-in .22s ease;
+}
+
+@keyframes dropdown-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.dropdown a {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.dropdown a::after { display: none; }   /* no underline animation inside the panel */
+.dropdown a:hover { background: var(--blue-50); color: var(--blue-700); }
 
 
 /* ==========================================================
@@ -877,8 +929,10 @@ ul { list-style: none; }
 
 .footer-inner {
     display: grid;
-    grid-template-columns: 1.6fr 1fr 1.3fr 1.3fr;
-    gap: 44px;
+    /* brand | About | Our Doctors | Services | Locate Us */
+    grid-template-columns: 1.5fr 1fr 1.35fr 1fr 1fr;
+    column-gap: 24px;   /* keep this small so Locate Us stays on the row */
+    row-gap: 36px;
     padding-top: 70px;
     padding-bottom: 56px;
 }
@@ -893,9 +947,10 @@ ul { list-style: none; }
 .logo-footer .logo-name { color: var(--white); }
 .logo-footer .logo-img  { height: 42px; }
 
-.footer-brand p { max-width: 320px; }
+/* contact details sit directly under the logo */
+.footer-brand .footer-contact { margin-top: 4px; }
 
-.social-links { display: flex; gap: 10px; margin-top: 20px; }
+.social-links { display: flex; gap: 10px; margin-top: 24px; }
 .social-links a {
     display: grid;
     place-items: center;
@@ -933,21 +988,6 @@ ul { list-style: none; }
 
 .site-footer a { color: rgba(255, 255, 255, .72); }
 .site-footer a:hover { color: var(--white); }
-
-.footer-col .btn-primary {
-    background: var(--blue-500);
-    margin-top: 16px;
-}
-.footer-col .btn-primary:hover { 
-    background: var(--white); 
-    color: var(--blue-900); 
-}
-
-.footer-hours {
-    margin-top: 14px;
-    font-size: .82rem;
-    color: rgba(255, 255, 255, .55);
-}
 
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, .12);
@@ -992,7 +1032,9 @@ ul { list-style: none; }
     .cta-inner    { grid-template-columns: 1fr; gap: 34px; }
     .locate-inner { grid-template-columns: 1fr; }
 
-    .footer-inner { grid-template-columns: repeat(2, 1fr); gap: 36px; }
+    /* brand takes its own full-width row; the four link columns stay in one row */
+    .footer-inner { grid-template-columns: repeat(4, 1fr); column-gap: 20px; row-gap: 32px; }
+    .footer-brand { grid-column: 1 / -1; }
 }
 
 /* ---------- Mobile ---------- */
@@ -1033,6 +1075,19 @@ ul { list-style: none; }
     }
     .nav-menu a::after { display: none; }
 
+    /* dropdown becomes an indented list instead of a floating panel */
+    .dropdown {
+        position: static;
+        transform: none;
+        margin-top: 0;
+        min-width: 0;
+        border: 0;
+        box-shadow: none;
+        padding: 0 0 0 18px;
+    }
+    /* long specialist names wrap instead of overflowing the screen */
+    .dropdown a { border-radius: 0; white-space: normal; }
+
     /* --- everything stacks --- */
     .grid-2,
     .grid-3,
@@ -1052,8 +1107,13 @@ ul { list-style: none; }
 
     .why-badge { right: 0; bottom: 12px; padding: 16px 18px; }
 
-    .footer-inner { grid-template-columns: 1fr; gap: 34px; }
     .footer-bottom .container { flex-direction: column; text-align: center; }
+}
+
+/* ---------- Narrow tablets / large phones ---------- */
+@media (max-width: 600px) {
+    /* only now do the footer link columns drop to two per row */
+    .footer-inner { grid-template-columns: repeat(2, 1fr); gap: 30px; }
 }
 
 /* ---------- Small phones ---------- */
@@ -1061,4 +1121,244 @@ ul { list-style: none; }
     .container { padding: 0 18px; }
     .logo-name { font-size: .92rem; }
     .float-card span { display: none; }
+}
+
+
+/* ==========================================================
+   12. INNER PAGES  (about-us.html + join-us.html)
+   Everything above is shared. Only the pieces that did not
+   already exist are added here.
+   ========================================================== */
+
+/* --- Compact banner at the top of an inner page --- */
+.page-hero {
+    background:
+        radial-gradient(700px 320px at 80% 0%, var(--blue-100), transparent 65%),
+        linear-gradient(180deg, var(--blue-50) 0%, var(--white) 100%);
+    padding: 64px 0 56px;
+    text-align: left;
+}
+
+.page-hero h1 { 
+    font-size: clamp(2rem, 4vw, 3rem); 
+    margin-bottom: 16px; 
+}
+
+.page-hero p {
+    font-size: 1.05rem;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* small "Home / About Us" trail above the title */
+.breadcrumb {
+    display: flex;
+    justify-content: left;
+    gap: 8px;
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+}
+.breadcrumb i { font-size: .6rem; align-self: center; }
+
+
+/* --- Marker for text you still need to replace --- */
+.placeholder {
+    background: #fff6d9;
+    border-bottom: 1px dashed #d6a400;
+    color: #8a6400;
+    padding: 0 3px;
+    border-radius: 3px;
+    font-style: normal;
+}
+
+
+/* --- Timeline (used for "Our Story") --- */
+.timeline {
+    display: grid;
+    gap: 30px;
+    border-left: 2px solid var(--line);
+    padding-left: 30px;
+    margin-top: 34px;
+}
+
+.timeline li { position: relative; }
+
+/* the little dot sitting on the line */
+.timeline li::before {
+    content: "";
+    position: absolute;
+    left: -37px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--blue-700);
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 2px var(--blue-100);
+}
+
+.timeline .year {
+    display: inline-block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--blue-700);
+    background: var(--blue-50);
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 8px;
+}
+
+.timeline h4 { margin-bottom: 6px; }
+.timeline p  { font-size: .95rem; }
+
+
+/* --- Job opening cards (join-us.html) --- */
+.job-list { display: grid; gap: 20px; }
+
+.job-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+    transition: box-shadow .25s ease, border-color .25s ease;
+}
+.job-card:hover {
+    box-shadow: var(--shadow);
+    border-color: transparent;
+}
+
+.job-card h3 { margin-bottom: 8px; }
+.job-card p  { font-size: .95rem; margin-bottom: 14px; }
+
+/* row of small grey labels: full-time, location, etc. */
+.job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--blue-700);
+    background: var(--blue-50);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+}
+
+
+/* --- Application form (join-us.html) --- */
+.form-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 40px;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* two columns that collapse to one on small screens */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* a field that should span the full width */
+.form-field.full { grid-column: 1 / -1; }
+
+.form-field label {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-size: .95rem;
+    color: var(--ink);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.form-field textarea { resize: vertical; min-height: 130px; }
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: var(--blue-700);
+    box-shadow: 0 0 0 3px var(--blue-100);
+}
+
+/* the "Choose file" button inside a file input */
+.form-field input[type="file"] { padding: 9px 12px; }
+.form-field input[type="file"]::file-selector-button {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--blue-700);
+    background: var(--blue-50);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 16px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+/* small grey line of help text under a field */
+.form-hint {
+    display: block;
+    font-size: .8rem;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.form-actions { margin-top: 28px; }
+
+.form-note {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-top: 14px;
+}
+
+
+/* --- Inner page responsive --- */
+@media (max-width: 768px) {
+    .page-hero { padding: 46px 0 40px; }
+
+    .job-card {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 24px;
+    }
+    .job-card .btn { width: 100%; }
+
+    .form-card  { padding: 26px 20px; }
+    .form-grid  { grid-template-columns: 1fr; }
+    .form-actions .btn { width: 100%; }
+
+    .timeline { padding-left: 24px; gap: 26px; }
+    .timeline li::before { left: -31px; }
 }

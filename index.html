@@ -68,9 +68,45 @@
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
             <ul class="nav-menu">
-                <li><a href="#about">About</a></li>
-                <li><a href="#doctors">Our Doctors</a></li>
-                <li><a href="#services">Services</a></li>
+                <!-- "About" opens a dropdown instead of jumping to a section -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        About <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="join-us.html">Join Us</a></li>
+                    </ul>
+                </li>
+                <!-- "Our Doctors" dropdown.
+                     NOTE: doctors.html has not been built yet. -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Our Doctors <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="doctors.html">General Dentists</a></li>
+                        <li><a href="doctors.html">Endodontist / Root Canal Specialists</a></li>
+                        <li><a href="doctors.html">Aligner Team and Orthodontist</a></li>
+                        <li><a href="doctors.html">Periodontists / Gum Specialists</a></li>
+                        <li><a href="doctors.html">Prosthodontists / Restorative Dentistry</a></li>
+                    </ul>
+                </li>
+
+                <!-- "Services" dropdown -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Services <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="#services">General Dentistry</a></li>
+                        <li><a href="#services">Braces / Invisalign</a></li>
+                        <li><a href="#services">Dental Crowns and Bridges</a></li>
+                        <li><a href="#services">Dental Implants</a></li>
+                        <li><a href="#services">Dentures</a></li>
+                        <li><a href="#services">Teeth Whitening</a></li>
+                    </ul>
+                </li>
                 <li><a href="#locate">Locate Us</a></li>
             </ul>
         </div>
@@ -175,7 +211,7 @@
         <!-- Left: image placeholder.
              TO REPLACE: <img src="images/team.jpg" alt="Our team" class="why-photo"> -->
         <div class="why-visual">
-            <img src="images/dental team.webp" alt="Our Team" class="why-photo">
+            <img src="images/dental team.png" alt="Our Team" class="why-photo">
             <div class="why-badge">
                 <strong>20+</strong>
                 <span>Years serving<br>our community</span>
@@ -567,16 +603,19 @@
 <footer class="site-footer">
     <div class="container footer-inner">
 
-        <!-- Column 1: brand -->
+        <!-- Left: logo, name and contact details -->
         <div class="footer-col footer-brand">
             <a href="index.html" class="logo logo-footer">
                 <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
                 <span class="logo-name">Smile Dental Group</span>
             </a>
-            <p>
-                Gentle, modern dental care for every generation of your family.
-                Serving our community for over 20 years.
-            </p>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+
+            <!-- social media icons sit under the contact details -->
             <ul class="social-links">
                 <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
                 <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
@@ -584,35 +623,43 @@
             </ul>
         </div>
 
-        <!-- Column 2: quick links -->
+        <!-- Link column: About -->
         <div class="footer-col">
-            <h4>Quick Links</h4>
+            <h4>About</h4>
             <ul class="footer-links">
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#doctors">Our Doctors</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#locate">Locate Us</a></li>
+                <li><a href="about-us.html">About Us</a></li>
+                <li><a href="join-us.html">Join Us</a></li>
             </ul>
         </div>
 
-        <!-- Column 3: contact -->
+        <!-- Link column: Our Doctors.
+             NOTE: doctors.html has not been built yet. -->
         <div class="footer-col">
-            <h4>Contact</h4>
-            <ul class="footer-contact">
-                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
-                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
-                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            <h4>Our Doctors</h4>
+            <ul class="footer-links">
+                <li><a href="doctors.html">General Dentists</a></li>
+                <li><a href="doctors.html">Endodontists</a></li>
+                <li><a href="doctors.html">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html">Periodontists</a></li>
+                <li><a href="doctors.html">Prosthodontists</a></li>
             </ul>
         </div>
 
-        <!-- Column 4: appointment -->
+        <!-- Link column: Services -->
         <div class="footer-col">
-            <h4>Appointment</h4>
-            <p>Book online in under two minutes, or call us during opening hours.</p>
-            <a href="#appointment" class="btn btn-primary btn-block">
-                <i class="fa-regular fa-calendar-check"></i> Book Appointment
-            </a>
-            <p class="footer-hours">Mon – Fri 9am–8pm &middot; Sat 9am–5pm</p>
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="#">Fees Calculator</a></li>
+                <li><a href="#services">Dental Services</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Locate Us -->
+        <div class="footer-col">
+            <h4>Locate Us</h4>
+            <ul class="footer-links">
+                <li><a href="#locate">Locations</a></li>
+            </ul>
         </div>
 
     </div>
@@ -645,13 +692,56 @@
             : '<i class="fa-solid fa-bars"></i>';
     });
 
-    // Close the menu again after a link is tapped
-    document.querySelectorAll('.nav-menu a').forEach(function (link) {
+    // Close the menu again after a real link is tapped.
+    // The "About" toggle is skipped — tapping it should open the dropdown,
+    // not close the whole menu.
+    document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
         link.addEventListener('click', function () {
             mainNav.classList.remove('open');
             menuToggle.setAttribute('aria-expanded', false);
             menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
         });
+    });
+
+
+    /* ---------- Menu dropdowns (About, Our Doctors, Services) ---------- */
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+
+    // Helper: close every dropdown
+    function closeAllDropdowns() {
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('open');
+        });
+    }
+
+    // Open / close a dropdown when its menu item is clicked
+    dropdownItems.forEach(function (item) {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();      // stop the link from jumping anywhere
+
+            const wasOpen = item.classList.contains('open');
+            closeAllDropdowns();         // only one panel open at a time
+
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Click anywhere else on the page to close them again
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // The Escape key closes them too
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
     });
 </script>
 

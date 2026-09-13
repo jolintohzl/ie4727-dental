@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Smile Dental Group</title>
+    <meta name="description" content="Learn about Smile Dental Group — our mission, our story, our team of dentists and the technology behind our patient-first approach.">
+
+    <!-- Font Awesome (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Our own stylesheet (shared with index.html) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     NAVIGATION BAR  (same two-row structure as index.html)
+     ========================================================== -->
+<header class="site-header">
+
+    <!-- ---------- TOP ROW: logo + icons + book button ---------- -->
+    <div class="nav-top">
+        <div class="container nav-top-inner">
+
+            <a href="index.html" class="logo">
+                <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-text">
+                    <span class="logo-name">Smile Dental Group</span>
+                    <span class="logo-tagline">Gentle care, lasting smiles</span>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <button class="icon-btn" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <a href="#" class="icon-btn" aria-label="My account">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <!-- NOTE: appointment.html has not been built yet. -->
+                <a href="appointment.html" class="btn btn-primary btn-book">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Book Appointment</span>
+                </a>
+
+                <!-- Hamburger — only visible on mobile -->
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---------- BOTTOM ROW: centered menu ---------- -->
+    <nav class="nav-bottom" id="mainNav">
+        <div class="container">
+            <ul class="nav-menu">
+                <!-- "About" opens a dropdown instead of jumping to a section -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        About <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="join-us.html">Join Us</a></li>
+                    </ul>
+                </li>
+                <!-- "Our Doctors" dropdown.
+                     NOTE: doctors.html has not been built yet. -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Our Doctors <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="doctors.html">General Dentists</a></li>
+                        <li><a href="doctors.html">Endodontist / Root Canal Specialists</a></li>
+                        <li><a href="doctors.html">Aligner Team and Orthodontist</a></li>
+                        <li><a href="doctors.html">Periodontists / Gum Specialists</a></li>
+                        <li><a href="doctors.html">Prosthodontists / Restorative Dentistry</a></li>
+                    </ul>
+                </li>
+
+                <!-- "Services" dropdown -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Services <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="index.html#services">General Dentistry</a></li>
+                        <li><a href="index.html#services">Braces / Invisalign</a></li>
+                        <li><a href="index.html#services">Dental Crowns and Bridges</a></li>
+                        <li><a href="index.html#services">Dental Implants</a></li>
+                        <li><a href="index.html#services">Dentures</a></li>
+                        <li><a href="index.html#services">Teeth Whitening</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#locate">Locate Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+
+
+<!-- ==========================================================
+     1. PAGE BANNER
+     ========================================================== -->
+<section class="page-hero">
+    <div class="container">
+        <p class="breadcrumb">
+            <a href="index.html">Home</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>About Us</span>
+        </p>
+        <h1>About Smile Dental Group</h1>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     2. INTRODUCTION / MISSION STATEMENT
+     ========================================================== -->
+<section class="section">
+    <div class="container">
+
+        <div class="section-head">
+            <h2>About Smile Dental Group</h2>
+            <p class="section-sub">
+                Smile Dental Group</span> has cared for families
+                across Singapore</span> for over 15 years. What began as a single
+                treatment room is now a group of clinics offering general, cosmetic and
+                specialist dentistry under one roof.
+            </p>
+        </div>
+
+        <!-- Our mission + values, reusing the benefit cards from the homepage -->
+        <div class="grid grid-3">
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Our Mission</h3>
+                <p>
+                    <span class="placeholder">[Insert mission statement]</span> — to make
+                    quality dental care something every family can access without anxiety,
+                    confusion or hidden costs.
+                </p>
+            </article>
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-eye"></i></div>
+                <h3>Our Vision</h3>
+                <p>
+                    <span class="placeholder">[Insert vision statement]</span> — to be the
+                    practice our community recommends first, and returns to for a lifetime.
+                </p>
+            </article>
+
+            <article class="benefit-card">
+                <div class="benefit-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                <h3>Our Values</h3>
+                <p>
+                    Honesty about what you need, respect for your time and budget, and
+                    the patience to explain every option in plain language.
+                </p>
+            </article>
+
+        </div>
+
+        
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     3. OUR STORY  (image on the left, timeline on the right)
+     ========================================================== -->
+<section class="section why">
+    <div class="container why-inner">
+
+        <!-- Left: clinic photo.
+             TO REPLACE: swap the src for your own photo, e.g. images/clinic-front.jpg -->
+        <div class="why-visual">
+            <img src="images/dental team.webp" alt="The Smile Dental Group team" class="why-photo">
+            <div class="why-badge">
+                <strong><span class="placeholder">[20]</span>+</strong>
+                <span>Years serving<br>our community</span>
+            </div>
+        </div>
+
+        <!-- Right: history timeline.
+             Copy one <li> block to add another milestone. -->
+        <div class="why-copy">
+            <p class="section-label">Our story</p>
+            <h2>From one treatment room to a trusted dental group</h2>
+            <p class="lead">
+                <span class="placeholder">[Insert a short paragraph about how the clinic
+                started, who founded it, and what has stayed the same since day one.]</span>
+            </p>
+
+            <ul class="timeline">
+
+                <li>
+                    <span class="year"><span class="placeholder">[2005]</span></span>
+                    <h4>The first clinic opens</h4>
+                    <p>
+                        <span class="placeholder">[Insert founding story]</span> — a single
+                        surgery on <span class="placeholder">[insert street]</span> with two
+                        chairs and a waiting list built entirely on word of mouth.
+                    </p>
+                </li>
+
+                <li>
+                    <span class="year"><span class="placeholder">[2012]</span></span>
+                    <h4>Specialist care added</h4>
+                    <p>
+                        <span class="placeholder">[Insert milestone]</span> — orthodontics and
+                        implant dentistry join the practice, so patients no longer need a
+                        referral elsewhere.
+                    </p>
+                </li>
+
+                <li>
+                    <span class="year"><span class="placeholder">[2018]</span></span>
+                    <h4>Going fully digital</h4>
+                    <p>
+                        <span class="placeholder">[Insert milestone]</span> — intraoral
+                        scanners and low-dose digital imaging replace messy impressions
+                        and film X-rays.
+                    </p>
+                </li>
+
+                <li>
+                    <span class="year"><span class="placeholder">[Today]</span></span>
+                    <h4><span class="placeholder">[Insert number]</span> clinics, one standard of care</h4>
+                    <p>
+                        Same team values, same unhurried appointments — now closer to
+                        more of the families we look after.
+                    </p>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     4. MEET THE TEAM
+     Each card has the same structure — copy one to add a doctor.
+     Full profiles live on doctors.html.
+     ========================================================== -->
+<section class="section doctors">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Our team</p>
+            <h2>Meet the people behind your smile</h2>
+            <p class="section-sub">
+                A short introduction below — visit the doctors page for full
+                qualifications and treatment interests.
+            </p>
+        </div>
+
+        <div class="grid grid-3">
+
+            <!-- DOCTOR CARD 1 -->
+            <article class="doctor-card">
+                <!-- TO REPLACE: <img src="images/doctor-1.jpg" alt="Dr. [Name]" class="doctor-photo"> -->
+                <div class="doctor-photo-placeholder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>images/doctor-1.jpg</span>
+                </div>
+                <div class="doctor-info">
+                    <h3><span class="placeholder">[Dr. Insert Name]</span></h3>
+                    <p class="doctor-role"><span class="placeholder">[Insert specialty]</span> &middot; Braces &amp; Invisalign</p>
+                    <p class="doctor-bio">
+                        <span class="placeholder">[Insert short bio]</span> — around two
+                        sentences on experience, training and the treatments they most enjoy.
+                    </p>
+                    <ul class="doctor-social">
+                        <li><a href="doctors.html" aria-label="View full profile"><i class="fa-regular fa-id-badge"></i></a></li>
+                        <li><a href="#" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- DOCTOR CARD 2 -->
+            <article class="doctor-card">
+                <!-- TO REPLACE: <img src="images/doctor-2.jpg" alt="Dr. [Name]" class="doctor-photo"> -->
+                <div class="doctor-photo-placeholder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>images/doctor-2.jpg</span>
+                </div>
+                <div class="doctor-info">
+                    <h3><span class="placeholder">[Dr. Insert Name]</span></h3>
+                    <p class="doctor-role"><span class="placeholder">[Insert specialty]</span> &middot; Implants &amp; Surgery</p>
+                    <p class="doctor-bio">
+                        <span class="placeholder">[Insert short bio]</span> — around two
+                        sentences on experience, training and the treatments they most enjoy.
+                    </p>
+                    <ul class="doctor-social">
+                        <li><a href="doctors.html" aria-label="View full profile"><i class="fa-regular fa-id-badge"></i></a></li>
+                        <li><a href="#" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- DOCTOR CARD 3 -->
+            <article class="doctor-card">
+                <!-- TO REPLACE: <img src="images/doctor-3.jpg" alt="Dr. [Name]" class="doctor-photo"> -->
+                <div class="doctor-photo-placeholder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>images/doctor-3.jpg</span>
+                </div>
+                <div class="doctor-info">
+                    <h3><span class="placeholder">[Dr. Insert Name]</span></h3>
+                    <p class="doctor-role"><span class="placeholder">[Insert specialty]</span> &middot; Family Dentistry</p>
+                    <p class="doctor-bio">
+                        <span class="placeholder">[Insert short bio]</span> — around two
+                        sentences on experience, training and the treatments they most enjoy.
+                    </p>
+                    <ul class="doctor-social">
+                        <li><a href="doctors.html" aria-label="View full profile"><i class="fa-regular fa-id-badge"></i></a></li>
+                        <li><a href="#" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                    </ul>
+                </div>
+            </article>
+
+        </div>
+
+        <div class="section-cta">
+            <!-- NOTE: doctors.html has not been built yet. -->
+            <a href="doctors.html" class="btn btn-outline btn-lg">
+                View Full Doctor Profiles <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     5. WHY CHOOSE US  (technology + patient-first approach)
+     ========================================================== -->
+<section class="section">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Why choose us</p>
+            <h2>Modern technology, old-fashioned bedside manner</h2>
+            <p class="section-sub">
+                Better equipment means shorter, more comfortable visits — but it is
+                how we use it that patients notice.
+            </p>
+        </div>
+
+        <div class="grid grid-2">
+
+            <!-- Left column: the technology we use -->
+            <div>
+                <h3 style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-microscope" style="color: var(--blue-700);"></i>
+                    The technology we use
+                </h3>
+                <ul class="why-list">
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Digital intraoral scanning</h4>
+                            <p>Accurate 3D scans in minutes — no trays, no putty, no gagging.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Low-dose digital X-rays</h4>
+                            <p>Up to 80% less radiation than film, with images on screen instantly.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Same-day CAD/CAM crowns</h4>
+                            <p>Designed, milled and fitted in one visit, so no temporary crown is needed.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4><span class="placeholder">[Insert your equipment]</span></h4>
+                            <p><span class="placeholder">[Insert one line on what it does for the patient]</span></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right column: our patient-first approach -->
+            <div>
+                <h3 style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-heart-pulse" style="color: var(--blue-700);"></i>
+                    Our patient-first approach
+                </h3>
+                <ul class="why-list">
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Unhurried appointments</h4>
+                            <p>Longer slots by design, so nothing is rushed and questions are welcome.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Written plans and prices upfront</h4>
+                            <p>You see the full cost before treatment starts. No surprises on the invoice.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Gentle with anxious patients</h4>
+                            <p>Numbing options, a stop-anytime signal and extra time whenever it is needed.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>One record, one team</h4>
+                            <p>Your history follows you between our clinics and between our dentists.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     6. APPOINTMENT CTA  (dark band, same as the homepage)
+     ========================================================== -->
+<section class="cta-band">
+    <div class="container cta-inner">
+        <div class="cta-copy">
+            <p class="section-label light">Ready when you are</p>
+            <h2>Come and meet the team</h2>
+            <p>
+                Most new patients are seen within 48 hours. Tell us what you need and
+                we will match you with the right dentist — no obligation, no pressure.
+            </p>
+            <div class="cta-buttons">
+                <!-- NOTE: appointment.html has not been built yet. -->
+                <a href="appointment.html" class="btn btn-white btn-lg">
+                    <i class="fa-regular fa-calendar-check"></i> Book an Appointment
+                </a>
+                <a href="tel:+6561234567" class="btn btn-ghost btn-lg">
+                    <i class="fa-solid fa-phone"></i> <span class="placeholder">[+65 6123 4567]</span>
+                </a>
+            </div>
+        </div>
+
+        <ul class="cta-points">
+            <li><i class="fa-solid fa-bolt"></i> Same-day emergency care</li>
+            <li><i class="fa-solid fa-shield-heart"></i> Insurance &amp; CHAS accepted</li>
+            <li><i class="fa-solid fa-clock"></i> Evening &amp; weekend slots</li>
+        </ul>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     FOOTER  (same structure as index.html)
+     ========================================================== -->
+<footer class="site-footer">
+    <div class="container footer-inner">
+
+        <!-- Left: logo, name and contact details -->
+        <div class="footer-col footer-brand">
+            <a href="index.html" class="logo logo-footer">
+                <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-name">Smile Dental Group</span>
+            </a>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+
+            <!-- social media icons sit under the contact details -->
+            <ul class="social-links">
+                <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: About -->
+        <div class="footer-col">
+            <h4>About</h4>
+            <ul class="footer-links">
+                <li><a href="about-us.html">About Us</a></li>
+                <li><a href="join-us.html">Join Us</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Our Doctors.
+             NOTE: doctors.html has not been built yet. -->
+        <div class="footer-col">
+            <h4>Our Doctors</h4>
+            <ul class="footer-links">
+                <li><a href="doctors.html">General Dentists</a></li>
+                <li><a href="doctors.html">Endodontists</a></li>
+                <li><a href="doctors.html">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html">Periodontists</a></li>
+                <li><a href="doctors.html">Prosthodontists</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Services -->
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="#">Fees Calculator</a></li>
+                <li><a href="index.html#services">Dental Services</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Locate Us -->
+        <div class="footer-col">
+            <h4>Locate Us</h4>
+            <ul class="footer-links">
+                <li><a href="index.html#locate">Locations</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Smile Dental Group. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ==========================================================
+     Small script: opens / closes the menu on mobile
+     ========================================================== -->
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle the menu open/closed when the hamburger is clicked
+    menuToggle.addEventListener('click', function () {
+        const isOpen = mainNav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+        menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close the menu again after a real link is tapped.
+    // The "About" toggle is skipped — tapping it should open the dropdown,
+    // not close the whole menu.
+    document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mainNav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', false);
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+
+
+    /* ---------- Menu dropdowns (About, Our Doctors, Services) ---------- */
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+
+    // Helper: close every dropdown
+    function closeAllDropdowns() {
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('open');
+        });
+    }
+
+    // Open / close a dropdown when its menu item is clicked
+    dropdownItems.forEach(function (item) {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();      // stop the link from jumping anywhere
+
+            const wasOpen = item.classList.contains('open');
+            closeAllDropdowns();         // only one panel open at a time
+
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Click anywhere else on the page to close them again
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // The Escape key closes them too
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
+</script>
+
+</body>
+</html>

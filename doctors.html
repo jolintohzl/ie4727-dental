@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Doctors | Smile Dental Group</title>
+
+    <!-- Font Awesome (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- stylesheet shared with index.html -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     NAVIGATION BAR  (same two-row structure as index.html)
+     ========================================================== -->
+<header class="site-header">
+
+    <!-- ---------- TOP ROW: logo + icons + book button ---------- -->
+    <div class="nav-top">
+        <div class="container nav-top-inner">
+
+            <a href="index.html" class="logo">
+                <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-text">
+                    <span class="logo-name">Smile Dental Group</span>
+                    <span class="logo-tagline">Gentle care, lasting smiles</span>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <button class="icon-btn" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <a href="#" class="icon-btn" aria-label="My account">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <!-- NOTE: appointment.html has not been built yet. -->
+                <a href="appointment.html" class="btn btn-primary btn-book">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Book Appointment</span>
+                </a>
+
+                <!-- Hamburger — only visible on mobile -->
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---------- BOTTOM ROW: centered menu ---------- -->
+    <nav class="nav-bottom" id="mainNav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="about-us.html">About</a></li>
+
+                <!-- NOTE: doctors.html has not been built yet. -->
+                <li><a href="doctors.html">Our Doctors</a></li>
+
+                <!-- "Services" is the only menu item with a dropdown.
+                     The panel stays hidden until the text or the arrow is clicked. -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Services <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="services.html">Dental Services</a></li>
+                        <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="locate-us.html">Locate Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+<!-- ==========================================================
+     1. PAGE BANNER
+     ========================================================== -->
+<section class="page-hero">
+    <div class="container">
+        <p class="breadcrumb">
+            <a href="index.html">Home</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>Our Doctors</span>
+        </p>
+        <p>
+            Our dentists and specialists, grouped by what they treat.
+        </p>
+    </div>
+</section>
+
+
+
+<!-- ==========================================================
+     2. GENERAL DENTISTS
+     Copy one .doctor-card block to add another dentist to this row.
+     ========================================================== -->
+<section class="section" id="general">
+    <div class="container">
+
+        <div class="team-head">
+            <h2>General Dentists</h2>
+            <p class="team-blurb">Check-ups, fillings, cleaning and everyday care for the whole family.</p>
+        </div>
+
+        <div class="grid grid-4">
+
+                <!-- DOCTOR CARD 1 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-general-1.jpg" alt="Dr. Tan Wei Ling" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Tan Wei Ling</h3>
+                        <p class="doctor-role">Family Dentistry</p>
+                        <p class="doctor-bio">Graduated from NUS Dentistry in 2011 and has spent her career in family practice, seeing three generations of some of our families.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 2 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-general-2.jpg" alt="Dr. Marcus Lim" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Marcus Lim</h3>
+                        <p class="doctor-role">Preventive Care</p>
+                        <p class="doctor-bio">Trained at NUS with further study in minimally invasive dentistry; he has twelve years of experience and a strong preference for catching problems early.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 3 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-general-3.jpg" alt="Dr. Daniel Ong" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Daniel Ong</h3>
+                        <p class="doctor-role">Paediatric Dentistry</p>
+                        <p class="doctor-bio">Completed his paediatric training in Melbourne and has spent eight years making first dental visits something children do not dread.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 4 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-general-4.jpg" alt="Dr. Aaron Tan" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Aaron Tan</h3>
+                        <p class="doctor-role">Emergency Care</p>
+                        <p class="doctor-bio">Nine years in practice, much of it on our walk-in emergency list, so he is used to sorting out pain quickly and calmly.</p>
+                    </div>
+                </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     3. ENDODONTISTS / ROOT CANAL SPECIALISTS
+     Copy one .doctor-card block to add another dentist to this row.
+     ========================================================== -->
+<section class="section why" id="endodontics">
+    <div class="container">
+
+        <div class="team-head">
+            <h2>Endodontists / Root Canal Specialists</h2>
+            <p class="team-blurb">Saving teeth that would otherwise need to come out.</p>
+        </div>
+
+        <div class="grid grid-4">
+
+                <!-- DOCTOR CARD 1 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-endodontics-2.jpg" alt="Dr. Jason Koh" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Jason Koh</h3>
+                        <p class="doctor-role">Retreatment</p>
+                        <p class="doctor-bio">Fifteen years in specialist practice; he takes on the cases other clinics have already tried and could not settle.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 2 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-endodontics-1.jpg" alt="Dr. Lim Hui Min" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Lim Hui Min</h3>
+                        <p class="doctor-role">Root Canal Therapy</p>
+                        <p class="doctor-bio">Holds a Master's in Endodontics from the University of Hong Kong and has completed well over two thousand root canal treatments.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 3 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-endodontics-3.jpg" alt="Dr. Benjamin Sim" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Benjamin Sim</h3>
+                        <p class="doctor-role">Microsurgery</p>
+                        <p class="doctor-bio">Trained in surgical endodontics in the UK and works almost entirely under the operating microscope.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 4 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-endodontics-4.jpg" alt="Dr. Ryan Chua" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Ryan Chua</h3>
+                        <p class="doctor-role">Dental Trauma</p>
+                        <p class="doctor-bio">Seven years in hospital practice before joining us, so he is experienced with knocked-out and fractured teeth.</p>
+                    </div>
+                </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     4. ALIGNER TEAM AND ORTHODONTISTS
+     Copy one .doctor-card block to add another dentist to this row.
+     ========================================================== -->
+<section class="section" id="orthodontics">
+    <div class="container">
+
+        <div class="team-head">
+            <h2>Aligner Team and Orthodontists</h2>
+            <p class="team-blurb">Straightening teeth with braces and clear aligners.</p>
+        </div>
+
+        <div class="grid grid-4">
+
+                <!-- DOCTOR CARD 1 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-orthodontics-2.jpg" alt="Dr. Ethan Wong" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Ethan Wong</h3>
+                        <p class="doctor-role">Fixed Braces</p>
+                        <p class="doctor-bio">Completed his orthodontic residency in Sydney and has fourteen years of experience with complex bite corrections.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 2 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-orthodontics-3.jpg" alt="Dr. Samuel Teo" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Samuel Teo</h3>
+                        <p class="doctor-role">Early Treatment</p>
+                        <p class="doctor-bio">Focuses on children aged seven to twelve, where guiding growth early can avoid longer treatment later.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 3 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-orthodontics-4.jpg" alt="Dr. Nicholas Yeo" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Nicholas Yeo</h3>
+                        <p class="doctor-role">Retention</p>
+                        <p class="doctor-bio">Ten years in orthodontics; he looks after the retention stage, which is where results are kept or lost.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 4 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-orthodontics-1.jpg" alt="Dr. Ng Jia Hui" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Ng Jia Hui</h3>
+                        <p class="doctor-role">Clear Aligners</p>
+                        <p class="doctor-bio">A certified aligner provider since 2015, she has planned more than a thousand cases and leads our digital treatment planning.</p>
+                    </div>
+                </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     5. PERIODONTISTS / GUM SPECIALISTS
+     Copy one .doctor-card block to add another dentist to this row.
+     ========================================================== -->
+<section class="section why" id="periodontics">
+    <div class="container">
+
+        <div class="team-head">
+            <h2>Periodontists / Gum Specialists</h2>
+            <p class="team-blurb">Treating gum disease and the bone that supports your teeth.</p>
+        </div>
+
+        <div class="grid grid-4">
+
+                <!-- DOCTOR CARD 1 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-periodontics-1.jpg" alt="Dr. Chua Mei Xin" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Chua Mei Xin</h3>
+                        <p class="doctor-role">Gum Disease</p>
+                        <p class="doctor-bio">Specialist periodontist with a Master's from King's College London and thirteen years treating advanced gum disease.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 2 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-periodontics-2.jpg" alt="Dr. Kelvin Ho" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Kelvin Ho</h3>
+                        <p class="doctor-role">Gum Grafting</p>
+                        <p class="doctor-bio">Trained in soft tissue grafting in Taiwan and has eleven years of experience rebuilding receded gum lines.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 3 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-periodontics-3.jpg" alt="Dr. Darren Loh" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Darren Loh</h3>
+                        <p class="doctor-role">Implant Maintenance</p>
+                        <p class="doctor-bio">Nine years in practice, working with our implant team to keep the gum and bone around implants healthy.</p>
+                    </div>
+                </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     6. PROSTHODONTISTS / RESTORATIVE DENTISTRY
+     Copy one .doctor-card block to add another dentist to this row.
+     ========================================================== -->
+<section class="section" id="prosthodontics">
+    <div class="container">
+
+        <div class="team-head">
+            <h2>Prosthodontists / Restorative Dentistry</h2>
+            <p class="team-blurb">Rebuilding worn, broken or missing teeth.</p>
+        </div>
+
+        <div class="grid grid-4">
+
+                <!-- DOCTOR CARD 1 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-prosthodontics-1.jpg" alt="Dr. Goh Shu Fen" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Goh Shu Fen</h3>
+                        <p class="doctor-role">Crowns & Bridges</p>
+                        <p class="doctor-bio">A prosthodontist trained in Japan, she has sixteen years of experience in full-mouth rehabilitation and shade matching.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 2 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-prosthodontics-2.jpg" alt="Dr. Jonathan Neo" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Jonathan Neo</h3>
+                        <p class="doctor-role">Dental Implants</p>
+                        <p class="doctor-bio">Places and restores implants, with over a decade of surgical experience and advanced training in bone grafting.</p>
+                    </div>
+                </article>
+
+                <!-- DOCTOR CARD 3 -->
+                <article class="doctor-card">
+                    <img src="images/doctor-prosthodontics-3.jpg" alt="Dr. Bryan Seah" class="doctor-photo">
+                    <div class="doctor-info">
+                        <h3>Dr. Bryan Seah</h3>
+                        <p class="doctor-role">Dentures</p>
+                        <p class="doctor-bio">Twelve years spent almost entirely on removable prosthetics, and known for getting a difficult denture to fit.</p>
+                    </div>
+                </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     FOOTER  (same structure as index.html)
+     ========================================================== -->
+<footer class="site-footer">
+    <div class="container footer-inner">
+
+        <!-- Left: logo, name and contact details -->
+        <div class="footer-col footer-brand">
+            <a href="index.html" class="logo logo-footer">
+                <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-name">Smile Dental Group</span>
+            </a>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+
+            <!-- social media icons sit under the contact details -->
+            <ul class="social-links">
+                <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: About -->
+        <div class="footer-col">
+            <h4>About</h4>
+            <ul class="footer-links">
+                <li><a href="about-us.html">About Us</a></li>
+                <li><a href="about-us.html#join">Join Us</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Our Doctors.
+             NOTE: doctors.html has not been built yet. -->
+        <div class="footer-col">
+            <h4>Our Doctors</h4>
+            <ul class="footer-links">
+                <li><a href="doctors.html#general">General Dentists</a></li>
+                <li><a href="doctors.html#endodontics">Endodontists</a></li>
+                <li><a href="doctors.html#orthodontics">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html#periodontics">Periodontists</a></li>
+                <li><a href="doctors.html#prosthodontics">Prosthodontists</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Services -->
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                <li><a href="services.html">Dental Services</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Locate Us -->
+        <div class="footer-col">
+            <h4>Locate Us</h4>
+            <ul class="footer-links">
+                <li><a href="locate-us.html">Locations</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Smile Dental Group. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ==========================================================
+     Small script: opens / closes the menu on mobile
+     ========================================================== -->
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle the menu open/closed when the hamburger is clicked
+    menuToggle.addEventListener('click', function () {
+        const isOpen = mainNav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+        menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close the menu again after a real link is tapped.
+    // The "Services" toggle is skipped — tapping it should open the dropdown,
+    // not close the whole menu.
+    document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mainNav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', false);
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+
+
+    /* ---------- Menu dropdown (Services) ---------- */
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+
+    // Helper: close every dropdown
+    function closeAllDropdowns() {
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('open');
+        });
+    }
+
+    // Open / close a dropdown when its menu item is clicked
+    dropdownItems.forEach(function (item) {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();      // stop the link from jumping anywhere
+
+            const wasOpen = item.classList.contains('open');
+            closeAllDropdowns();         // only one panel open at a time
+
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Click anywhere else on the page to close them again
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // The Escape key closes them too
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
+</script>
+
+</body>
+</html>

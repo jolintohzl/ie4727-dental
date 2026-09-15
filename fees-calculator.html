@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fees Calculator | Smile Dental Group</title>
+
+    <!-- Font Awesome (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- stylesheet shared with index.html -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     NAVIGATION BAR  (same two-row structure as index.html)
+     ========================================================== -->
+<header class="site-header">
+
+    <!-- ---------- TOP ROW: logo + icons + book button ---------- -->
+    <div class="nav-top">
+        <div class="container nav-top-inner">
+
+            <a href="index.html" class="logo">
+                <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-text">
+                    <span class="logo-name">Smile Dental Group</span>
+                    <span class="logo-tagline">Gentle care, lasting smiles</span>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <button class="icon-btn" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+                <a href="#" class="icon-btn" aria-label="My account">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <!-- NOTE: appointment.html has not been built yet. -->
+                <a href="appointment.html" class="btn btn-primary btn-book">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Book Appointment</span>
+                </a>
+
+                <!-- Hamburger — only visible on mobile -->
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---------- BOTTOM ROW: centered menu ---------- -->
+    <nav class="nav-bottom" id="mainNav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="about-us.html">About</a></li>
+
+                <!-- NOTE: doctors.html has not been built yet. -->
+                <li><a href="doctors.html">Our Doctors</a></li>
+
+                <!-- "Services" is the only menu item with a dropdown.
+                     The panel stays hidden until the text or the arrow is clicked. -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Services <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="services.html">Dental Services</a></li>
+                        <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="locate-us.html">Locate Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+
+<!-- ==========================================================
+     1. PAGE BANNER
+     ========================================================== -->
+<section class="page-hero">
+    <div class="container">
+        <p class="breadcrumb">
+            <a href="index.html">Home</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>Fees Calculator</span>
+        </p>
+        <p>
+            Pick a treatment, your age group and the scheme you hold to see an
+            estimate of what you would pay.
+        </p>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     2. THE CALCULATOR
+     The prices and subsidy rates all live in one place, in the
+     script at the bottom of this page. Update them there.
+     ========================================================== -->
+<section class="section" id="calculator">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">Estimate your bill</p>
+            <h2>Fees calculator</h2>
+            <p class="section-sub">
+                Singapore residents can use CHAS, Pioneer or Merdeka Generation benefits and
+                MediSave towards dental treatment. This works out a rough figure for you.
+            </p>
+        </div>
+
+        <div class="calc-grid">
+
+            <!-- ---------- Left: the three choices ---------- -->
+            <div class="form-card">
+                <div class="form-grid">
+
+                    <div class="form-field full">
+                        <label for="service">1. Which treatment do you need?</label>
+                        <select id="service">
+                            <option value="">-- Please select a treatment --</option>
+                        </select>
+                        <span class="form-hint" id="serviceHint"></span>
+                    </div>
+
+                    <div class="form-field full">
+                        <label for="ageGroup">2. Which age group are you in?</label>
+                        <select id="ageGroup">
+                            <option value="">-- Please select an age group --</option>
+                            <option value="under21">Under 21</option>
+                            <option value="21to59">21 to 59</option>
+                            <option value="60to64">60 to 64</option>
+                            <option value="65plus">65 and above</option>
+                        </select>
+                        <span class="form-hint">
+                            Some schemes are only open to certain ages, so this decides
+                            what you can pick below.
+                        </span>
+                    </div>
+
+                    <div class="form-field full">
+                        <label for="scheme">3. Which scheme would you like to apply?</label>
+                        <select id="scheme" disabled>
+                            <option value="">-- Choose an age group first --</option>
+                        </select>
+                        <span class="form-hint" id="schemeHint"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ---------- Right: the running total ---------- -->
+            <div class="form-card calc-result" id="result">
+
+                <h3 class="calc-title">Your estimate</h3>
+
+                <div class="calc-line">
+                    <span>Treatment</span>
+                    <strong id="outTreatment">&mdash;</strong>
+                </div>
+
+                <div class="calc-line">
+                    <span>Clinic fee</span>
+                    <strong id="outPrice">&mdash;</strong>
+                </div>
+
+                <div class="calc-line">
+                    <span id="outSchemeLabel">Subsidy applied</span>
+                    <strong id="outSubsidy" class="calc-subsidy">&mdash;</strong>
+                </div>
+
+                <div class="calc-line total">
+                    <span>You pay</span>
+                    <strong id="outTotal">&mdash;</strong>
+                </div>
+
+                <p class="calc-message" id="outMessage">
+                    Choose a treatment, an age group and a scheme to see your estimate.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Everything on this page is an estimate, so say so plainly -->
+        <p class="calc-disclaimer">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>
+                <strong>These figures are estimates only.</strong>
+                Clinic fees vary with the complexity of each case, and subsidy rates are set by
+                the Ministry of Health and change from time to time. The amounts here are
+                <span class="placeholder">[illustrative figures — replace with this clinic's
+                current fees and the published CHAS, PG, MG and MediSave rates]</span>.
+                Your final bill is confirmed at your appointment.
+            </span>
+        </p>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     FOOTER  (same structure as index.html)
+     ========================================================== -->
+<footer class="site-footer">
+    <div class="container footer-inner">
+
+        <!-- Left: logo, name and contact details -->
+        <div class="footer-col footer-brand">
+            <a href="index.html" class="logo logo-footer">
+                <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-name">Smile Dental Group</span>
+            </a>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+
+            <!-- social media icons sit under the contact details -->
+            <ul class="social-links">
+                <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: About -->
+        <div class="footer-col">
+            <h4>About</h4>
+            <ul class="footer-links">
+                <li><a href="about-us.html">About Us</a></li>
+                <li><a href="about-us.html#join">Join Us</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Our Doctors.
+             NOTE: doctors.html has not been built yet. -->
+        <div class="footer-col">
+            <h4>Our Doctors</h4>
+            <ul class="footer-links">
+                <li><a href="doctors.html#general">General Dentists</a></li>
+                <li><a href="doctors.html#endodontics">Endodontists</a></li>
+                <li><a href="doctors.html#orthodontics">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html#periodontics">Periodontists</a></li>
+                <li><a href="doctors.html#prosthodontics">Prosthodontists</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Services -->
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                <li><a href="services.html">Dental Services</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Locate Us -->
+        <div class="footer-col">
+            <h4>Locate Us</h4>
+            <ul class="footer-links">
+                <li><a href="locate-us.html">Locations</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Smile Dental Group. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ==========================================================
+     Small script: opens / closes the menu on mobile
+     ========================================================== -->
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle the menu open/closed when the hamburger is clicked
+    menuToggle.addEventListener('click', function () {
+        const isOpen = mainNav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+        menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close the menu again after a real link is tapped.
+    // The "Services" toggle is skipped — tapping it should open the dropdown,
+    // not close the whole menu.
+    document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mainNav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', false);
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+
+
+    /* ---------- Menu dropdown (Services) ---------- */
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+
+    // Helper: close every dropdown
+    function closeAllDropdowns() {
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('open');
+        });
+    }
+
+    // Open / close a dropdown when its menu item is clicked
+    dropdownItems.forEach(function (item) {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();      // stop the link from jumping anywhere
+
+            const wasOpen = item.classList.contains('open');
+            closeAllDropdowns();         // only one panel open at a time
+
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Click anywhere else on the page to close them again
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // The Escape key closes them too
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
+</script>
+
+
+
+<!-- ==========================================================
+     CALCULATOR SCRIPT
+     ========================================================== -->
+<script>
+(function () {
+
+    /* ----------------------------------------------------------
+       1. THE PRICE LIST
+       One entry per treatment. Update the numbers here and the
+       whole calculator follows.
+
+         price      what the clinic charges, in SGD
+         chasBlue   dollars off for a CHAS Blue cardholder
+         chasOrange dollars off for a CHAS Orange cardholder
+         medisave   most you may withdraw from MediSave (0 = not claimable;
+                    MediSave only covers surgical dental work)
+         flexi      true if Flexi-MediSave can be used on it
+       ---------------------------------------------------------- */
+    const TREATMENTS = [
+        { id: "consult",   name: "Consultation & Check-up",      price: 45,   chasBlue: 11.5, chasOrange: 8,   medisave: 0,    flexi: true  },
+        { id: "scaling",   name: "Scaling & Polishing",          price: 110,  chasBlue: 50.5, chasOrange: 25,  medisave: 0,    flexi: true  },
+        { id: "filling",   name: "Filling",                      price: 140,  chasBlue: 75.5, chasOrange: 52.5, medisave: 0,   flexi: true  },
+        { id: "extract",   name: "Simple Extraction",            price: 130,  chasBlue: 75.5, chasOrange: 52.5, medisave: 0,   flexi: true  },
+        { id: "surgical",  name: "Surgical Extraction (wisdom tooth)", price: 1200, chasBlue: 0, chasOrange: 0, medisave: 950, flexi: false },
+        { id: "rootcanal", name: "Root Canal Treatment",         price: 1100, chasBlue: 170,  chasOrange: 100, medisave: 0,    flexi: true  },
+        { id: "crown",     name: "Dental Crown",                 price: 1300, chasBlue: 190,  chasOrange: 130, medisave: 0,    flexi: true  },
+        { id: "bridge",    name: "Dental Bridge (3 units)",      price: 2400, chasBlue: 190,  chasOrange: 130, medisave: 0,    flexi: true  },
+        { id: "implant",   name: "Dental Implant",               price: 4500, chasBlue: 0,    chasOrange: 0,   medisave: 1150, flexi: false },
+        { id: "denturef",  name: "Full Denture (per arch)",      price: 1200, chasBlue: 260,  chasOrange: 190, medisave: 0,    flexi: true  },
+        { id: "denturep",  name: "Partial Denture",              price: 700,  chasBlue: 150,  chasOrange: 110, medisave: 0,    flexi: true  },
+        { id: "braces",    name: "Braces / Invisalign",          price: 5500, chasBlue: 0,    chasOrange: 0,   medisave: 0,    flexi: false }
+    ];
+
+    /* ----------------------------------------------------------
+       2. THE SCHEMES
+       "ages" lists the age groups that may pick each scheme.
+       ---------------------------------------------------------- */
+    const FLEXI_CAP = 200;   // Flexi-MediSave allows up to $200 a year
+
+    const SCHEMES = [
+        { id: "none",        name: "No scheme (pay in full)",
+          ages: ["under21", "21to59", "60to64", "65plus"],
+          hint: "The full clinic fee, with nothing deducted." },
+
+        { id: "chasBlue",    name: "CHAS Blue",
+          ages: ["under21", "21to59", "60to64", "65plus"],
+          hint: "For lower-income households. The higher of the two CHAS subsidy tiers." },
+
+        { id: "chasOrange",  name: "CHAS Orange",
+          ages: ["under21", "21to59", "60to64", "65plus"],
+          hint: "For middle-income households. Covers dental and chronic conditions only." },
+
+        { id: "merdeka",     name: "Merdeka Generation",
+          ages: ["65plus"],
+          hint: "Merdeka Generation cardholders receive more than the CHAS Blue rate." },
+
+        { id: "pioneer",     name: "Pioneer Generation",
+          ages: ["65plus"],
+          hint: "Pioneer Generation cardholders receive the highest rate of subsidy." },
+
+        { id: "medisave",    name: "MediSave",
+          ages: ["21to59", "60to64", "65plus"],
+          hint: "Only for surgical procedures such as implants and surgical extractions." },
+
+        { id: "flexi",       name: "Flexi-MediSave",
+          ages: ["60to64", "65plus"],
+          hint: "From age 60 you may use up to $" + FLEXI_CAP + " of MediSave a year on outpatient treatment." }
+    ];
+
+    /* Merdeka and Pioneer build on the CHAS Blue rate.
+       Adjust these two multipliers if the published rates change. */
+    const MERDEKA_MULTIPLIER = 1.25;
+    const PIONEER_MULTIPLIER = 1.50;
+
+
+    /* ---------- Grab the elements once ---------- */
+    const serviceSelect = document.getElementById("service");
+    const ageSelect     = document.getElementById("ageGroup");
+    const schemeSelect  = document.getElementById("scheme");
+    const serviceHint   = document.getElementById("serviceHint");
+    const schemeHint    = document.getElementById("schemeHint");
+
+    const outTreatment  = document.getElementById("outTreatment");
+    const outPrice      = document.getElementById("outPrice");
+    const outSubsidy    = document.getElementById("outSubsidy");
+    const outTotal      = document.getElementById("outTotal");
+    const outMessage    = document.getElementById("outMessage");
+    const outSchemeLabel = document.getElementById("outSchemeLabel");
+
+
+    /* ---------- Fill the treatment dropdown from the list above ---------- */
+    TREATMENTS.forEach(function (t) {
+        const option = document.createElement("option");
+        option.value = t.id;
+        option.textContent = t.name + " — " + money(t.price);
+        serviceSelect.appendChild(option);
+    });
+
+
+    /* Show money the same way everywhere: $1,234.50 */
+    function money(amount) {
+        return "$" + amount.toLocaleString("en-SG", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function findTreatment(id) {
+        return TREATMENTS.filter(function (t) { return t.id === id; })[0];
+    }
+
+    function findScheme(id) {
+        return SCHEMES.filter(function (s) { return s.id === id; })[0];
+    }
+
+
+    /* ----------------------------------------------------------
+       Work out the subsidy for one treatment under one scheme.
+       Returns the dollar amount and a line explaining it.
+       ---------------------------------------------------------- */
+    function calculateSubsidy(treatment, schemeId) {
+        let amount = 0;
+        let note = "";
+
+        if (schemeId === "chasBlue") {
+            amount = treatment.chasBlue;
+            note = amount > 0
+                ? "CHAS Blue covers " + money(amount) + " of this treatment."
+                : "CHAS does not cover this treatment.";
+
+        } else if (schemeId === "chasOrange") {
+            amount = treatment.chasOrange;
+            note = amount > 0
+                ? "CHAS Orange covers " + money(amount) + " of this treatment."
+                : "CHAS does not cover this treatment.";
+
+        } else if (schemeId === "merdeka" || schemeId === "pioneer") {
+            const multiplier = (schemeId === "pioneer") ? PIONEER_MULTIPLIER : MERDEKA_MULTIPLIER;
+            amount = treatment.chasBlue * multiplier;
+            note = amount > 0
+                ? "You receive the CHAS Blue rate plus the extra "
+                  + (schemeId === "pioneer" ? "Pioneer" : "Merdeka") + " Generation subsidy."
+                : "This treatment is not on the subsidised list.";
+
+        } else if (schemeId === "medisave") {
+            if (treatment.medisave > 0) {
+                amount = treatment.medisave;
+                note = "MediSave covers up to " + money(treatment.medisave)
+                     + " of this procedure. The rest is paid in cash.";
+            } else {
+                note = "MediSave can only be used for surgical procedures, so it does "
+                     + "not apply to this treatment.";
+            }
+
+        } else if (schemeId === "flexi") {
+            if (treatment.flexi) {
+                amount = FLEXI_CAP;
+                note = "Flexi-MediSave covers up to " + money(FLEXI_CAP)
+                     + " a year towards outpatient treatment.";
+            } else {
+                note = "Flexi-MediSave is for routine outpatient treatment and does not "
+                     + "apply to this procedure.";
+            }
+
+        } else {
+            note = "No scheme applied — this is the full clinic fee.";
+        }
+
+        // round to whole cents first, otherwise the subsidy and the amount
+        // payable can display as a cent more than the fee they came from
+        amount = Math.round(amount * 100) / 100;
+
+        // never give back more than the treatment costs
+        if (amount > treatment.price) {
+            amount = treatment.price;
+            note += " The subsidy is capped at the cost of the treatment.";
+        }
+
+        return { amount: amount, note: note };
+    }
+
+
+    /* ----------------------------------------------------------
+       Rebuild the scheme dropdown whenever the age group changes,
+       so only the schemes that person can hold are offered.
+       ---------------------------------------------------------- */
+    function refreshSchemes() {
+        const age = ageSelect.value;
+        const previous = schemeSelect.value;
+
+        schemeSelect.innerHTML = "";
+
+        if (!age) {
+            schemeSelect.disabled = true;
+            schemeSelect.innerHTML = '<option value="">-- Choose an age group first --</option>';
+            schemeHint.textContent = "";
+            return;
+        }
+
+        schemeSelect.disabled = false;
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Please select a scheme --";
+        schemeSelect.appendChild(placeholder);
+
+        SCHEMES.forEach(function (s) {
+            if (s.ages.indexOf(age) === -1) { return; }
+            const option = document.createElement("option");
+            option.value = s.id;
+            option.textContent = s.name;
+            schemeSelect.appendChild(option);
+        });
+
+        // keep the previous choice if it is still allowed at this age
+        schemeSelect.value = previous;
+        updateSchemeHint();
+    }
+
+    function updateSchemeHint() {
+        const scheme = findScheme(schemeSelect.value);
+        schemeHint.textContent = scheme ? scheme.hint : "";
+    }
+
+
+    /* ---------- Redraw the estimate panel ---------- */
+    function updateEstimate() {
+        const treatment = findTreatment(serviceSelect.value);
+        const scheme    = findScheme(schemeSelect.value);
+
+        serviceHint.textContent = treatment
+            ? "Clinic fee for this treatment: " + money(treatment.price)
+            : "";
+
+        // nothing to show until all three questions are answered
+        if (!treatment || !ageSelect.value || !scheme) {
+            outTreatment.innerHTML = "&mdash;";
+            outPrice.innerHTML     = "&mdash;";
+            outSubsidy.innerHTML   = "&mdash;";
+            outTotal.innerHTML     = "&mdash;";
+            outSchemeLabel.textContent = "Subsidy applied";
+            outMessage.textContent = "Choose a treatment, an age group and a scheme to see your estimate.";
+            return;
+        }
+
+        const subsidy = calculateSubsidy(treatment, scheme.id);
+        const payable = treatment.price - subsidy.amount;
+
+        outTreatment.textContent   = treatment.name;
+        outPrice.textContent       = money(treatment.price);
+        outSchemeLabel.textContent = scheme.id === "none" ? "Subsidy applied" : scheme.name;
+        outSubsidy.textContent     = subsidy.amount > 0 ? "− " + money(subsidy.amount) : money(0);
+        outTotal.textContent       = money(payable);
+        outMessage.textContent     = subsidy.note;
+    }
+
+
+    /* ---------- Wire the three dropdowns up ---------- */
+    ageSelect.addEventListener("change", function () {
+        refreshSchemes();
+        updateEstimate();
+    });
+    serviceSelect.addEventListener("change", updateEstimate);
+    schemeSelect.addEventListener("change", function () {
+        updateSchemeHint();
+        updateEstimate();
+    });
+
+})();
+</script>
+
+</body>
+</html>

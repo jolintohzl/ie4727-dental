@@ -680,7 +680,8 @@ ul { list-style: none; }
 .doctor-photo,
 .doctor-photo-placeholder {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    /* square suits a headshot - 4/3 cropped the chin off the real photos */
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     object-position: top center;
 }
@@ -1125,17 +1126,198 @@ ul { list-style: none; }
 
 
 /* ==========================================================
-   12. INNER PAGES  (about-us.html + join-us.html)
+   12. INNER PAGES  (about-us.html)
    Everything above is shared. Only the pieces that did not
    already exist are added here.
    ========================================================== */
+
+   /* --- locate-us.html --- */
+.location-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    /* a column so the Get Directions buttons line up across cards
+       even when one branch has a longer address than another */
+    display: flex;
+    flex-direction: column;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+.location-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow);
+}
+
+/* works for the placeholder picture and for a Google Maps iframe */
+.location-map {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
+}
+
+.location-info {
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.location-info h3 { font-size: 1.25rem; margin-bottom: 20px; }
+
+.location-list {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 24px;
+    flex: 1;            /* pushes the button to the bottom of the card */
+}
+.location-list li { display: flex; gap: 14px; }
+.location-list i {
+    color: var(--blue-700);
+    width: 18px;
+    margin-top: 4px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.location-list h4 {
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+.location-list p { font-size: .93rem; line-height: 1.6; }
+
+
+/* --- fees-calculator.html --- */
+.calc-grid {
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* the estimate panel stays in view while the choices are made */
+.calc-result { position: sticky; top: 100px; }
+
+/* Once there is no room beside the questions, the estimate drops below them
+   and stops sticking. Same rule as before: this has to sit AFTER the two rules
+   it overrides, or the equal-specificity originals win. */
+@media (max-width: 992px) {
+    .calc-grid   { grid-template-columns: 1fr; }
+    .calc-result { position: static; }
+}
+
+.calc-title {
+    font-size: 1.15rem;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+.calc-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 18px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: .95rem;
+}
+.calc-line strong { text-align: right; }
+.calc-subsidy { color: var(--blue-700); }
+
+/* the "you pay" row is the answer, so it is the loudest thing in the panel */
+.calc-line.total {
+    border-bottom: 0;
+    padding-top: 20px;
+    font-size: 1.05rem;
+}
+.calc-line.total strong {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--blue-700);
+    line-height: 1.1;
+}
+
+.calc-message {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: var(--blue-50);
+    border-radius: var(--radius-sm);
+    font-size: .88rem;
+    color: var(--body);
+}
+
+.calc-disclaimer {
+    display: flex;
+    gap: 12px;
+    margin-top: 34px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: .88rem;
+    color: var(--muted);
+}
+.calc-disclaimer i { color: var(--blue-500); margin-top: 3px; }
+
+
+/* --- services.html: picture beside the description --- */
+
+/* every second service swaps the picture to the right-hand side */
+.why-inner.flip .why-visual { order: 2; }
+
+/* once the row stacks there is no left or right, so the picture leads again.
+   This has to sit here, next to the rule it undoes — the same override placed
+   further up the file would lose to it. */
+@media (max-width: 992px) {
+    .why-inner.flip .why-visual { order: 0; }
+}
+
+.service-price {
+    font-size: .95rem;
+    color: var(--muted);
+    padding-top: 6px;
+    border-top: 1px solid var(--line);
+}
+
+
+/* --- doctors.html: one heading + one row of cards per speciality --- */
+.team-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px 28px;
+    flex-wrap: wrap;
+    margin-bottom: 34px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+}
+.team-head h2 { font-size: 1.55rem; }
+.team-blurb   { color: var(--muted); font-size: .92rem; }
+
+
+/* --- Careers divider band ---
+   Marks where the "about us" half of about-us.html ends and the "join us"
+   half begins. It borrows the dark gradient from .cta-band, so the only
+   rules needed here are the ones that sit text and cards on top of it. --- */
+.section-divider { padding: 76px 0; }
+
+.section-divider .section-head h2  { color: var(--white); }
+.section-divider .section-head .section-sub { color: rgba(255, 255, 255, .85); }
+
+/* the benefit cards stay white, so their text has to stay dark */
+.section-divider .benefit-card p { color: var(--body); }
+
 
 /* --- Compact banner at the top of an inner page --- */
 .page-hero {
     background:
         radial-gradient(700px 320px at 80% 0%, var(--blue-100), transparent 65%),
         linear-gradient(180deg, var(--blue-50) 0%, var(--white) 100%);
-    padding: 64px 0 56px;
+    padding: 40px 0 34px;
     text-align: left;
 }
 
@@ -1144,20 +1326,28 @@ ul { list-style: none; }
     margin-bottom: 16px; 
 }
 
-.page-hero p {
+/* the intro line under the breadcrumb.
+   :not(.breadcrumb) matters — without it the "margin: 0" below would be
+   overridden onto the breadcrumb too and push it back off the left edge. */
+.page-hero p:not(.breadcrumb) {
     font-size: 1.05rem;
     max-width: 640px;
-    margin: 0 auto;
+    margin: 0;
 }
 
-/* small "Home / About Us" trail above the title */
+/* the banner is short, so the section under it starts closer than usual */
+.page-hero + .section { padding-top: 54px; }
+
+/* small "Home / About Us" trail at the top of the page.
+   No auto margins, so it lines up with the left edge of the content
+   below it (the "Our Mission" card). */
 .breadcrumb {
     display: flex;
-    justify-content: left;
+    justify-content: flex-start;
     gap: 8px;
     font-size: .85rem;
     color: var(--muted);
-    margin-bottom: 18px;
+    margin: 0 0 10px;
 }
 .breadcrumb i { font-size: .6rem; align-self: center; }
 
@@ -1171,49 +1361,6 @@ ul { list-style: none; }
     border-radius: 3px;
     font-style: normal;
 }
-
-
-/* --- Timeline (used for "Our Story") --- */
-.timeline {
-    display: grid;
-    gap: 30px;
-    border-left: 2px solid var(--line);
-    padding-left: 30px;
-    margin-top: 34px;
-}
-
-.timeline li { position: relative; }
-
-/* the little dot sitting on the line */
-.timeline li::before {
-    content: "";
-    position: absolute;
-    left: -37px;
-    top: 6px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--blue-700);
-    border: 3px solid var(--white);
-    box-shadow: 0 0 0 2px var(--blue-100);
-}
-
-.timeline .year {
-    display: inline-block;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: .8rem;
-    font-weight: 700;
-    letter-spacing: .08em;
-    color: var(--blue-700);
-    background: var(--blue-50);
-    border-radius: 999px;
-    padding: 3px 12px;
-    margin-bottom: 8px;
-}
-
-.timeline h4 { margin-bottom: 6px; }
-.timeline p  { font-size: .95rem; }
-
 
 /* --- Job opening cards (join-us.html) --- */
 .job-list { display: grid; gap: 20px; }
@@ -1346,7 +1493,12 @@ ul { list-style: none; }
 
 /* --- Inner page responsive --- */
 @media (max-width: 768px) {
-    .page-hero { padding: 46px 0 40px; }
+    .page-hero { padding: 30px 0 26px; }
+
+    /* heading and blurb stack instead of sitting on one line */
+    .team-head { display: block; margin-bottom: 26px; }
+    .team-head h2 { margin-bottom: 6px; }
+    .page-hero + .section { padding-top: 44px; }
 
     .job-card {
         grid-template-columns: 1fr;
@@ -1359,6 +1511,17 @@ ul { list-style: none; }
     .form-grid  { grid-template-columns: 1fr; }
     .form-actions .btn { width: 100%; }
 
-    .timeline { padding-left: 24px; gap: 26px; }
-    .timeline li::before { left: -31px; }
+    /* Our Story timeline: the four milestones sit side by side on desktop,
+       which is far too tight on a phone. Stack them into a normal vertical
+       list instead, with the line running down the left edge. */
+    .timeline {
+        flex-direction: column;
+        gap: 26px;
+        border-top: none;
+        border-left: 2px solid var(--line);
+        padding-top: 0;
+        padding-left: 24px;
+    }
+    /* move each dot from above the item to beside it */
+    .timeline li::before { top: 4px; left: -31px; }
 }

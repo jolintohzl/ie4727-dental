@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smile Dental Group</title>
-    <meta name="description" content="Smile Dental Group provides gentle, professional dental care — braces, implants, whitening and general dentistry. Book your appointment today.">
 
     <!-- Font Awesome (icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -68,46 +67,24 @@
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
             <ul class="nav-menu">
-                <!-- "About" opens a dropdown instead of jumping to a section -->
-                <li class="has-dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        About <i class="fa-solid fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown">
-                        <li><a href="about-us.html">About Us</a></li>
-                        <li><a href="join-us.html">Join Us</a></li>
-                    </ul>
-                </li>
-                <!-- "Our Doctors" dropdown.
-                     NOTE: doctors.html has not been built yet. -->
-                <li class="has-dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        Our Doctors <i class="fa-solid fa-chevron-down"></i>
-                    </a>
-                    <ul class="dropdown">
-                        <li><a href="doctors.html">General Dentists</a></li>
-                        <li><a href="doctors.html">Endodontist / Root Canal Specialists</a></li>
-                        <li><a href="doctors.html">Aligner Team and Orthodontist</a></li>
-                        <li><a href="doctors.html">Periodontists / Gum Specialists</a></li>
-                        <li><a href="doctors.html">Prosthodontists / Restorative Dentistry</a></li>
-                    </ul>
-                </li>
+                <li><a href="about-us.html">About</a></li>
 
-                <!-- "Services" dropdown -->
+                <!-- NOTE: doctors.html has not been built yet. -->
+                <li><a href="doctors.html">Our Doctors</a></li>
+
+                <!-- "Services" is the only menu item with a dropdown.
+                     The panel stays hidden until the text or the arrow is clicked. -->
                 <li class="has-dropdown">
                     <a href="#" class="dropdown-toggle">
                         Services <i class="fa-solid fa-chevron-down"></i>
                     </a>
                     <ul class="dropdown">
-                        <li><a href="#services">General Dentistry</a></li>
-                        <li><a href="#services">Braces / Invisalign</a></li>
-                        <li><a href="#services">Dental Crowns and Bridges</a></li>
-                        <li><a href="#services">Dental Implants</a></li>
-                        <li><a href="#services">Dentures</a></li>
-                        <li><a href="#services">Teeth Whitening</a></li>
+                        <li><a href="services.html">Dental Services</a></li>
+                        <li><a href="fees-calculator.html">Fees Calculator</a></li>
                     </ul>
                 </li>
-                <li><a href="#locate">Locate Us</a></li>
+
+                <li><a href="locate-us.html">Locate Us</a></li>
             </ul>
         </div>
     </nav>
@@ -628,7 +605,7 @@
             <h4>About</h4>
             <ul class="footer-links">
                 <li><a href="about-us.html">About Us</a></li>
-                <li><a href="join-us.html">Join Us</a></li>
+                <li><a href="about-us.html#join">Join Us</a></li>
             </ul>
         </div>
 
@@ -637,11 +614,11 @@
         <div class="footer-col">
             <h4>Our Doctors</h4>
             <ul class="footer-links">
-                <li><a href="doctors.html">General Dentists</a></li>
-                <li><a href="doctors.html">Endodontists</a></li>
-                <li><a href="doctors.html">Aligner Team and Orthodontists</a></li>
-                <li><a href="doctors.html">Periodontists</a></li>
-                <li><a href="doctors.html">Prosthodontists</a></li>
+                <li><a href="doctors.html#general">General Dentists</a></li>
+                <li><a href="doctors.html#endodontics">Endodontists</a></li>
+                <li><a href="doctors.html#orthodontics">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html#periodontics">Periodontists</a></li>
+                <li><a href="doctors.html#prosthodontics">Prosthodontists</a></li>
             </ul>
         </div>
 
@@ -649,8 +626,8 @@
         <div class="footer-col">
             <h4>Services</h4>
             <ul class="footer-links">
-                <li><a href="#">Fees Calculator</a></li>
-                <li><a href="#services">Dental Services</a></li>
+                <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                <li><a href="services.html">Dental Services</a></li>
             </ul>
         </div>
 
@@ -658,7 +635,7 @@
         <div class="footer-col">
             <h4>Locate Us</h4>
             <ul class="footer-links">
-                <li><a href="#locate">Locations</a></li>
+                <li><a href="locate-us.html">Locations</a></li>
             </ul>
         </div>
 
@@ -693,7 +670,7 @@
     });
 
     // Close the menu again after a real link is tapped.
-    // The "About" toggle is skipped — tapping it should open the dropdown,
+    // The "Services" toggle is skipped — tapping it should open the dropdown,
     // not close the whole menu.
     document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
         link.addEventListener('click', function () {
@@ -704,7 +681,7 @@
     });
 
 
-    /* ---------- Menu dropdowns (About, Our Doctors, Services) ---------- */
+    /* ---------- Menu dropdown (Services) ---------- */
     const dropdownItems = document.querySelectorAll('.has-dropdown');
 
     // Helper: close every dropdown

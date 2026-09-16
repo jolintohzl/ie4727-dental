@@ -942,6 +942,11 @@ ul { list-style: none; }
     color: var(--white);
     margin-bottom: 18px;
     font-size: 1rem;
+    /* The "Smile Dental Group" wordmark is centred against the 42px logo, so it
+       sits lower than a plain heading. This drops the four link headings by the
+       same 12px so the whole row reads as one line. Undone below 992px, where
+       the brand moves onto its own row and there is nothing to line up with. */
+    margin-top: 12px;
 }
 
 .logo-footer { margin-bottom: 18px; }
@@ -1032,6 +1037,9 @@ ul { list-style: none; }
 
     .cta-inner    { grid-template-columns: 1fr; gap: 34px; }
     .locate-inner { grid-template-columns: 1fr; }
+
+    /* the headings no longer sit beside the wordmark, so drop the nudge */
+    .footer-col h4 { margin-top: 0; }
 
     /* brand takes its own full-width row; the four link columns stay in one row */
     .footer-inner { grid-template-columns: repeat(4, 1fr); column-gap: 20px; row-gap: 32px; }
@@ -1381,8 +1389,28 @@ ul { list-style: none; }
     border-color: transparent;
 }
 
-.job-card h3 { margin-bottom: 8px; }
-.job-card p  { font-size: .95rem; margin-bottom: 14px; }
+.job-card h3 { margin-bottom: 12px; }
+
+/* What the job involves, as bullet points.
+   :not(.job-meta) keeps the row of grey tags below out of it — that list
+   stays flat, with no bullets and no indent. */
+.job-card ul:not(.job-meta) {
+    list-style: disc;
+    padding-left: 20px;
+    margin-bottom: 22px;
+    font-size: .95rem;
+}
+.job-card ul:not(.job-meta) li { margin-bottom: 6px; }
+
+/* a plain disc at this text size is easy to miss, so make it a touch
+   larger than the words beside it */
+.job-card ul:not(.job-meta) li::marker {
+    color: var(--blue-500);
+    font-size: 1.15em;
+}
+
+/* clear the description bullets from the row of tags underneath */
+.job-meta { margin-top: 4px; }
 
 /* row of small grey labels: full-time, location, etc. */
 .job-meta {

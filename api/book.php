@@ -88,6 +88,11 @@ try {
     throw $e;
 }
 
+// The booking is saved, so the half-filled form in booking_drafts is no longer needed.
+// (Before log_in(), because logging in changes the session id the guest draft is filed under.)
+$stmt = $pdo->prepare('DELETE FROM booking_drafts WHERE session_id = ? OR patient_id = ?');
+$stmt->execute([session_id(), $patientId]);
+
 if ($isNewAccount) {
     log_in($patientId);
 }

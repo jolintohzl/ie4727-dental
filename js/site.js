@@ -253,7 +253,22 @@
             input.value = new URLSearchParams(window.location.search).get('q') || '';
         }
 
+        // the top-row box collapses to an icon, but stays open while it has text
+        function syncOpen() { form.classList.toggle('is-open', input.value.trim() !== ''); }
+        syncOpen();
+        input.addEventListener('input', syncOpen);
+
+        // Esc closes it again
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                input.value = '';
+                syncOpen();
+                input.blur();
+            }
+        });
+
         // don't send an all-spaces search
+        // (this is also what opens the collapsed box: clicking the icon focuses the input)
         form.addEventListener('submit', function (event) {
             input.value = input.value.trim();
             if (!input.value) {

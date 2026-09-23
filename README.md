@@ -23,11 +23,15 @@ If your MySQL user or password is not XAMPP's default (`root`, no password), cha
 | Search icon | `search.html` | `js/search.js` — reads the site's own pages and ranks matches | none (no database) |
 | Profile icon → log-in modal | every page | `js/login-modal.jsx` (React, via CDN + Babel) | `api/login.php`, `api/session.php` |
 | Account dashboard | `dashboard.html` | `js/dashboard.js` | `api/profile.php`, `api/appointments.php`, `api/reschedule.php`, `api/cancel.php`, `api/logout.php` |
-| Book Appointment | `appointment.html` | `js/appointment.js` | `api/options.php`, `api/slots.php`, `api/book.php` |
+| Book Appointment | `appointment.html` | `js/appointment.js` | `api/options.php`, `api/slots.php`, `api/book.php`, `api/draft.php` (saves progress) |
 
 - `js/site.js` is loaded on every page: navbar search bar, profile icon, and the
   `Smile.api()` helper that every script uses to call PHP.
 - `js/validators.js` holds the form rules (email, NRIC/FIN, phone, password). PHP checks the
   same rules again in `api/bootstrap.php`.
+- The booking form saves progress after every step into the `booking_drafts` table, so a
+  refresh puts it back. Guests' drafts are tied to PHP's session cookie; logged-in patients'
+  to their account. The password is never saved in a draft. If your database was created
+  before this table existed, import `database/add_booking_drafts.sql` (it doesn't wipe data).
 - Every timeslot is 30 minutes. A doctor cannot be double-booked — the database enforces it
   with a unique index, so two people clicking at the same moment can't both get the slot.

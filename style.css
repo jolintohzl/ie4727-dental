@@ -1644,6 +1644,44 @@ ul { list-style: none; }
 }
 .nav-search button:hover { background: var(--blue-700); color: var(--white); }
 
+/* Top-row search starts as a round icon and slides open on hover,
+   on click/focus, or while it holds text (.is-open, set in site.js) */
+.nav-actions .nav-search {
+    flex: none;
+    width: 42px;
+    min-width: 0;
+    max-width: none;
+    padding: 0 3px;
+    overflow: hidden;
+    transition: width .3s ease, padding .3s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.nav-actions .nav-search input {
+    width: 0;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+.nav-actions .nav-search button {
+    background: transparent;
+    color: var(--blue-900);
+    font-size: 1rem;
+}
+.nav-actions .nav-search:hover,
+.nav-actions .nav-search:focus-within,
+.nav-actions .nav-search.is-open {
+    width: clamp(200px, 28vw, 320px);
+    padding: 0 4px 0 18px;
+}
+.nav-actions .nav-search:hover input,
+.nav-actions .nav-search:focus-within input,
+.nav-actions .nav-search.is-open input { opacity: 1; }
+.nav-actions .nav-search:hover button,
+.nav-actions .nav-search:focus-within button,
+.nav-actions .nav-search.is-open button {
+    background: var(--blue-50);
+    color: var(--blue-700);
+}
+.nav-actions .nav-search button:hover { background: var(--blue-700); color: var(--white); }
+
 /* second copy inside the mobile menu — hidden on bigger screens */
 .nav-search-mobile { display: none; }
 
@@ -1849,7 +1887,40 @@ body.modal-open { overflow: hidden; }
 
 
 /* ---------- Shared: page layout for the three new pages ---------- */
-.narrow { max-width: 880px; }
+
+/* The page heading uses <h1> (every page should have one) but is sized like
+   the <h2> section headings, e.g. "About Smile Dental Group". */
+.section-head h1 { font-size: clamp(1.75rem, 3vw, 2.5rem); }
+.section-head .btn { margin-top: 20px; }
+
+/* one centred column under the heading */
+.page-column {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* inside it the steps / sections sit straight on the page — no card */
+.page-column .panel {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+.page-column .panel + .panel {
+    margin-top: 40px;
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+}
+
+/* each section's heading is centred too: number/icon on top, title under it */
+.page-column .panel-head {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+.page-column .account-switch { justify-content: center; }
 
 /* white card with a numbered heading — one per booking step */
 .panel {
@@ -1930,14 +2001,20 @@ body.modal-open { overflow: hidden; }
     margin: 6px 0 0;
 }
 
+/* Booking page: centred fields, one per row */
+.booking-body .form-grid { grid-template-columns: 1fr; }
+.booking-body .form-grid .form-field,
+.booking-body .panel > .form-field,
+.booking-body .form-divider {
+    width: 100%;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Progress timeline  1 ── 2 ── 3 ── 4 */
 .booking-steps {
-    margin-bottom: 24px;
-    padding: 18px 20px 14px;
-    background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
+    margin-bottom: 28px;
 }
 
 .booking-steps ol {
@@ -2018,6 +2095,70 @@ body.modal-open { overflow: hidden; }
 .booking-steps li.is-locked a { cursor: not-allowed; }
 .booking-steps li.is-locked a:hover .step-dot { border-color: var(--line); color: var(--muted); }
 
+/* Tooltip above a locked step: "Please … first". The text comes from the
+   link's data-tip attribute, set in js/appointment.js. */
+.booking-steps a { position: relative; }
+
+.booking-steps a[data-tip]::after,
+.booking-steps a[data-tip]::before {
+    position: absolute;
+    left: 50%;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index: 20;
+}
+
+/* the bubble */
+.booking-steps a[data-tip]::after {
+    content: attr(data-tip);
+    bottom: calc(100% + 10px);
+    transform: translate(-50%, 4px);
+    width: max-content;
+    max-width: 220px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: var(--ink);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: .78rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+/* the little arrow pointing down at the dot */
+.booking-steps a[data-tip]::before {
+    content: "";
+    bottom: calc(100% + 4px);
+    transform: translate(-50%, 4px);
+    border: 6px solid transparent;
+    border-bottom: 0;
+    border-top-color: var(--ink);
+}
+
+.booking-steps a[data-tip]:hover::after,
+.booking-steps a[data-tip]:hover::before,
+.booking-steps a[data-tip]:focus-visible::after,
+.booking-steps a[data-tip]:focus-visible::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+/* the last step sits at the right edge, so its bubble opens leftwards */
+.booking-steps li:last-child a[data-tip]::after {
+    left: auto;
+    right: 0;
+    transform: translateY(4px);
+}
+.booking-steps li:last-child a[data-tip]:hover::after,
+.booking-steps li:last-child a[data-tip]:focus-visible::after {
+    transform: none;
+}
+
 /* Back / Next under each step */
 .wizard-nav {
     display: flex;
@@ -2026,6 +2167,18 @@ body.modal-open { overflow: hidden; }
 }
 .wizard-nav #nextBtn,
 .wizard-nav #confirmBtn { margin-left: auto; }
+
+/* "Progress saved" under the Back / Next buttons */
+.draft-status {
+    min-height: 1.4em;
+    margin-top: 10px;
+    text-align: right;
+    font-size: .82rem;
+    color: var(--muted);
+}
+.draft-status i { color: var(--success); margin-right: 4px; }
+
+#draftNotice .link-button { margin-left: 4px; }
 
 /* Branch cards — a radio button dressed up as a card */
 .choice-grid {
@@ -2320,14 +2473,6 @@ body.modal-open { overflow: hidden; }
 
 
 /* ---------- dashboard.html ---------- */
-.dash-hello {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
 /* label on the left, box on the right — like the wireframe */
 .profile-form .form-field {
     display: grid;
@@ -2503,7 +2648,6 @@ body.modal-open { overflow: hidden; }
 
     .modal { padding: 34px 22px 26px; }
 
-    .booking-steps { padding: 12px 8px 10px; }
     .wizard-nav .btn { flex: 1; padding-left: 16px; padding-right: 16px; }
     .step-dot   { width: 32px; height: 32px; font-size: .85rem; }
     .step-label { font-size: .7rem; }

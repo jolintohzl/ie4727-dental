@@ -15,6 +15,7 @@ CREATE DATABASE IF NOT EXISTS smile_dental
 
 USE smile_dental;
 
+DROP TABLE IF EXISTS booking_drafts;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS doctor_services;
 DROP TABLE IF EXISTS doctors;
@@ -123,6 +124,47 @@ CREATE TABLE appointments (
     FOREIGN KEY (doctor_id)  REFERENCES doctors(id),
     FOREIGN KEY (service_id) REFERENCES services(id),
     FOREIGN KEY (branch_id)  REFERENCES branches(id)
+) ENGINE=InnoDB;
+
+
+-- ----------------------------------------------------------
+-- 6. BOOKING DRAFTS  (a booking that has been started but not confirmed)
+--
+-- appointment.html saves what has been filled in after every step, so a
+-- refresh can put it all back. Nothing here is a real booking — that only
+-- happens in `appointments` once "Confirm booking" is clicked, and then the
+-- draft is deleted. Drafts untouched for 7 days are deleted automatically.
+--
+-- Whose draft it is:
+--   logged in  → patient_id  (survives closing the browser)
+--   guest      → session_id  (PHP's session cookie; lasts until the browser closes)
+-- The password is never stored here.
+-- ----------------------------------------------------------
+CREATE TABLE booking_drafts (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    session_id  VARCHAR(128) NULL UNIQUE,
+    patient_id  INT UNSIGNED NULL UNIQUE,
+    step        TINYINT UNSIGNED NOT NULL DEFAULT 1,    -- the step they were on (1 – 4)
+
+    -- step 1 (guests only; logged-in patients' details are in `patients`)
+    name        VARCHAR(100) NULL,
+    nric        CHAR(9)      NULL,
+    phone       VARCHAR(8)   NULL,
+    email       VARCHAR(255) NULL,
+
+    -- steps 2 – 4
+    service_id  INT UNSIGNED NULL,
+    branch_id   INT UNSIGNED NULL,
+    appt_date   DATE         NULL,
+    appt_time   TIME         NULL,
+    doctor_id   INT UNSIGNED NULL,
+
+    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
+    FOREIGN KEY (branch_id)  REFERENCES branches(id) ON DELETE SET NULL,
+    FOREIGN KEY (doctor_id)  REFERENCES doctors(id)  ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 

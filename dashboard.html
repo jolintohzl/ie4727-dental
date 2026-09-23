@@ -40,7 +40,7 @@
                 <!-- Search box (sends ?q= to search.html) -->
                 <form class="nav-search" action="search.html" method="get" role="search">
                     <input type="search" name="q" placeholder="Search the site…"
-                           aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                           aria-label="Search the website" autocomplete="off" maxlength="80">
                     <button type="submit" aria-label="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -71,7 +71,7 @@
             <!-- phones only: the top row has no room for the search box -->
             <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
                 <input type="search" name="q" placeholder="Search the site…"
-                       aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                       aria-label="Search the website" autocomplete="off" maxlength="80">
                 <button type="submit" aria-label="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
@@ -106,21 +106,12 @@
      1. PAGE BANNER
      ========================================================== -->
 <section class="page-hero">
-    <div class="container narrow">
+    <div class="container">
         <p class="breadcrumb">
             <a href="index.html">Home</a>
             <i class="fa-solid fa-chevron-right"></i>
             <span>My Account</span>
         </p>
-        <div class="dash-hello">
-            <div>
-                <h1 id="dashTitle">My account</h1>
-                <p id="dashSub">Your profile and appointments in one place.</p>
-            </div>
-            <button type="button" class="btn btn-outline" id="logoutBtn" hidden>
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log out
-            </button>
-        </div>
     </div>
 </section>
 
@@ -130,7 +121,18 @@
      js/dashboard.js decides which of the three blocks to show.
      ========================================================== -->
 <section class="section">
-    <div class="container narrow">
+    <div class="container">
+
+        <!-- page heading — same style as "About Smile Dental Group" -->
+        <div class="section-head">
+            <h1 id="dashTitle">My account</h1>
+            <p class="section-sub" id="dashSub">Your profile and appointments in one place.</p>
+            <button type="button" class="btn btn-outline" id="logoutBtn" hidden>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log out
+            </button>
+        </div>
+
+    <div class="page-column">
 
         <p class="loading-note" id="dashLoading">
             <i class="fa-solid fa-spinner fa-spin"></i> Loading your account…
@@ -225,6 +227,7 @@
 
         </div>
 
+    </div>
     </div>
 </section>
 

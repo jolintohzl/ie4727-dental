@@ -10,6 +10,10 @@
    Each step gets its own #step-N address, so the browser's
    back button goes to the previous step.
 
+   Progress is saved to the database as the user goes
+   (api/draft.php → booking_drafts table), so a refresh puts the
+   form back the way it was. The password is never saved.
+
    Server side: api/options.php, api/slots.php, api/book.php
    ========================================================== */
 
@@ -34,6 +38,7 @@
         slots: [],         // [{ time, freeDoctors: [ids] }] for state.date
         slotsRequest: 0,   // ignores slow replies that arrive after a newer one
         step: 1,           // which step of the wizard is showing
+        ready: false,      // false while the page is still setting itself up
         booked: false      // true once the booking has gone through
     };
 
@@ -99,6 +104,7 @@
             Smile.setFieldError(field, '');
         });
         if (state.options) updateSteps();
+        saveDraft();
     }
 
     const rules = {
@@ -211,6 +217,7 @@
         Smile.setFieldError('serviceId', '');
         state.doctorId = null;
         refreshSchedule();
+        saveDraft();
     });
 
     $('branchOptions').addEventListener('change', function (event) {
@@ -221,6 +228,7 @@
             state.date = null;
         }
         refreshSchedule();
+        saveDraft();
     });
 
 
@@ -229,6 +237,7 @@
        ========================================================== */
 
     // Called whenever the service, branch or date changes.
+    // Returns a promise that settles once the timeslots have loaded.
     function refreshSchedule() {
         const ready = state.serviceId && state.branchId;
         $('timeLocked').hidden = !!ready;
@@ -237,12 +246,10 @@
         state.time = null;
         state.slots = [];
 
-        if (ready) {
-            drawCalendar();
-            loadSlots();
-        }
+        const slotsLoaded = ready ? (drawCalendar(), loadSlots()) : Promise.resolve();
         drawDoctors();
         drawSummary();
+        return slotsLoaded;
     }
 
     function drawCalendar() {
@@ -306,6 +313,7 @@
             state.date = day.dataset.date;
             Smile.setFieldError('date', '');
             refreshSchedule();
+            saveDraft();
         }
     });
 
@@ -374,6 +382,7 @@
         drawSlots();
         drawDoctors();
         drawSummary();
+        saveDraft();
     });
 
 
@@ -420,6 +429,7 @@
         state.doctorId = Number(event.target.value);
         Smile.setFieldError('doctorId', '');
         drawSummary();
+        saveDraft();
     });
 
 
@@ -588,6 +598,8 @@
         const firstName = (state.patient ? state.patient.name : $('name').value).trim().split(/\s+/)[0];
 
         state.booked = true;
+        clearTimeout(saveTimer);
+        $('draftNotice').hidden = true;
         form.hidden = true;
         stepsBar.hidden = true;
         const done = $('bookingDone');
@@ -625,6 +637,13 @@
 
     const TOTAL_STEPS = 4;
     const STEP_NAMES = ['Your details', 'Service & branch', 'Date & time', 'Doctor'];
+
+    // Tooltip on a locked step, named after the unfinished step that blocks it.
+    const LOCKED_TIPS = {
+        1: 'Please complete patient details first',
+        2: 'Please select a service & branch first',
+        3: 'Please select a date & time first'
+    };
     const stepsBar = $('bookingSteps');
     const stepItems = stepsBar.querySelectorAll('li');
 
@@ -632,12 +651,17 @@
         return !Object.keys(stepErrors(step)).length;
     }
 
+    // The first unfinished step before `step`, or null if they're all done.
+    function blockingStep(step) {
+        for (let s = 1; s < step; s++) {
+            if (!isComplete(s)) return s;
+        }
+        return null;
+    }
+
     // A step can be opened once every step before it is complete.
     function canOpen(step) {
-        for (let s = 1; s < step; s++) {
-            if (!isComplete(s)) return false;
-        }
-        return true;
+        return blockingStep(step) === null;
     }
 
     // Timeline: tick finished steps, ring the current one, grey out locked ones.
@@ -645,7 +669,8 @@
         stepItems.forEach(function (li, i) {
             const step = i + 1;
             const done = isComplete(step);
-            const locked = !canOpen(step);
+            const blocker = blockingStep(step);
+            const locked = blocker !== null;
             const link = li.querySelector('a');
 
             li.classList.toggle('is-done', done);
@@ -654,7 +679,11 @@
             li.querySelector('.step-dot').innerHTML = done ? '<i class="fa-solid fa-check"></i>' : String(step);
 
             link.setAttribute('aria-label', 'Step ' + step + ': ' + STEP_NAMES[i] +
-                (done ? ', done' : '') + (locked ? ', not available yet' : ''));
+                (done ? ', done' : '') + (locked ? '. ' + LOCKED_TIPS[blocker] : ''));
+
+            // the hover tooltip (drawn by CSS from data-tip)
+            if (locked) link.dataset.tip = LOCKED_TIPS[blocker];
+            else delete link.dataset.tip;
             if (step === state.step) link.setAttribute('aria-current', 'step');
             else link.removeAttribute('aria-current');
             if (locked) link.setAttribute('aria-disabled', 'true');
@@ -689,6 +718,7 @@
         if (how === 'push') {
             history.pushState({ step: step }, '', '#step-' + step);
         }
+        saveDraft();
 
         // a new "page": back up to the timeline, and move keyboard /
         // screen-reader focus to the new step's heading
@@ -744,6 +774,127 @@
 
 
     /* ==========================================================
+       SAVED PROGRESS  (api/draft.php → booking_drafts table)
+       ========================================================== */
+
+    let saveTimer = null;
+
+    // Saves what has been filled in so far. Called after every step change
+    // and every choice. Quick clicks in a row are sent as one save.
+    function saveDraft() {
+        if (!state.ready || state.booked) return;
+
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(async function () {
+            const body = {
+                step: state.step,
+                serviceId: state.serviceId,
+                branchId: state.branchId,
+                date: state.date,
+                time: state.time,
+                doctorId: state.doctorId
+            };
+            // guests' details; logged-in patients' are already in their account.
+            // The password is deliberately left out.
+            if (!state.patient) {
+                body.name = $('name').value.trim();
+                body.nric = $('nric').value.trim().toUpperCase();
+                body.phone = Validators.cleanPhone($('phone').value);
+                body.email = $('email').value.trim();
+            }
+
+            $('draftStatus').textContent = 'Saving…';
+            try {
+                await Smile.api('draft.php', { body: body });
+                $('draftStatus').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Progress saved';
+            } catch (error) {
+                // not worth interrupting the booking for — it just won't survive a refresh
+                $('draftStatus').textContent = 'Progress could not be saved.';
+            }
+        }, 300);
+    }
+
+    function dateIsBookable(iso) {
+        const date = Smile.parseDate(iso);
+        return date >= today() && date <= lastBookableDay() && branchOpenOn(date);
+    }
+
+    // Puts a saved draft back into the form. Returns true if the time or
+    // doctor that was picked has been taken since, so it had to be dropped.
+    async function restoreDraft(draft) {
+        let changed = false;
+
+        // step 1 (guests)
+        if (!state.patient) {
+            PATIENT_FIELDS.forEach(function (field) {
+                if (draft[field]) $(field).value = draft[field];
+            });
+        }
+
+        // step 2
+        if (draft.serviceId && state.options.services.some(function (s) { return s.id === draft.serviceId; })) {
+            $('serviceId').value = draft.serviceId;
+            $('serviceId').dispatchEvent(new Event('change'));
+        }
+        const radio = draft.branchId && form.querySelector('input[name="branchId"][value="' + draft.branchId + '"]');
+        if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // step 3 + 4 — only if that date/time/doctor can still be booked
+        if (draft.date && state.serviceId && state.branchId && dateIsBookable(draft.date)) {
+            state.date = draft.date;
+            const d = Smile.parseDate(draft.date);
+            state.month = new Date(d.getFullYear(), d.getMonth(), 1);
+            await refreshSchedule();
+
+            const slot = draft.time && state.slots.find(function (s) { return s.time === draft.time; });
+            if (slot && slot.freeDoctors.length) {
+                state.time = draft.time;
+                if (draft.doctorId && slot.freeDoctors.indexOf(draft.doctorId) !== -1) {
+                    state.doctorId = draft.doctorId;
+                } else if (draft.doctorId) {
+                    changed = true;
+                }
+            } else if (draft.time) {
+                changed = true;
+            }
+            drawSlots();
+            drawDoctors();
+            drawSummary();
+        } else if (draft.date) {
+            changed = true;
+        }
+        return changed;
+    }
+
+    function hasContent(draft) {
+        return ['name', 'nric', 'phone', 'email', 'serviceId', 'branchId', 'date']
+            .some(function (key) { return draft[key]; });
+    }
+
+    function showDraftNotice(changed) {
+        let text = 'Welcome back — we\'ve restored the booking you started.';
+        if (!state.patient) text += ' For your security, please enter your password again.';
+        if (changed) text += ' The time or doctor you picked is no longer available, so please choose again.';
+        $('draftNoticeText').textContent = text;
+        $('draftNotice').hidden = false;
+    }
+
+    // "Start over" throws the draft away and reloads an empty form.
+    $('startOverBtn').addEventListener('click', async function () {
+        clearTimeout(saveTimer);
+        try {
+            await Smile.api('draft.php', { body: { clear: true } });
+        } catch (error) {
+            // the reload below still gives a clean page for now
+        }
+        window.location.href = 'appointment.html';
+    });
+
+
+    /* ==========================================================
        START
        ========================================================== */
 
@@ -757,6 +908,15 @@
             drawServices();
             drawBranches();
             showPatient(results[1].patient);
+
+            // put back a booking that was started earlier (e.g. before a refresh)
+            let draft = null;
+            try {
+                draft = (await Smile.api('draft.php')).draft;
+            } catch (error) {
+                // no saved progress — start fresh
+            }
+            const changed = draft ? await restoreDraft(draft) : false;
 
             // links like appointment.html?service=root-canal&branch=orchard pre-select choices
             const params = new URLSearchParams(window.location.search);
@@ -772,8 +932,16 @@
                 radio.dispatchEvent(new Event('change', { bubbles: true }));
             }
 
-            refreshSchedule();
-            goToStep(1, 'start');
+            // (skipped when a date was restored — it would clear the restored time)
+            if (!state.date) refreshSchedule();
+
+            // reopen the step they were on, or the furthest one they can reach
+            let step = draft ? Math.min(Math.max(draft.step, 1), TOTAL_STEPS) : 1;
+            while (step > 1 && !canOpen(step)) step--;
+            goToStep(step, 'start');
+
+            if (draft && hasContent(draft)) showDraftNotice(changed);
+            state.ready = true;
         } catch (error) {
             $('bookingLoadError').hidden = false;
             $('bookingLoadError').innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> <span>' +

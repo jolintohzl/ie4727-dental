@@ -191,7 +191,7 @@ function LoginModal({ options, onClose }) {
                         <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={submitting}>
                             {submitting
                                 ? <><i className="fa-solid fa-spinner fa-spin"></i> Logging in…</>
-                                : <><i className="fa-solid fa-arrow-right-to-bracket"></i> Log in</>}
+                                : 'Log in'}
                         </button>
 
                         <p className="modal-foot">

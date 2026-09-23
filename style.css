@@ -129,7 +129,7 @@ ul { list-style: none; }
 .btn-primary {
     background: var(--blue-700);
     color: var(--white);
-    box-shadow: 0 6px 18px rgba(0, 74, 173, 0.28);
+    
 }
 .btn-primary:hover {
     background: var(--blue-500);
@@ -324,7 +324,7 @@ ul { list-style: none; }
 .nav-menu a:hover::after { width: 100%; }
 
 
-/* --- "About" dropdown (opens on click) --- */
+/* --- "Services" dropdown (hover on desktop, tap on touch screens) --- */
 .has-dropdown { position: relative; }
 
 /* the small arrow next to the word About */
@@ -354,10 +354,41 @@ ul { list-style: none; }
     padding: 8px;
     z-index: 120;
 }
-/* clicking About (or its arrow) reveals the panel with a short fade + slide */
+/* the script adds .open when the word is tapped — this is what touch
+   screens and the mobile menu use */
 .has-dropdown.open .dropdown {
     display: block;
     animation: dropdown-in .22s ease;
+}
+
+/* On a screen with a mouse the panel opens on hover instead, so nothing has
+   to be clicked. :focus-within keeps it reachable by keyboard (Tab to it).
+   The guard matters: phones report (hover: none), and without it a tap would
+   open a panel that could never be closed again. */
+@media (hover: hover) and (min-width: 769px) {
+
+    .has-dropdown:hover .dropdown,
+    .has-dropdown:focus-within .dropdown {
+        display: block;
+        animation: dropdown-in .22s ease;
+    }
+
+    .has-dropdown:hover .dropdown-toggle i,
+    .has-dropdown:focus-within .dropdown-toggle i {
+        transform: rotate(180deg);
+    }
+
+    /* The panel sits 12px below the word, and that gap used to belong to
+       neither the link nor the panel — the pointer left both on the way down
+       and the panel snapped shut. Growing the menu item downwards puts the gap
+       inside the thing being hovered. The negative margin cancels the padding
+       so the navbar height does not change, and the panel drops the margin it
+       no longer needs (top:100% now already sits 12px lower). */
+    .has-dropdown {
+        padding-bottom: 12px;
+        margin-bottom: -12px;
+    }
+    .dropdown { margin-top: 0; }
 }
 
 @keyframes dropdown-in {

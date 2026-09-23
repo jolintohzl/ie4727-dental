@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img" aria-label="Map placeholder showing the clinic location">
+  <rect width="400" height="300" fill="#eef1f5"/>
+  <rect x="340" y="0" width="60" height="300" fill="#cfe3f5"/>
+  <rect x="30" y="30" width="110" height="80" fill="#e2e7ee"/>
+  <rect x="180" y="30" width="110" height="80" fill="#e2e7ee"/>
+  <rect x="30" y="160" width="110" height="110" fill="#e2e7ee"/>
+  <rect x="180" y="160" width="110" height="110" fill="#dbeddb"/>
+  <path d="M-20 135 L420 135" stroke="#fdf3d3" stroke-width="20"/>
+  <path d="M-20 135 L420 135" stroke="#ffffff" stroke-width="3" opacity=".7"/>
+  <path d="M160 -20 L160 320" stroke="#ffffff" stroke-width="14"/>
+  <path d="M310 -20 L310 320" stroke="#ffffff" stroke-width="9"/>
+  <g transform="translate(160,170)"><ellipse cx="0" cy="3" rx="11" ry="4" fill="#000" opacity=".16"/><path d="M0 2c-7-10-11-15-11-21a11 11 0 0 1 22 0c0 6-4 11-11 21z" fill="#004aad"/><circle cx="0" cy="-19" r="4.2" fill="#ffffff"/></g>
+</svg>

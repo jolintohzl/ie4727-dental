@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | Smile Dental Group</title>
+
+    <!-- Font Awesome (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- stylesheet shared with index.html -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     NAVIGATION BAR  (same two-row structure as index.html)
+     ========================================================== -->
+<header class="site-header">
+
+    <!-- ---------- TOP ROW: logo + icons + book button ---------- -->
+    <div class="nav-top">
+        <div class="container nav-top-inner">
+
+            <a href="index.html" class="logo">
+                <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-text">
+                    <span class="logo-name">Smile Dental Group</span>
+                    <span class="logo-tagline">Gentle care, lasting smiles</span>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <!-- Search box (sends ?q= to search.html) -->
+                <form class="nav-search" action="search.html" method="get" role="search">
+                    <input type="search" name="q" placeholder="Search the site…"
+                           aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                    <button type="submit" aria-label="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <a href="dashboard.html" class="icon-btn" id="accountBtn" aria-label="My account">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <!-- NOTE: appointment.html has not been built yet. -->
+                <a href="appointment.html" class="btn btn-primary btn-book">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Book Appointment</span>
+                </a>
+
+                <!-- Hamburger — only visible on mobile -->
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---------- BOTTOM ROW: centered menu ---------- -->
+    <nav class="nav-bottom" id="mainNav">
+        <div class="container">
+            <!-- phones only: the top row has no room for the search box -->
+            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+                <input type="search" name="q" placeholder="Search the site…"
+                       aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                <button type="submit" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <ul class="nav-menu">
+                <li><a href="about-us.html">About</a></li>
+
+                <!-- NOTE: doctors.html has not been built yet. -->
+                <li><a href="doctors.html">Our Doctors</a></li>
+
+                <!-- "Services" is the only menu item with a dropdown.
+                     The panel stays hidden until the text or the arrow is clicked. -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Services <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="services.html">Dental Services</a></li>
+                        <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="locate-us.html">Locate Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+
+<!-- ==========================================================
+     1. PAGE BANNER
+     ========================================================== -->
+<section class="page-hero">
+    <div class="container narrow">
+        <p class="breadcrumb">
+            <a href="index.html">Home</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>Book Appointment</span>
+        </p>
+        <h1>Book an appointment</h1>
+        <p>
+            Four short steps: your details, the treatment and clinic, a time that
+            suits you, and the dentist you'd like to see.
+        </p>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     2. BOOKING FORM  (steps 1 – 4, one "page" at a time)
+     Everything inside is filled in by js/appointment.js using
+     the services, branches and doctors from api/options.php.
+     ========================================================== -->
+<section class="section">
+    <div class="container narrow">
+
+        <div class="alert alert-error" id="bookingLoadError" role="alert" hidden></div>
+
+        <!-- Progress timeline: 1 ── 2 ── 3 ── 4
+             Only one step of the form shows at a time. js/appointment.js marks the
+             current step (is-active), finished steps (is-done) and steps that
+             can't be opened yet (is-locked). -->
+        <nav class="booking-steps" id="bookingSteps" aria-label="Booking progress">
+            <ol>
+                <li data-panel="stepDetails">
+                    <a href="#step-1"><span class="step-dot">1</span><span class="step-label">Your details</span></a>
+                </li>
+                <li data-panel="stepService">
+                    <a href="#step-2"><span class="step-dot">2</span><span class="step-label">Service &amp; branch</span></a>
+                </li>
+                <li data-panel="stepTime">
+                    <a href="#step-3"><span class="step-dot">3</span><span class="step-label">Date &amp; time</span></a>
+                </li>
+                <li data-panel="stepDoctor">
+                    <a href="#step-4"><span class="step-dot">4</span><span class="step-label">Doctor</span></a>
+                </li>
+            </ol>
+        </nav>
+
+        <form id="bookingForm" novalidate>
+
+            <!-- ---------- STEP 1: patient details ---------- -->
+            <div class="panel" id="stepDetails" data-step="1">
+                <div class="panel-head">
+                    <span class="step-number">1</span>
+                    <div>
+                        <h2>Fill in patient details</h2>
+
+                        <!-- shown when nobody is logged in -->
+                        <div class="account-switch" id="accountGuest">
+                            <span>New patient? Register below, or</span>
+                            <button type="button" class="btn btn-outline btn-sm" id="bookingLoginBtn">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i> Log in
+                            </button>
+                        </div>
+
+                        <!-- shown when logged in -->
+                        <div class="account-switch" id="accountMember" hidden>
+                            <span>Booking as <strong id="memberName"></strong>.</span>
+                            <a href="dashboard.html">Edit details</a>
+                            <span aria-hidden="true">·</span>
+                            <button type="button" class="link-button" id="bookingLogoutBtn">Not you? Log out</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="name">Name <span class="req">*</span></label>
+                        <input type="text" id="name" name="name" autocomplete="name" placeholder="e.g. Jaslyn Tan" maxlength="100">
+                        <span class="field-error" id="name-error" hidden></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="nric">NRIC/FIN No. <span class="req">*</span></label>
+                        <input type="text" id="nric" name="nric" autocomplete="off" placeholder="e.g. S1234567A" maxlength="9">
+                        <span class="field-error" id="nric-error" hidden></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="phone">Contact No. <span class="req">*</span></label>
+                        <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="e.g. 9123 4567" maxlength="15">
+                        <span class="field-error" id="phone-error" hidden></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="email">Email <span class="req">*</span></label>
+                        <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" maxlength="255">
+                        <span class="field-error" id="email-error" hidden></span>
+                    </div>
+
+                    <!-- password is only needed when creating a new account -->
+                    <hr class="form-divider" data-new-account>
+
+                    <div class="form-field" data-new-account>
+                        <label for="password">Create a password <span class="req">*</span></label>
+                        <div class="password-wrap">
+                            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" maxlength="72">
+                            <button type="button" class="password-toggle" data-toggles="password" aria-label="Show password">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="form-hint" id="password-hint">At least 8 characters, with a letter and a number.</span>
+                        <span class="field-error" id="password-error" hidden></span>
+                    </div>
+
+                    <div class="form-field" data-new-account>
+                        <label for="confirmPassword">Confirm password <span class="req">*</span></label>
+                        <div class="password-wrap">
+                            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" placeholder="Type it again" maxlength="72">
+                            <button type="button" class="password-toggle" data-toggles="confirmPassword" aria-label="Show password">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="field-error" id="confirmPassword-error" hidden></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ---------- STEP 2: service + branch ---------- -->
+            <div class="panel" id="stepService" data-step="2" hidden>
+                <div class="panel-head">
+                    <span class="step-number">2</span>
+                    <div>
+                        <h2>Choose a service and branch</h2>
+                        <p>Not sure what you need? Pick General Dentistry and we'll take a look.</p>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="serviceId">Service <span class="req">*</span></label>
+                    <select id="serviceId" name="serviceId">
+                        <option value="">Loading services…</option>
+                    </select>
+                    <span class="form-hint" id="serviceHint"></span>
+                    <span class="field-error" id="serviceId-error" hidden></span>
+                </div>
+
+                <fieldset class="branch-fieldset">
+                    <legend class="form-legend">Branch <span class="req">*</span></legend>
+                    <div class="choice-grid" id="branchOptions">
+                        <p class="loading-note">Loading branches…</p>
+                    </div>
+                    <span class="field-error" id="branchId-error" hidden></span>
+                </fieldset>
+            </div>
+
+
+            <!-- ---------- STEP 3: date + time ---------- -->
+            <div class="panel" id="stepTime" data-step="3" hidden>
+                <div class="panel-head">
+                    <span class="step-number">3</span>
+                    <div>
+                        <h2>Choose a timeslot</h2>
+                        <p>Each appointment is 30 minutes. Crossed-out times are fully booked.</p>
+                    </div>
+                </div>
+
+                <p class="empty-note" id="timeLocked">
+                    <i class="fa-regular fa-calendar"></i>
+                    Choose a service and a branch first to see available dates.
+                </p>
+
+                <div class="schedule-grid" id="timePicker" hidden>
+                    <div>
+                        <div class="calendar" id="calendar"></div>
+                        <span class="field-error" id="date-error" hidden></span>
+                    </div>
+
+                    <div>
+                        <h3 class="slot-heading" id="slotHeading">Pick a date</h3>
+                        <p class="slot-sub" id="slotSub">Available times will appear here.</p>
+                        <div class="slot-grid" id="slotGrid" role="group" aria-labelledby="slotHeading"></div>
+                        <span class="field-error" id="time-error" hidden></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ---------- STEP 4: doctor ---------- -->
+            <div class="panel" id="stepDoctor" data-step="4" hidden>
+                <div class="panel-head">
+                    <span class="step-number">4</span>
+                    <div>
+                        <h2>Select a doctor</h2>
+                        <p>Only dentists who treat your chosen service are listed.</p>
+                    </div>
+                </div>
+
+                <p class="empty-note" id="doctorLocked">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    Choose a timeslot first to see which dentists are free.
+                </p>
+
+                <div id="doctorPicker" hidden>
+                    <p class="service-label" id="doctorServiceLabel"></p>
+                    <div class="doctor-options" id="doctorOptions" role="radiogroup" aria-label="Doctor"></div>
+                    <span class="field-error" id="doctorId-error" hidden></span>
+                </div>
+            </div>
+
+
+            <!-- ---------- SUMMARY (shown on step 4, under the doctors) ---------- -->
+            <div class="panel" id="stepConfirm" data-step="4" hidden>
+                <div class="panel-head">
+                    <span class="step-number"><i class="fa-solid fa-check"></i></span>
+                    <div>
+                        <h2>Review and confirm</h2>
+                    </div>
+                </div>
+
+                <dl class="summary-list" id="bookingSummary"></dl>
+
+                <div class="alert alert-error" id="bookingError" role="alert" hidden></div>
+
+                <p class="form-note">
+                    Need to change something later? You can reschedule or cancel from
+                    <a href="dashboard.html">My Account</a>.
+                </p>
+            </div>
+
+            <!-- ---------- BACK / NEXT ---------- -->
+            <div class="wizard-nav">
+                <button type="button" class="btn btn-outline btn-lg" id="backBtn" hidden>
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary btn-lg" id="nextBtn">
+                    <span id="nextLabel">Next</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" id="confirmBtn" hidden>
+                    <i class="fa-regular fa-calendar-check"></i> Confirm booking
+                </button>
+            </div>
+
+        </form>
+
+        <!-- filled in after a successful booking -->
+        <div id="bookingDone" hidden></div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     FOOTER  (same structure as index.html)
+     ========================================================== -->
+<footer class="site-footer">
+    <div class="container footer-inner">
+
+        <!-- Left: logo, name and contact details -->
+        <div class="footer-col footer-brand">
+            <a href="index.html" class="logo logo-footer">
+                <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-name">Smile Dental Group</span>
+            </a>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+
+            <!-- social media icons sit under the contact details -->
+            <ul class="social-links">
+                <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: About -->
+        <div class="footer-col">
+            <h4>About</h4>
+            <ul class="footer-links">
+                <li><a href="about-us.html">About Us</a></li>
+                <li><a href="about-us.html#join">Join Us</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Our Doctors.
+             NOTE: doctors.html has not been built yet. -->
+        <div class="footer-col">
+            <h4>Our Doctors</h4>
+            <ul class="footer-links">
+                <li><a href="doctors.html#general">General Dentists</a></li>
+                <li><a href="doctors.html#endodontics">Endodontists/Root Canal Specialists</a></li>
+                <li><a href="doctors.html#orthodontics">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html#periodontics">Periodontists/Gum Specialists</a></li>
+                <li><a href="doctors.html#prosthodontics">Prosthodontists/Restorative Dentistry</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Services -->
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                <li><a href="services.html">Dental Services</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Locate Us -->
+        <div class="footer-col">
+            <h4>Locate Us</h4>
+            <ul class="footer-links">
+                <li><a href="locate-us.html">Locations</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Smile Dental Group. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ==========================================================
+     Small script: opens / closes the menu on mobile
+     ========================================================== -->
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle the menu open/closed when the hamburger is clicked
+    menuToggle.addEventListener('click', function () {
+        const isOpen = mainNav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+        menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close the menu again after a real link is tapped.
+    // The "Services" toggle is skipped — tapping it should open the dropdown,
+    // not close the whole menu.
+    document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mainNav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', false);
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+
+
+    /* ---------- Menu dropdown (Services) ---------- */
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+
+    // Helper: close every dropdown
+    function closeAllDropdowns() {
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('open');
+        });
+    }
+
+    // Open / close a dropdown when its menu item is clicked
+    dropdownItems.forEach(function (item) {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();      // stop the link from jumping anywhere
+
+            const wasOpen = item.classList.contains('open');
+            closeAllDropdowns();         // only one panel open at a time
+
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Click anywhere else on the page to close them again
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // The Escape key closes them too
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
+</script>
+
+<!-- ==========================================================
+     Log in, search and account scripts (shared by every page)
+     ========================================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
+<script src="js/validators.js"></script>
+<script src="js/site.js"></script>
+<script type="text/babel" src="js/login-modal.jsx"></script>
+<script src="js/appointment.js"></script>
+
+</body>
+</html>

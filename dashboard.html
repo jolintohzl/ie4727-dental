@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Smile Dental Group</title>
+
+    <!-- Font Awesome (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- stylesheet shared with index.html -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ==========================================================
+     NAVIGATION BAR  (same two-row structure as index.html)
+     ========================================================== -->
+<header class="site-header">
+
+    <!-- ---------- TOP ROW: logo + icons + book button ---------- -->
+    <div class="nav-top">
+        <div class="container nav-top-inner">
+
+            <a href="index.html" class="logo">
+                <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-text">
+                    <span class="logo-name">Smile Dental Group</span>
+                    <span class="logo-tagline">Gentle care, lasting smiles</span>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <!-- Search box (sends ?q= to search.html) -->
+                <form class="nav-search" action="search.html" method="get" role="search">
+                    <input type="search" name="q" placeholder="Search the site…"
+                           aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                    <button type="submit" aria-label="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <a href="dashboard.html" class="icon-btn" id="accountBtn" aria-label="My account">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <!-- NOTE: appointment.html has not been built yet. -->
+                <a href="appointment.html" class="btn btn-primary btn-book">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>Book Appointment</span>
+                </a>
+
+                <!-- Hamburger — only visible on mobile -->
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ---------- BOTTOM ROW: centered menu ---------- -->
+    <nav class="nav-bottom" id="mainNav">
+        <div class="container">
+            <!-- phones only: the top row has no room for the search box -->
+            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+                <input type="search" name="q" placeholder="Search the site…"
+                       aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                <button type="submit" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <ul class="nav-menu">
+                <li><a href="about-us.html">About</a></li>
+
+                <!-- NOTE: doctors.html has not been built yet. -->
+                <li><a href="doctors.html">Our Doctors</a></li>
+
+                <!-- "Services" is the only menu item with a dropdown.
+                     The panel stays hidden until the text or the arrow is clicked. -->
+                <li class="has-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Services <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="services.html">Dental Services</a></li>
+                        <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="locate-us.html">Locate Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+
+<!-- ==========================================================
+     1. PAGE BANNER
+     ========================================================== -->
+<section class="page-hero">
+    <div class="container narrow">
+        <p class="breadcrumb">
+            <a href="index.html">Home</a>
+            <i class="fa-solid fa-chevron-right"></i>
+            <span>My Account</span>
+        </p>
+        <div class="dash-hello">
+            <div>
+                <h1 id="dashTitle">My account</h1>
+                <p id="dashSub">Your profile and appointments in one place.</p>
+            </div>
+            <button type="button" class="btn btn-outline" id="logoutBtn" hidden>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log out
+            </button>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     2. ACCOUNT DASHBOARD
+     js/dashboard.js decides which of the three blocks to show.
+     ========================================================== -->
+<section class="section">
+    <div class="container narrow">
+
+        <p class="loading-note" id="dashLoading">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading your account…
+        </p>
+
+        <!-- ---------- Not logged in ---------- -->
+        <div class="panel confirmation" id="dashGuest" hidden>
+            <div class="confirmation-icon info">
+                <i class="fa-regular fa-user"></i>
+            </div>
+            <h2>Log in to your account</h2>
+            <p>See your upcoming appointments, reschedule them and keep your details up to date.</p>
+            <div class="confirmation-actions">
+                <button type="button" class="btn btn-primary btn-lg" id="dashLoginBtn">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Log in
+                </button>
+                <a href="appointment.html" class="btn btn-outline btn-lg">New patient? Book now</a>
+            </div>
+        </div>
+
+        <!-- ---------- Logged in ---------- -->
+        <div id="dashMember" hidden>
+
+            <!-- Profile -->
+            <form class="panel profile-form" id="profileForm" novalidate>
+                <div class="panel-head">
+                    <span class="step-number"><i class="fa-regular fa-id-card"></i></span>
+                    <div>
+                        <h2>Edit profile details</h2>
+                        <p>We use these to confirm your identity and contact you about appointments.</p>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" autocomplete="name" maxlength="100">
+                    <span class="field-error" id="name-error" hidden></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="nric">NRIC/FIN No.</label>
+                    <input type="text" id="nric" name="nric" autocomplete="off" maxlength="9">
+                    <span class="field-error" id="nric-error" hidden></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="phone">Contact No.</label>
+                    <input type="tel" id="phone" name="phone" autocomplete="tel" maxlength="15">
+                    <span class="field-error" id="phone-error" hidden></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" autocomplete="email" maxlength="255">
+                    <span class="field-error" id="email-error" hidden></span>
+                </div>
+
+                <div class="alert alert-error" id="profileError" role="alert" hidden></div>
+
+                <div class="profile-actions">
+                    <span class="save-status" id="saveStatus" role="status"></span>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <i class="fa-regular fa-floppy-disk"></i> Save
+                    </button>
+                </div>
+            </form>
+
+            <!-- Appointments -->
+            <div class="panel">
+                <div class="panel-head">
+                    <span class="step-number"><i class="fa-regular fa-calendar"></i></span>
+                    <div>
+                        <h2>Upcoming appointments</h2>
+                        <p>Need to change a time? Reschedule up until the appointment starts.</p>
+                    </div>
+                </div>
+
+                <div class="alert alert-success" id="apptNotice" role="status" hidden></div>
+                <div class="appt-list" id="upcomingList"></div>
+
+                <details class="past-toggle" id="pastWrap" hidden>
+                    <summary id="pastSummary">Past and cancelled appointments</summary>
+                    <div class="appt-list" id="pastList"></div>
+                </details>
+
+                <div class="panel-foot">
+                    <a href="appointment.html" class="btn btn-outline">
+                        <i class="fa-solid fa-plus"></i> Book another appointment
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     FOOTER  (same structure as index.html)
+     ========================================================== -->
+<footer class="site-footer">
+    <div class="container footer-inner">
+
+        <!-- Left: logo, name and contact details -->
+        <div class="footer-col footer-brand">
+            <a href="index.html" class="logo logo-footer">
+                <img src="images/dental group footer.png" alt="Smile Dental Group logo" class="logo-img">
+                <span class="logo-name">Smile Dental Group</span>
+            </a>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-location-dot"></i> 123 Orchard Road, #05-12<br>Singapore 238888</li>
+                <li><i class="fa-solid fa-phone"></i> <a href="tel:+6561234567">+65 6123 4567</a></li>
+                <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
+            </ul>
+
+            <!-- social media icons sit under the contact details -->
+            <ul class="social-links">
+                <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: About -->
+        <div class="footer-col">
+            <h4>About</h4>
+            <ul class="footer-links">
+                <li><a href="about-us.html">About Us</a></li>
+                <li><a href="about-us.html#join">Join Us</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Our Doctors.
+             NOTE: doctors.html has not been built yet. -->
+        <div class="footer-col">
+            <h4>Our Doctors</h4>
+            <ul class="footer-links">
+                <li><a href="doctors.html#general">General Dentists</a></li>
+                <li><a href="doctors.html#endodontics">Endodontists/Root Canal Specialists</a></li>
+                <li><a href="doctors.html#orthodontics">Aligner Team and Orthodontists</a></li>
+                <li><a href="doctors.html#periodontics">Periodontists/Gum Specialists</a></li>
+                <li><a href="doctors.html#prosthodontics">Prosthodontists/Restorative Dentistry</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Services -->
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="fees-calculator.html">Fees Calculator</a></li>
+                <li><a href="services.html">Dental Services</a></li>
+            </ul>
+        </div>
+
+        <!-- Link column: Locate Us -->
+        <div class="footer-col">
+            <h4>Locate Us</h4>
+            <ul class="footer-links">
+                <li><a href="locate-us.html">Locations</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 2026 Smile Dental Group. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ==========================================================
+     Small script: opens / closes the menu on mobile
+     ========================================================== -->
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    // Toggle the menu open/closed when the hamburger is clicked
+    menuToggle.addEventListener('click', function () {
+        const isOpen = mainNav.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+        menuToggle.innerHTML = isOpen
+            ? '<i class="fa-solid fa-xmark"></i>'
+            : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close the menu again after a real link is tapped.
+    // The "Services" toggle is skipped — tapping it should open the dropdown,
+    // not close the whole menu.
+    document.querySelectorAll('.nav-menu a:not(.dropdown-toggle)').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mainNav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', false);
+            menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        });
+    });
+
+
+    /* ---------- Menu dropdown (Services) ---------- */
+    const dropdownItems = document.querySelectorAll('.has-dropdown');
+
+    // Helper: close every dropdown
+    function closeAllDropdowns() {
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('open');
+        });
+    }
+
+    // Open / close a dropdown when its menu item is clicked
+    dropdownItems.forEach(function (item) {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();      // stop the link from jumping anywhere
+
+            const wasOpen = item.classList.contains('open');
+            closeAllDropdowns();         // only one panel open at a time
+
+            if (!wasOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
+
+    // Click anywhere else on the page to close them again
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-dropdown')) {
+            closeAllDropdowns();
+        }
+    });
+
+    // The Escape key closes them too
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAllDropdowns();
+        }
+    });
+</script>
+
+<!-- ==========================================================
+     Log in, search and account scripts (shared by every page)
+     ========================================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
+<script src="js/validators.js"></script>
+<script src="js/site.js"></script>
+<script type="text/babel" src="js/login-modal.jsx"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

@@ -1,12 +1,14 @@
 /* ==========================================================
    appointment.html — the booking form.
 
-   Flow (one continuous page, like the wireframe):
+   A 4-step wizard — one step ("page") shows at a time:
      1. patient details  (or log in to fill them in)
      2. service + branch
      3. date on the calendar → timeslot
-     4. doctor who is free at that time
+     4. doctor who is free at that time + summary
      → confirm → success message
+   Each step gets its own #step-N address, so the browser's
+   back button goes to the previous step.
 
    Server side: api/options.php, api/slots.php, api/book.php
    ========================================================== */
@@ -30,7 +32,9 @@
         doctorId: null,
         month: null,       // Date: first day of the month the calendar shows
         slots: [],         // [{ time, freeDoctors: [ids] }] for state.date
-        slotsRequest: 0    // ignores slow replies that arrive after a newer one
+        slotsRequest: 0,   // ignores slow replies that arrive after a newer one
+        step: 1,           // which step of the wizard is showing
+        booked: false      // true once the booking has gone through
     };
 
 
@@ -94,6 +98,7 @@
             $(field).value = '';
             Smile.setFieldError(field, '');
         });
+        if (state.options) updateSteps();
     }
 
     const rules = {
@@ -448,6 +453,7 @@
             branch: b && Smile.escapeHtml(b.name)
         });
         showBookingError('');
+        updateSteps();
     }
 
     function showBookingError(message) {
@@ -457,47 +463,69 @@
             : '';
     }
 
-    // Returns { field: message } for everything that is missing or wrong.
-    function validateAll() {
-        let errors = {};
-        if (!state.patient) {
-            errors = Validators.check(readDetails(), rules);
+    // Which step of the wizard each field is on (also the order errors are checked in).
+    const FIELD_STEP = {
+        name: 1, nric: 1, phone: 1, email: 1, password: 1, confirmPassword: 1,
+        serviceId: 2, branchId: 2,
+        date: 3, time: 3,
+        doctorId: 4
+    };
+    const ERROR_ORDER = Object.keys(FIELD_STEP);
+
+    // Returns { field: message } for everything missing or wrong on one step.
+    function stepErrors(step) {
+        const errors = {};
+        if (step === 1 && !state.patient) {
+            Object.assign(errors, Validators.check(readDetails(), rules));
         }
-        if (!state.serviceId) errors.serviceId = 'Please choose a service.';
-        if (!state.branchId) errors.branchId = 'Please choose a branch.';
-        if (state.serviceId && state.branchId) {
+        if (step === 2) {
+            if (!state.serviceId) errors.serviceId = 'Please choose a service.';
+            if (!state.branchId) errors.branchId = 'Please choose a branch.';
+        }
+        if (step === 3) {
             if (!state.date) errors.date = 'Please choose a date.';
             else if (!state.time) errors.time = 'Please choose a time.';
-            else if (!state.doctorId) errors.doctorId = 'Please choose a doctor.';
+        }
+        if (step === 4 && !state.doctorId) {
+            errors.doctorId = 'Please choose a doctor.';
         }
         return errors;
     }
 
-    const ERROR_ORDER = ['name', 'nric', 'phone', 'email', 'password', 'confirmPassword',
-                         'serviceId', 'branchId', 'date', 'time', 'doctorId'];
+    function validateAll() {
+        return Object.assign({}, stepErrors(1), stepErrors(2), stepErrors(3), stepErrors(4));
+    }
 
+    // Shows the messages, then opens the step with the first problem on it.
     function showErrors(errors) {
         ERROR_ORDER.forEach(function (field) {
             Smile.setFieldError(field, errors[field] || '');
         });
 
-        // take the user to the first problem
         const first = ERROR_ORDER.find(function (field) { return errors[field]; });
-        if (first) {
-            const target = $(first) || $(first + '-error');
-            const anchor = target.closest('.form-field, .panel') || target;
-            anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            if (target.matches('input, select')) target.focus({ preventScroll: true });
+        if (!first) return;
+
+        if (FIELD_STEP[first] !== state.step) {
+            goToStep(FIELD_STEP[first], 'push');
         }
+        const target = $(first) || $(first + '-error');
+        const anchor = target.closest('.form-field, fieldset, .panel') || target;
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (target.matches('input, select')) target.focus({ preventScroll: true });
     }
 
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
 
+        // pressing Enter on steps 1 – 3 just moves on to the next step
+        if (state.step < TOTAL_STEPS) {
+            goNext();
+            return;
+        }
+
         const errors = validateAll();
         if (Object.keys(errors).length) {
             showErrors(errors);
-            showBookingError('Please fix the highlighted fields above.');
             return;
         }
 
@@ -536,6 +564,7 @@
             if (error.status === 409 && error.fields.time) {
                 state.time = null;
                 state.doctorId = null;
+                goToStep(3, 'push');
                 loadSlots().then(function () {
                     Smile.setFieldError('time', error.fields.time);
                     drawDoctors();
@@ -558,7 +587,9 @@
     function showConfirmation(appt, newAccount, email) {
         const firstName = (state.patient ? state.patient.name : $('name').value).trim().split(/\s+/)[0];
 
+        state.booked = true;
         form.hidden = true;
+        stepsBar.hidden = true;
         const done = $('bookingDone');
         done.hidden = false;
         done.innerHTML =
@@ -586,6 +617,130 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         $('confirmationPanel').focus({ preventScroll: true });
     }
+
+
+    /* ==========================================================
+       STEPS  (one "page" at a time + the 1 ── 2 ── 3 ── 4 timeline)
+       ========================================================== */
+
+    const TOTAL_STEPS = 4;
+    const STEP_NAMES = ['Your details', 'Service & branch', 'Date & time', 'Doctor'];
+    const stepsBar = $('bookingSteps');
+    const stepItems = stepsBar.querySelectorAll('li');
+
+    function isComplete(step) {
+        return !Object.keys(stepErrors(step)).length;
+    }
+
+    // A step can be opened once every step before it is complete.
+    function canOpen(step) {
+        for (let s = 1; s < step; s++) {
+            if (!isComplete(s)) return false;
+        }
+        return true;
+    }
+
+    // Timeline: tick finished steps, ring the current one, grey out locked ones.
+    function updateSteps() {
+        stepItems.forEach(function (li, i) {
+            const step = i + 1;
+            const done = isComplete(step);
+            const locked = !canOpen(step);
+            const link = li.querySelector('a');
+
+            li.classList.toggle('is-done', done);
+            li.classList.toggle('is-active', step === state.step);
+            li.classList.toggle('is-locked', locked);
+            li.querySelector('.step-dot').innerHTML = done ? '<i class="fa-solid fa-check"></i>' : String(step);
+
+            link.setAttribute('aria-label', 'Step ' + step + ': ' + STEP_NAMES[i] +
+                (done ? ', done' : '') + (locked ? ', not available yet' : ''));
+            if (step === state.step) link.setAttribute('aria-current', 'step');
+            else link.removeAttribute('aria-current');
+            if (locked) link.setAttribute('aria-disabled', 'true');
+            else link.removeAttribute('aria-disabled');
+        });
+
+        if (state.step < TOTAL_STEPS) {
+            $('nextLabel').textContent = 'Next: ' + STEP_NAMES[state.step];
+        }
+    }
+
+    // Shows one step and hides the rest.
+    //   how = 'start' → first load (no scrolling, replaces the address)
+    //         'push'  → user moved on/back: new #step-N in the browser history
+    //         'pop'   → browser back/forward button
+    function goToStep(step, how) {
+        state.step = step;
+
+        form.querySelectorAll('.panel[data-step]').forEach(function (panel) {
+            panel.hidden = Number(panel.dataset.step) !== step;
+        });
+        $('backBtn').hidden = step === 1;
+        $('nextBtn').hidden = step === TOTAL_STEPS;
+        $('confirmBtn').hidden = step !== TOTAL_STEPS;
+        showBookingError('');
+        updateSteps();
+
+        if (how === 'start') {
+            history.replaceState({ step: step }, '', '#step-' + step);
+            return;
+        }
+        if (how === 'push') {
+            history.pushState({ step: step }, '', '#step-' + step);
+        }
+
+        // a new "page": back up to the timeline, and move keyboard /
+        // screen-reader focus to the new step's heading
+        const headerHeight = document.querySelector('.site-header').offsetHeight;
+        const top = stepsBar.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+        if (window.scrollY > top) window.scrollTo({ top: top, behavior: 'smooth' });
+
+        const heading = form.querySelector('.panel[data-step="' + step + '"] h2');
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({ preventScroll: true });
+    }
+
+    // Next only works when the current step is filled in properly.
+    function goNext() {
+        const errors = stepErrors(state.step);
+        if (Object.keys(errors).length) {
+            showErrors(errors);
+            return;
+        }
+        goToStep(state.step + 1, 'push');
+    }
+
+    $('nextBtn').addEventListener('click', goNext);
+    $('backBtn').addEventListener('click', function () {
+        goToStep(state.step - 1, 'push');
+    });
+
+    // Clicking the timeline jumps to any step that is already unlocked.
+    stepsBar.addEventListener('click', function (event) {
+        const li = event.target.closest('li');
+        if (!li) return;
+        event.preventDefault();
+        const step = Array.prototype.indexOf.call(stepItems, li) + 1;
+        if (step !== state.step && canOpen(step)) {
+            goToStep(step, 'push');
+        }
+    });
+
+    // Browser back / forward between steps.
+    window.addEventListener('popstate', function () {
+        if (state.booked || !state.options) return;
+        const match = /^#step-(\d)$/.exec(window.location.hash);
+        let step = match ? Math.min(Math.max(Number(match[1]), 1), TOTAL_STEPS) : 1;
+        while (step > 1 && !canOpen(step)) step--;     // can't skip ahead via the address bar
+        goToStep(step, 'pop');
+        if (window.location.hash !== '#step-' + step) {
+            history.replaceState({ step: step }, '', '#step-' + step);
+        }
+    });
+
+    // typing in step 1 can complete it
+    form.addEventListener('input', updateSteps);
 
 
     /* ==========================================================
@@ -618,11 +773,13 @@
             }
 
             refreshSchedule();
+            goToStep(1, 'start');
         } catch (error) {
             $('bookingLoadError').hidden = false;
             $('bookingLoadError').innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> <span>' +
                 Smile.escapeHtml(error.message) + '</span>';
             form.hidden = true;
+            stepsBar.hidden = true;
         }
     }
 

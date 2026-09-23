@@ -7,6 +7,9 @@
 3. Create the database: phpMyAdmin → **Import** → choose `database/schema.sql` → **Go**.
    (Running it again wipes all accounts and bookings.)
 4. Visit <http://localhost/ie4727-dental/index.html>.
+   If that doesn't load, your Apache may use a different port: look for the `Listen` line in
+   XAMPP's `etc/httpd.conf` (e.g. `Listen 8000` → <http://localhost:8000/ie4727-dental/index.html>).
+   phpMyAdmin is on the same port: <http://localhost/phpmyadmin> or <http://localhost:8000/phpmyadmin>.
 
 The pages must be opened through `http://localhost/...`, not by double-clicking the
 HTML file — the log-in, booking and dashboard pages need PHP to talk to the database.

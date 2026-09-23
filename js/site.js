@@ -4,7 +4,7 @@
      2. Small formatters   – dates, times, safe HTML
      3. Login state        – who is logged in, log in / log out
      4. Navbar: account    – profile icon → log-in modal or dashboard
-     5. Navbar: search     – search icon opens a search bar
+     5. Navbar: search     – the search box next to the profile icon
 
    Everything is shared through one global object, window.Smile,
    so the other scripts (booking page, dashboard, React login modal)
@@ -243,57 +243,24 @@
     }
 
 
-    /* ---------- 5. Navbar: search bar ---------- */
+    /* ---------- 5. Navbar: search box ---------- */
 
-    const searchToggle = document.getElementById('searchToggle');
-    const header = document.querySelector('.site-header');
-    const navTop = header && header.querySelector('.nav-top');
+    document.querySelectorAll('.nav-search').forEach(function (form) {
+        const input = form.querySelector('input');
 
-    if (searchToggle && navTop) {
-        const panel = document.createElement('div');
-        panel.className = 'search-panel';
-        panel.id = 'searchPanel';
-        panel.hidden = true;
-        panel.innerHTML =
-            '<div class="container">' +
-                '<form class="search-form" action="search.html" method="get" role="search">' +
-                    '<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>' +
-                    '<input type="search" name="q" placeholder="Search services, doctors, clinics…" ' +
-                           'aria-label="Search the website" autocomplete="off" required maxlength="80">' +
-                    '<button type="submit" class="btn btn-primary">Search</button>' +
-                '</form>' +
-            '</div>';
-        navTop.insertAdjacentElement('afterend', panel);
-
-        const input = panel.querySelector('input');
-        searchToggle.setAttribute('aria-controls', 'searchPanel');
-        searchToggle.setAttribute('aria-expanded', 'false');
-
-        function setSearchOpen(open) {
-            panel.hidden = !open;
-            searchToggle.setAttribute('aria-expanded', String(open));
-            searchToggle.innerHTML = open
-                ? '<i class="fa-solid fa-xmark"></i>'
-                : '<i class="fa-solid fa-magnifying-glass"></i>';
-            if (open) input.focus();
+        // on search.html, keep the current search in the box
+        if (/search\.html$/.test(window.location.pathname)) {
+            input.value = new URLSearchParams(window.location.search).get('q') || '';
         }
 
-        searchToggle.addEventListener('click', function () {
-            setSearchOpen(panel.hidden);
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && !panel.hidden) {
-                setSearchOpen(false);
-                searchToggle.focus();
+        // don't send an all-spaces search
+        form.addEventListener('submit', function (event) {
+            input.value = input.value.trim();
+            if (!input.value) {
+                event.preventDefault();
+                input.focus();
             }
         });
-
-        // don't send an all-spaces search
-        panel.querySelector('form').addEventListener('submit', function (event) {
-            input.value = input.value.trim();
-            if (!input.value) event.preventDefault();
-        });
-    }
+    });
 
 })();

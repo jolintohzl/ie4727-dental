@@ -37,9 +37,14 @@
             </a>
 
             <div class="nav-actions">
-                <button class="icon-btn" id="searchToggle" aria-label="Search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <!-- Search box (sends ?q= to search.html) -->
+                <form class="nav-search" action="search.html" method="get" role="search">
+                    <input type="search" name="q" placeholder="Search the site…"
+                           aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                    <button type="submit" aria-label="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
 
                 <a href="dashboard.html" class="icon-btn" id="accountBtn" aria-label="My account">
                     <i class="fa-regular fa-user"></i>
@@ -63,6 +68,15 @@
     <!-- ---------- BOTTOM ROW: centered menu ---------- -->
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
+            <!-- phones only: the top row has no room for the search box -->
+            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+                <input type="search" name="q" placeholder="Search the site…"
+                       aria-label="Search the website" autocomplete="off" maxlength="80" required>
+                <button type="submit" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
             <ul class="nav-menu">
                 <li><a href="about-us.html">About</a></li>
 
@@ -108,7 +122,7 @@
 
 
 <!-- ==========================================================
-     2. BOOKING FORM  (one continuous page, steps 1 – 4)
+     2. BOOKING FORM  (steps 1 – 4, one "page" at a time)
      Everything inside is filled in by js/appointment.js using
      the services, branches and doctors from api/options.php.
      ========================================================== -->
@@ -117,10 +131,31 @@
 
         <div class="alert alert-error" id="bookingLoadError" role="alert" hidden></div>
 
+        <!-- Progress timeline: 1 ── 2 ── 3 ── 4
+             Only one step of the form shows at a time. js/appointment.js marks the
+             current step (is-active), finished steps (is-done) and steps that
+             can't be opened yet (is-locked). -->
+        <nav class="booking-steps" id="bookingSteps" aria-label="Booking progress">
+            <ol>
+                <li data-panel="stepDetails">
+                    <a href="#step-1"><span class="step-dot">1</span><span class="step-label">Your details</span></a>
+                </li>
+                <li data-panel="stepService">
+                    <a href="#step-2"><span class="step-dot">2</span><span class="step-label">Service &amp; branch</span></a>
+                </li>
+                <li data-panel="stepTime">
+                    <a href="#step-3"><span class="step-dot">3</span><span class="step-label">Date &amp; time</span></a>
+                </li>
+                <li data-panel="stepDoctor">
+                    <a href="#step-4"><span class="step-dot">4</span><span class="step-label">Doctor</span></a>
+                </li>
+            </ol>
+        </nav>
+
         <form id="bookingForm" novalidate>
 
             <!-- ---------- STEP 1: patient details ---------- -->
-            <div class="panel" id="stepDetails">
+            <div class="panel" id="stepDetails" data-step="1">
                 <div class="panel-head">
                     <span class="step-number">1</span>
                     <div>
@@ -199,7 +234,7 @@
 
 
             <!-- ---------- STEP 2: service + branch ---------- -->
-            <div class="panel" id="stepService">
+            <div class="panel" id="stepService" data-step="2" hidden>
                 <div class="panel-head">
                     <span class="step-number">2</span>
                     <div>
@@ -228,7 +263,7 @@
 
 
             <!-- ---------- STEP 3: date + time ---------- -->
-            <div class="panel" id="stepTime">
+            <div class="panel" id="stepTime" data-step="3" hidden>
                 <div class="panel-head">
                     <span class="step-number">3</span>
                     <div>
@@ -259,7 +294,7 @@
 
 
             <!-- ---------- STEP 4: doctor ---------- -->
-            <div class="panel" id="stepDoctor">
+            <div class="panel" id="stepDoctor" data-step="4" hidden>
                 <div class="panel-head">
                     <span class="step-number">4</span>
                     <div>
@@ -281,8 +316,8 @@
             </div>
 
 
-            <!-- ---------- SUMMARY + CONFIRM ---------- -->
-            <div class="panel" id="stepConfirm">
+            <!-- ---------- SUMMARY (shown on step 4, under the doctors) ---------- -->
+            <div class="panel" id="stepConfirm" data-step="4" hidden>
                 <div class="panel-head">
                     <span class="step-number"><i class="fa-solid fa-check"></i></span>
                     <div>
@@ -294,13 +329,23 @@
 
                 <div class="alert alert-error" id="bookingError" role="alert" hidden></div>
 
-                <button type="submit" class="btn btn-primary btn-lg btn-block" id="confirmBtn">
-                    <i class="fa-regular fa-calendar-check"></i> Confirm booking
-                </button>
                 <p class="form-note">
                     Need to change something later? You can reschedule or cancel from
                     <a href="dashboard.html">My Account</a>.
                 </p>
+            </div>
+
+            <!-- ---------- BACK / NEXT ---------- -->
+            <div class="wizard-nav">
+                <button type="button" class="btn btn-outline btn-lg" id="backBtn" hidden>
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary btn-lg" id="nextBtn">
+                    <span id="nextLabel">Next</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" id="confirmBtn" hidden>
+                    <i class="fa-regular fa-calendar-check"></i> Confirm booking
+                </button>
             </div>
 
         </form>

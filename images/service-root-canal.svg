@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Root Canal placeholder image">
-  <rect width="400" height="400" fill="#e3edfa"/>
-  <circle cx="200" cy="188" r="132" fill="#adcbec" opacity=".45"/>
-  <path d="M200 78c-58 0-88 44-88 88 0 54 20 122 41 159 12 21 38 18 43-4l13-58c0-3 2-5 4-5s4 2 4 5l13 58c5 22 31 25 43 4 21-37 41-105 41-159 0-44-30-88-88-88z" fill="#adcbec"/>
-  <text x="200" y="336" text-anchor="middle" font-family="'Plus Jakarta Sans', Inter, Helvetica, Arial, sans-serif"
-        font-size="22" font-weight="700" fill="#00337a">Root Canal</text>
-  <text x="200" y="362" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif"
-        font-size="14" fill="#00337a" opacity=".6">Placeholder image</text>
-</svg>

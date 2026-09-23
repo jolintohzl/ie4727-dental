@@ -566,12 +566,20 @@
         });
     }
 
-    // Open / close a dropdown when its menu item is clicked
+    // On a screen with a mouse, CSS opens the panel on hover, so the click
+    // toggle below would fight it — a click would leave .open set and the
+    // panel stuck open after the pointer moved away. Touch screens and the
+    // mobile menu cannot hover, so they still need the tap.
+    const hoverOpens = window.matchMedia('(hover: hover) and (min-width: 769px)');
+
+    // Open / close a dropdown when its menu item is tapped
     dropdownItems.forEach(function (item) {
         const toggle = item.querySelector('.dropdown-toggle');
 
         toggle.addEventListener('click', function (event) {
             event.preventDefault();      // stop the link from jumping anywhere
+
+            if (hoverOpens.matches) { return; }   // hover already handles it
 
             const wasOpen = item.classList.contains('open');
             closeAllDropdowns();         // only one panel open at a time

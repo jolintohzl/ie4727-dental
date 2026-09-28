@@ -41,8 +41,15 @@
         };
         if (options.body !== undefined) {
             init.method = options.method || 'POST';
-            init.headers['Content-Type'] = 'application/json';
-            init.body = JSON.stringify(options.body);
+            if (options.body instanceof FormData) {
+                // A file upload has to be multipart. Deliberately no
+                // Content-Type header: the browser adds one with the
+                // boundary string, and setting it by hand breaks the body.
+                init.body = options.body;
+            } else {
+                init.headers['Content-Type'] = 'application/json';
+                init.body = JSON.stringify(options.body);
+            }
         }
 
         let response;

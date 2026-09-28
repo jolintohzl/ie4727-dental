@@ -74,6 +74,32 @@
             return '';
         },
 
+        /* ---- Job application form (about-us.html) ---- */
+
+        position: function (value) {
+            return value ? '' : 'Please choose the position you are applying for.';
+        },
+
+        // Takes the File object from the input, not a string.
+        // Limits match the hint printed under the field.
+        resume: function (file) {
+            if (!file) return 'Please attach your resume.';
+            if (!/\.(pdf|doc|docx)$/i.test(file.name || '')) {
+                return 'Resume must be a PDF, DOC or DOCX file.';
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                return 'Resume must be 5 MB or smaller.';
+            }
+            return '';
+        },
+
+        // Optional — only complains if it is too long to store.
+        coverNote: function (value) {
+            return String(value || '').length > 2000
+                ? 'Please keep this under 2000 characters.'
+                : '';
+        },
+
         // Runs several rules at once.
         // rules = { email: Validators.email, ... }  →  { email: 'message', ... }
         // Only fields with a problem appear in the result.

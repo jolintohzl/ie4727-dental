@@ -4,6 +4,7 @@
    + { name, nric, phone, email, password } when nobody is logged in —
    in that case the account is created and logged in as part of the booking. */
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/mail.php';
 require_method('POST');
 
 $in = read_json();
@@ -97,7 +98,13 @@ if ($isNewAccount) {
     log_in($patientId);
 }
 
+// ---- 4. Tell the patient ----
+// After the commit, so a mail problem can never cost someone their slot.
+// send_booking_email() swallows its own errors and logs them.
+$appointment = find_appointment($appointmentId, $patientId);
+send_booking_email($patientId, $appointment);
+
 respond([
-    'appointment' => find_appointment($appointmentId, $patientId),
+    'appointment' => $appointment,
     'newAccount'  => $isNewAccount,
 ], 201);

@@ -1,0 +1,10 @@
+# Nothing in storage/ may be fetched over HTTP. Resumes are private, and an
+# uploads folder that Apache will serve is a classic way to get a malicious
+# file executed. api/apply.php reads these files from disk, not through a URL.
+Require all denied
+
+# Belt and braces: even if the rule above is lost, do not run anything here.
+php_flag engine off
+<FilesMatch ".*">
+    SetHandler default-handler
+</FilesMatch>

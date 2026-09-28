@@ -1,0 +1,3 @@
+# Keep the folder in git, but not the resumes people upload.
+*
+!.gitignore

@@ -15,6 +15,7 @@ CREATE DATABASE IF NOT EXISTS smile_dental
 
 USE smile_dental;
 
+DROP TABLE IF EXISTS job_applications;
 DROP TABLE IF EXISTS booking_drafts;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS doctor_services;
@@ -165,6 +166,31 @@ CREATE TABLE booking_drafts (
     FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
     FOREIGN KEY (branch_id)  REFERENCES branches(id) ON DELETE SET NULL,
     FOREIGN KEY (doctor_id)  REFERENCES doctors(id)  ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+
+-- ----------------------------------------------------------
+-- Applications sent by the careers form on about-us.html.
+-- The resume itself lives in storage/resumes/ under a random
+-- name; resume_name is only what the applicant called it.
+-- ----------------------------------------------------------
+CREATE TABLE job_applications (
+    id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    full_name    VARCHAR(100) NOT NULL,
+    email        VARCHAR(255) NOT NULL,
+    phone        VARCHAR(8)   NOT NULL,
+    position     VARCHAR(32)  NOT NULL,          -- matches the <select> values
+    message      TEXT         NULL,
+
+    resume_name  VARCHAR(255) NOT NULL,
+    resume_file  VARCHAR(80)  NOT NULL,
+    resume_size  INT UNSIGNED NOT NULL,
+
+    submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    submitted_ip VARCHAR(45) NULL,
+
+    INDEX (email),
+    INDEX (submitted_at)
 ) ENGINE=InnoDB;
 
 

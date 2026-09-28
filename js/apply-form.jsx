@@ -6,6 +6,12 @@
    Babel turns the JSX below into plain JavaScript in the browser,
    so there is no build step — same approach as js/login-modal.jsx.
 
+   The form posts the old-fashioned way: action="apply.php" with a real
+   method="post", so the browser submits it and PHP renders the result
+   page. React's job here is only to draw the fields and catch mistakes
+   before the round trip — it never sends the data itself, and there is
+   no fetch/AJAX or JSON anywhere in this file.
+
    Validation rules live in js/validators.js so the booking form,
    the login modal and this form all agree on what a valid name,
    email or phone number looks like.
@@ -59,12 +65,9 @@
     function ApplicationForm() {
         const blank = { fullName: '', email: '', contact: '', position: '', resume: null, message: '' };
 
-        const [values, setValues]     = useState(blank);
-        const [touched, setTouched]   = useState({});   // fields the user has left
-        const [sent, setSent]         = useState(null); // the server's reply once accepted
-        const [serverError, setError] = useState('');
-        const [serverFields, setServerFields] = useState({});
-        const [submitting, setSubmitting]     = useState(false);
+        const [values, setValues]   = useState(blank);
+        const [touched, setTouched] = useState({});     // fields the user has left
+        const [submitting, setSubmitting] = useState(false);
 
         const refs = {
             fullName: useRef(null),
@@ -79,67 +82,34 @@
         // has been visited — nobody wants to be told the name is wrong
         // before they have finished typing it.
         const errors = Validators.check(values, APPLY_RULES);
-        const showError = (field) =>
-            serverFields[field] || (touched[field] ? errors[field] : '');
+        const showError = (field) => (touched[field] ? errors[field] : '');
 
         function update(field, value) {
             setValues((prev) => ({ ...prev, [field]: value }));
-            setSent(null);
-            setError('');
-            setServerFields((prev) => ({ ...prev, [field]: '' }));
         }
 
         function markTouched(field) {
             setTouched((prev) => ({ ...prev, [field]: true }));
         }
 
-        async function handleSubmit(event) {
-            event.preventDefault();
-            setSent(null);      // a fresh attempt clears the last success banner
-            setError('');
-
-            // On submit every field counts as visited, so nothing stays hidden.
+        // Only steps in when something is wrong. If every field is valid this
+        // returns without calling preventDefault(), so the browser performs a
+        // normal form POST to apply.php and PHP takes over from there.
+        function handleSubmit(event) {
             const all = {};
             FIELD_ORDER.forEach((f) => { all[f] = true; });
             setTouched(all);
 
             const firstBad = FIELD_ORDER.find((f) => errors[f]);
             if (firstBad) {
+                event.preventDefault();
                 const el = refs[firstBad].current;
                 el && el.focus();
                 el && el.scrollIntoView({ block: 'center', behavior: 'smooth' });
                 return;
             }
 
-            // FormData, not JSON, because of the file. Smile.api spots it and
-            // lets the browser set the multipart Content-Type itself.
-            const body = new FormData();
-            body.append('fullName', values.fullName.trim());
-            body.append('email', values.email.trim());
-            body.append('contact', values.contact);
-            body.append('position', values.position);
-            body.append('message', values.message);
-            body.append('resume', values.resume);
-
-            setSubmitting(true);
-            try {
-                const data = await Smile.api('apply.php', { body: body });
-                setSent(data);
-                setValues(blank);
-                setTouched({});
-                if (refs.resume.current) refs.resume.current.value = '';
-            } catch (err) {
-                setError(err.message);
-                setServerFields(err.fields || {});
-                // jump to whichever field the server objected to
-                const bad = FIELD_ORDER.find((f) => (err.fields || {})[f]);
-                if (bad && refs[bad].current) {
-                    refs[bad].current.focus();
-                    refs[bad].current.scrollIntoView({ block: 'center', behavior: 'smooth' });
-                }
-            } finally {
-                setSubmitting(false);
-            }
+            setSubmitting(true);   // stops an impatient second click
         }
 
         const invalidProps = (field) => ({
@@ -149,25 +119,8 @@
         });
 
         return (
-            <form className="form-card" onSubmit={handleSubmit} noValidate>
-
-                {sent && (
-                    <div className="alert alert-success" role="status">
-                        <i className="fa-solid fa-circle-check"></i>
-                        <span>
-                            Thanks — your application for <strong>{sent.position}</strong> has
-                            been received. Your reference is <strong>{sent.reference}</strong>,
-                            and a confirmation is on its way to your inbox.
-                        </span>
-                    </div>
-                )}
-
-                {serverError && (
-                    <div className="alert alert-error" role="alert">
-                        <i className="fa-solid fa-circle-exclamation"></i>
-                        <span>{serverError}</span>
-                    </div>
-                )}
+            <form className="form-card" action="apply.php" method="post"
+                  encType="multipart/form-data" onSubmit={handleSubmit} noValidate>
 
                 <div className="form-grid">
 

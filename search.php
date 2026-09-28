@@ -1,3 +1,16 @@
+<?php
+/* Site search — rendered entirely by PHP.
+   The form below arrives here as a plain GET with ?q=..., and the
+   results are printed straight into the page. There is no fetch(),
+   no AJAX and no JSON: includes/search-index.php reads the site's
+   HTML files off the disk and ranks them. */
+require __DIR__ . '/includes/search-index.php';
+
+$query   = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
+$query   = mb_substr($query, 0, 80);
+$terms   = array_values(array_filter(preg_split('/\s+/u', mb_strtolower($query))));
+$results = $query !== '' ? search_run($query) : [];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,8 +50,8 @@
             </a>
 
             <div class="nav-actions">
-                <!-- Search box (sends ?q= to search.html) -->
-                <form class="nav-search" action="search.html" method="get" role="search">
+                <!-- Search box (sends ?q= to search.php) -->
+                <form class="nav-search" action="search.php" method="get" role="search">
                     <input type="search" name="q" placeholder="Search the site…"
                            aria-label="Search the website" autocomplete="off" maxlength="80">
                     <button type="submit" aria-label="Search">
@@ -68,7 +81,7 @@
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
             <!-- phones only: the top row has no room for the search box -->
-            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+            <form class="nav-search nav-search-mobile" action="search.php" method="get" role="search">
                 <input type="search" name="q" placeholder="Search the site…"
                        aria-label="Search the website" autocomplete="off" maxlength="80">
                 <button type="submit" aria-label="Search">
@@ -116,40 +129,60 @@
 
 <!-- ==========================================================
      2. RESULTS
-     js/search.js reads ?q= from the address bar, looks through
-     the site's pages and lists every section that matches.
+     PHP reads ?q= from the query string, searches the site's
+     pages on the server and prints every section that matches.
      ========================================================== -->
 <section class="section">
     <div class="container">
 
         <!-- page heading — same style as "About Smile Dental Group" -->
         <div class="section-head">
-            <h1 id="searchTitle">Search</h1>
+            <h1 id="searchTitle"><?= $query !== '' ? 'Search results' : 'Search' ?></h1>
             <p class="section-sub">Find a treatment, a dentist, a clinic or an answer across the whole site.</p>
         </div>
 
     <div class="page-column">
 
-        <form class="search-form search-page-form" action="search.html" method="get" role="search">
+        <form class="search-form search-page-form" action="search.php" method="get" role="search">
             <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             <input type="search" name="q" id="searchInput" placeholder="Search services, doctors, clinics…"
-                   aria-label="Search the website" autocomplete="off" maxlength="80">
+                   aria-label="Search the website" autocomplete="off" maxlength="80"
+                   value="<?= search_escape($query) ?>">
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <p class="result-count" id="resultCount" role="status"></p>
-        <div class="result-list" id="results"></div>
+<?php if ($query !== ''): ?>
+        <p class="result-count" role="status">
+            <?= count($results) ?><?= count($results) === 1 ? ' result' : ' results' ?>
+            for &ldquo;<?= search_escape($query) ?>&rdquo;<?= count($results) === SEARCH_MAX_RESULTS ? ' (showing the best ' . SEARCH_MAX_RESULTS . ')' : '' ?>
+        </p>
 
-        <div id="searchHelp" hidden>
-            <p class="empty-note" id="searchHelpText"></p>
+        <div class="result-list">
+            <?php foreach ($results as $r): ?>
+            <a class="result-card" href="<?= search_escape($r['url']) ?>">
+                <span class="result-page"><?= search_escape($r['page']) ?></span>
+                <h3><?= search_highlight($r['title'], $terms) ?></h3>
+                <p><?= search_highlight(search_snippet($r['text'], $terms), $terms) ?></p>
+            </a>
+            <?php endforeach; ?>
+        </div>
+<?php endif; ?>
+
+        <div<?= ($query !== '' && $results) ? ' hidden' : '' ?>>
+            <p class="empty-note">
+                <i class="fa-solid fa-lightbulb"></i>
+                <span><?= $query === ''
+                    ? 'Type something above, or try one of these:'
+                    : 'Nothing matched &ldquo;' . search_escape($query) . '&rdquo;. Try one of these:' ?></span>
+            </p>
             <div class="search-suggestions">
-                <a href="search.html?q=root+canal">Root canal</a>
-                <a href="search.html?q=braces">Braces</a>
-                <a href="search.html?q=implants">Implants</a>
-                <a href="search.html?q=opening+hours">Opening hours</a>
-                <a href="search.html?q=tampines">Tampines</a>
-                <a href="search.html?q=children">Children</a>
-                <a href="search.html?q=fees">Fees</a>
+                <a href="search.php?q=root+canal">Root canal</a>
+                <a href="search.php?q=braces">Braces</a>
+                <a href="search.php?q=implants">Implants</a>
+                <a href="search.php?q=opening+hours">Opening hours</a>
+                <a href="search.php?q=tampines">Tampines</a>
+                <a href="search.php?q=children">Children</a>
+                <a href="search.php?q=fees">Fees</a>
             </div>
         </div>
 
@@ -322,7 +355,6 @@
 <script src="js/validators.js"></script>
 <script src="js/site.js"></script>
 <script type="text/babel" src="js/login-modal.jsx"></script>
-<script src="js/search.js"></script>
 
 </body>
 </html>

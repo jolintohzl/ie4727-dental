@@ -1181,7 +1181,59 @@ ul { list-style: none; }
    already exist are added here.
    ========================================================== */
 
-   /* --- locate-us.html --- */
+   /* --- Pages rendered by PHP (apply.php, login.php) --- */
+.login-card { max-width: 440px; text-align: center; }
+.login-card .modal-icon { margin-bottom: 16px; }
+.login-form { text-align: left; margin-top: 22px; }
+.login-form .form-field { margin-bottom: 16px; }
+.login-form .btn { margin-top: 6px; }
+
+.result-card { max-width: 620px; margin: 0 auto; text-align: center; }
+.result-card h1 { font-size: 1.6rem; margin-bottom: 14px; }
+.result-card p  { margin-bottom: 16px; }
+.result-card .btn { margin-top: 8px; }
+
+.result-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+.result-icon.success { background: var(--success-bg); color: var(--success); }
+.result-icon.error   { background: var(--danger-bg);  color: var(--danger); }
+
+.result-errors {
+    list-style: disc;
+    text-align: left;
+    margin: 0 auto 22px;
+    padding-left: 22px;
+    max-width: 420px;
+    color: var(--danger);
+    font-size: .95rem;
+}
+.result-errors li { margin-bottom: 6px; }
+
+/* the reference / position summary on the confirmation page */
+.result-facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 18px;
+    text-align: left;
+    max-width: 420px;
+    margin: 0 auto 22px;
+    padding: 18px 20px;
+    background: var(--blue-50);
+    border-radius: var(--radius-sm);
+    font-size: .95rem;
+}
+.result-facts dt { font-weight: 700; color: var(--ink); }
+.result-facts dd { color: var(--body); }
+
+
+/* --- locate-us.html --- */
 .location-card {
     background: var(--white);
     border: 1px solid var(--line);

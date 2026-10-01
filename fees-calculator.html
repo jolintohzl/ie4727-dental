@@ -13,6 +13,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Bootstrap 5.3 (CSS only) — used for the price list table lower down.
+         Version 5 needs no jQuery, unlike Bootstrap 4.
+         It is loaded BEFORE style.css on purpose: where both files style the
+         same class name (.container, .btn, .modal) the later file wins, so our
+         own look is kept and only the table picks up Bootstrap's styling. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
     <!-- stylesheet shared with index.html -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -220,6 +227,157 @@
                 on the amounts shown here. Your final bill is confirmed at your appointment.
             </span>
         </p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     3. FULL PRICE LIST
+     The calculator above answers one question at a time. This
+     table shows every treatment at once so the figures can be
+     compared side by side.
+
+     The look comes from Bootstrap's table classes (see the
+     Bootstrap link in <head>):
+       .table             the base table styling
+       .table-striped     shades every other row
+       .table-hover       highlights the row under the pointer
+       .align-middle      centres the text in each cell vertically
+       .table-responsive  on the wrapper, lets the table scroll
+                          sideways on a phone instead of squashing
+       .visually-hidden   gives the tick / cross a word a screen
+                          reader can announce
+
+     NOTE: these are the same numbers held in js/fees-calculator.jsx.
+     If a price changes, update it in BOTH places.
+     ========================================================== -->
+<section class="section price-list" id="price-list">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">For reference</p>
+            <h2>Full price list</h2>
+            <p class="section-sub">
+                Every treatment we offer, with the subsidy each scheme covers.
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle price-table">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Treatment</th>
+                        <th scope="col">Clinic fee</th>
+                        <th scope="col">CHAS Blue</th>
+                        <th scope="col">CHAS Orange</th>
+                        <th scope="col">MediSave</th>
+                        <th scope="col">Flexi-MediSave</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                        <tr>
+                            <th scope="row">Consultation &amp; Check-up</th>
+                            <td>$45.00</td>
+                            <td>$11.50</td>
+                            <td>$8.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Scaling &amp; Polishing</th>
+                            <td>$110.00</td>
+                            <td>$50.50</td>
+                            <td>$25.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Filling</th>
+                            <td>$140.00</td>
+                            <td>$75.50</td>
+                            <td>$52.50</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Simple Extraction</th>
+                            <td>$130.00</td>
+                            <td>$75.50</td>
+                            <td>$52.50</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Surgical Extraction (wisdom tooth)</th>
+                            <td>$1,200.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td>$950.00</td>
+                            <td><i class="fa-solid fa-xmark price-no" aria-hidden="true"></i><span class="visually-hidden">No</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Root Canal Treatment</th>
+                            <td>$1,100.00</td>
+                            <td>$170.00</td>
+                            <td>$100.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dental Crown</th>
+                            <td>$1,300.00</td>
+                            <td>$190.00</td>
+                            <td>$130.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dental Bridge (3 units)</th>
+                            <td>$2,400.00</td>
+                            <td>$190.00</td>
+                            <td>$130.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dental Implant</th>
+                            <td>$4,500.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td>$1,150.00</td>
+                            <td><i class="fa-solid fa-xmark price-no" aria-hidden="true"></i><span class="visually-hidden">No</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Full Denture (per arch)</th>
+                            <td>$1,200.00</td>
+                            <td>$260.00</td>
+                            <td>$190.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Partial Denture</th>
+                            <td>$700.00</td>
+                            <td>$150.00</td>
+                            <td>$110.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Braces / Invisalign</th>
+                            <td>$5,500.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-xmark price-no" aria-hidden="true"></i><span class="visually-hidden">No</span></td>
+                        </tr>
+                </tbody>
+
+            </table>
         </div>
 
     </div>

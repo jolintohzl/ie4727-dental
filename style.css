@@ -494,16 +494,7 @@ ul, ol { padding-left: 0; }
     gap: 14px;
 }
 
-.hero-points {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 22px;
-    margin-top: 34px;
-    font-size: .9rem;
-    color: var(--body);
-}
-.hero-points li { display: flex; align-items: center; gap: 8px; }
-.hero-points i  { color: var(--blue-500); }
+
 
 /* --- Hero visual --- */
 .hero-visual { position: relative; }
@@ -629,25 +620,6 @@ ul, ol { padding-left: 0; }
 .why-photo-placeholder i { font-size: 3.4rem; opacity: .6; }
 .why-photo-placeholder p { font-weight: 600; }
 .why-photo-placeholder span { font-size: .8rem; opacity: .75; }
-
-.why-badge {
-    position: absolute;
-    right: -20px;
-    bottom: 32px;
-    background: var(--blue-700);
-    color: var(--white);
-    padding: 20px 24px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    text-align: center;
-}
-.why-badge strong {
-    display: block;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 2rem;
-    line-height: 1;
-}
-.why-badge span { font-size: .8rem; opacity: .85; line-height: 1.4; display: block; margin-top: 6px; }
 
 .why-copy .lead { margin: 18px 0 28px; font-size: 1.05rem; }
 

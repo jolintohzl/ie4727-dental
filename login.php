@@ -7,7 +7,7 @@
    and redirects, or draws the page again with the mistake shown.
    No JavaScript is involved and nothing here is JSON.
 
-   The React modal in js/login-modal.jsx still exists, but only
+   The pop-up modal in js/login-modal.js still exists, but only
    for the booking and dashboard screens, where logging in has to
    happen without leaving the page.
    ========================================================== */

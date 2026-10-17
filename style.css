@@ -1953,7 +1953,7 @@ ul, ol { padding-left: 0; }
 }
 
 
-/* ---------- Log-in modal (js/login-modal.jsx) ---------- */
+/* ---------- Log-in modal (js/login-modal.js) ---------- */
 body.modal-open { overflow: hidden; }
 
 .modal-backdrop {
@@ -1979,6 +1979,12 @@ body.modal-open { overflow: hidden; }
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     padding: 40px 36px 32px;
+
+    /* fees-calculator.html loads Bootstrap, which also has a .modal class:
+       hidden (display: none), full-screen and clipped. Undo those three. */
+    display: block;
+    height: auto;
+    overflow: visible;
 }
 
 .modal-close {

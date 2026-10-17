@@ -398,10 +398,11 @@
 
 <!-- ==========================================================
      6. APPLICATION FORM
-     NOTE: js/apply-form.jsx (React) renders and validates this form,
-     then posts it to api/apply.php. Validation rules are shared with
-     the rest of the site via js/validators.js, and checked again on
-     the server. Resumes are stored in storage/resumes/.
+     A normal HTML form that posts to apply.php. js/apply-form.js
+     adds the as-you-type checks and the red messages under each
+     field; apply.php checks everything again on the server.
+     Validation rules are shared with the rest of the site via
+     js/validators.js. Resumes are stored in storage/resumes/.
      ========================================================== -->
 <section class="section" id="apply">
     <div class="container">
@@ -415,34 +416,37 @@
             </p>
         </div>
 
-        <!-- js/apply-form.jsx replaces this with the React version, which
-             validates as you go. The plain form below is what shows if
-             JavaScript is off. -->
-        <div id="applyFormRoot">
-        <form class="form-card" action="apply.php" method="post" enctype="multipart/form-data">
+        <!-- novalidate turns off the browser's own pop-up bubbles so
+             js/apply-form.js can show our messages instead. Without
+             JavaScript, apply.php still rejects anything missing. -->
+        <form class="form-card" id="applyForm" action="apply.php" method="post"
+              enctype="multipart/form-data" novalidate>
             <div class="form-grid">
 
                 <!-- Full name -->
                 <div class="form-field">
-                    <label for="fullName">Full Name <span style="color:#c0392b;">*</span></label>
-                    <input type="text" id="fullName" name="fullName" placeholder="e.g. Tan Wei Ling" required>
+                    <label for="fullName">Full Name <span class="required-star">*</span></label>
+                    <input type="text" id="fullName" name="fullName" placeholder="e.g. Tan Wei Ling" maxlength="100">
+                    <span class="field-error" id="fullName-error" role="alert" hidden></span>
                 </div>
 
                 <!-- Email -->
                 <div class="form-field">
-                    <label for="email">Email Address <span style="color:#c0392b;">*</span></label>
-                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                    <label for="email">Email Address <span class="required-star">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" maxlength="255">
+                    <span class="field-error" id="email-error" role="alert" hidden></span>
                 </div>
 
                 <!-- Contact number -->
                 <div class="form-field">
-                    <label for="contact">Contact Number <span style="color:#c0392b;">*</span></label>
-                    <input type="tel" id="contact" name="contact" placeholder="+65 9123 4567" required>
+                    <label for="contact">Contact Number <span class="required-star">*</span></label>
+                    <input type="tel" id="contact" name="contact" placeholder="9123 4567">
+                    <span class="field-error" id="contact-error" role="alert" hidden></span>
                 </div>
 
                 <!-- Position applied for -->
                 <div class="form-field">
-                    <label for="position">Position Applying For</label>
+                    <label for="position">Position Applying For <span class="required-star">*</span></label>
                     <select id="position" name="position">
                         <option value="">-- Please select --</option>
                         <option value="receptionist">Front Desk Receptionist</option>
@@ -451,25 +455,29 @@
                         <option value="hygienist">Dental Hygienist</option>
                         <option value="general">General Application</option>
                     </select>
+                    <span class="field-error" id="position-error" role="alert" hidden></span>
                 </div>
 
                 <!-- Resume upload -->
                 <div class="form-field full">
-                    <label for="resume">Upload Your Resume <span style="color:#c0392b;">*</span></label>
-                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
-                    <span class="form-hint">Accepted formats: PDF, DOC or DOCX. Maximum file size 5 MB.</span>
+                    <label for="resume">Upload Your Resume <span class="required-star">*</span></label>
+                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+                    <span class="form-hint" id="resume-hint">Accepted formats: PDF, DOC or DOCX. Maximum file size 5 MB.</span>
+                    <span class="field-error" id="resume-error" role="alert" hidden></span>
                 </div>
 
                 <!-- Message -->
                 <div class="form-field full">
                     <label for="message">Tell Us About Yourself</label>
                     <textarea id="message" name="message" placeholder="A short note on your experience, what you are looking for, and when you could start."></textarea>
+                    <span class="form-hint" id="message-hint" hidden></span>
+                    <span class="field-error" id="message-error" role="alert" hidden></span>
                 </div>
 
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                <button type="submit" class="btn btn-primary btn-lg btn-block" id="applySubmit">
                     <i class="fa-regular fa-paper-plane"></i> Submit Application
                 </button>
                 <p class="form-note">
@@ -479,7 +487,6 @@
                 </p>
             </div>
         </form>
-        </div>
 
     </div>
 </section>
@@ -643,13 +650,10 @@
 <!-- ==========================================================
      Log in, search and account scripts (shared by every page)
      ========================================================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
 <script src="js/validators.js"></script>
 <script src="js/site.js"></script>
-<script type="text/babel" src="js/login-modal.jsx"></script>
-<script type="text/babel" src="js/apply-form.jsx"></script>
+<script src="js/login-modal.js"></script>
+<script src="js/apply-form.js"></script>
 
 </body>
 </html>

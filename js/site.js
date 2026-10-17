@@ -7,7 +7,7 @@
      5. Navbar: search     – the search box next to the profile icon
 
    Everything is shared through one global object, window.Smile,
-   so the other scripts (booking page, dashboard, React login modal)
+   so the other scripts (booking page, dashboard, login modal)
    can use it.
    ========================================================== */
 
@@ -127,7 +127,7 @@
         const field = input && input.closest('.form-field');
 
         if (field) field.classList.toggle('has-error', !!message);
-        if (input && input.matches('input, select')) {
+        if (input && input.matches('input, select, textarea')) {
             if (message) {
                 input.setAttribute('aria-invalid', 'true');
                 input.setAttribute('aria-describedby', name + '-error');
@@ -187,7 +187,7 @@
         Smile.setPatient(null);
     };
 
-    // The login modal is written in React (js/login-modal.jsx) and loads a
+    // The login modal lives in js/login-modal.js, which loads a
     // moment after this file. Calls made before it is ready wait in a queue.
     //
     // Smile.openLogin({
@@ -236,7 +236,7 @@
     if (accountBtn) {
         // The link already points at dashboard.html. When nobody is logged in
         // we send them to login.php instead — a real page with a real form
-        // that posts to PHP. (The React modal is still used on the booking
+        // that posts to PHP. (The pop-up modal is still used on the booking
         // and dashboard screens, where logging in must not reload the page.)
         accountBtn.addEventListener('click', function (event) {
             if (!accountBtn.classList.contains('is-signed-in')) {

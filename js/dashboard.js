@@ -4,7 +4,7 @@
      • list appointments           → api/appointments.php
      • reschedule an appointment   → api/slots.php + api/reschedule.php
      • cancel an appointment       → api/cancel.php
-   Not logged in? The React login modal opens instead.
+   Not logged in? The login modal opens instead.
    ========================================================== */
 
 (function () {

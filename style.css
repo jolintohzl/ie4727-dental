@@ -91,6 +91,14 @@ a:hover { color: var(--blue-700); }
 
 ul { list-style: none; }
 
+/* fees-calculator.html also loads Bootstrap, whose own reset gives <p> and
+   <ul> spacing of their own. It uses element selectors (p, ul), which outrank
+   the * rule at the top of this file no matter which file loads first, so the
+   spacing is cleared again here by name. Harmless on the pages without
+   Bootstrap — they are already at zero. */
+p, ul, ol, dl, dd, figure, h5, h6 { margin: 0; }
+ul, ol { padding-left: 0; }
+
 .container {
     width: 100%;
     max-width: var(--container);
@@ -121,7 +129,7 @@ ul { list-style: none; }
                 background .2s ease, color .2s ease, border-color .2s ease;
 }
 
-.btn:hover { transform: translateY(-2px); }
+.btn:hover { transform: none; }
 
 .btn-lg    { padding: 15px 32px; font-size: 1rem; }
 .btn-block { width: 100%; }
@@ -134,7 +142,6 @@ ul { list-style: none; }
 .btn-primary:hover {
     background: var(--blue-500);
     color: var(--white);
-    box-shadow: 0 10px 26px rgba(0, 74, 173, 0.35);
 }
 
 .btn-outline {
@@ -341,6 +348,19 @@ ul { list-style: none; }
     margin-left: 6px;
     transition: transform .25s ease;
 }
+
+/* fees-calculator.html loads Bootstrap, which claims the class name
+   .dropdown-toggle and draws a little triangle with ::after. An element
+   has only ONE ::after, so on "Services" that triangle landed on the very
+   same box as the hover underline above — which is why a stray wedge
+   showed up there. Hiding the box would take the underline with it, so
+   only the three properties Bootstrap adds are undone here. We draw our
+   own chevron with the <i> below. */
+.dropdown-toggle::after {
+    border: 0;
+    margin-left: 0;
+    vertical-align: baseline;
+}
 .has-dropdown.open .dropdown-toggle i { 
     transform: rotate(180deg); }
 
@@ -473,16 +493,7 @@ ul { list-style: none; }
     gap: 14px;
 }
 
-.hero-points {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 22px;
-    margin-top: 34px;
-    font-size: .9rem;
-    color: var(--body);
-}
-.hero-points li { display: flex; align-items: center; gap: 8px; }
-.hero-points i  { color: var(--blue-500); }
+
 
 /* --- Hero visual --- */
 .hero-visual { position: relative; }
@@ -554,12 +565,6 @@ ul { list-style: none; }
     border-radius: var(--radius);
     padding: 32px 26px;
     text-align: center;
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-}
-.benefit-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
-    border-color: transparent;
 }
 
 .benefit-icon {
@@ -615,25 +620,6 @@ ul { list-style: none; }
 .why-photo-placeholder p { font-weight: 600; }
 .why-photo-placeholder span { font-size: .8rem; opacity: .75; }
 
-.why-badge {
-    position: absolute;
-    right: -20px;
-    bottom: 32px;
-    background: var(--blue-700);
-    color: var(--white);
-    padding: 20px 24px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    text-align: center;
-}
-.why-badge strong {
-    display: block;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 2rem;
-    line-height: 1;
-}
-.why-badge span { font-size: .8rem; opacity: .85; line-height: 1.4; display: block; margin-top: 6px; }
-
 .why-copy .lead { margin: 18px 0 28px; font-size: 1.05rem; }
 
 .why-list { display: grid; gap: 22px; margin-bottom: 34px; }
@@ -669,12 +655,6 @@ ul { list-style: none; }
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 32px 28px;
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-}
-.service-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
-    border-color: transparent;
 }
 
 .service-icon {
@@ -714,11 +694,6 @@ ul { list-style: none; }
     border: 1px solid var(--line);
     border-radius: var(--radius);
     overflow: hidden;
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-.doctor-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
 }
 
 .doctor-photo,
@@ -784,11 +759,6 @@ ul { list-style: none; }
     display: flex;
     flex-direction: column;
     gap: 16px;
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-.testimonial-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
 }
 
 .stars { color: #f5b942; font-size: .9rem; letter-spacing: 2px; }
@@ -905,11 +875,6 @@ ul { list-style: none; }
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 26px 24px;
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-.info-card:hover { 
-    transform: translateY(-4px); 
-    box-shadow: var(--shadow); 
 }
 
 .info-icon {
@@ -1013,7 +978,7 @@ ul { list-style: none; }
 }
 .social-links a:hover { 
     background: var(--blue-500); 
-    transform: translateY(-3px); 
+    transform: none; 
 }
 
 .footer-links   { 
@@ -1181,7 +1146,59 @@ ul { list-style: none; }
    already exist are added here.
    ========================================================== */
 
-   /* --- locate-us.html --- */
+   /* --- Pages rendered by PHP (apply.php, login.php) --- */
+.login-card { max-width: 440px; text-align: center; }
+.login-card .modal-icon { margin-bottom: 16px; }
+.login-form { text-align: left; margin-top: 22px; }
+.login-form .form-field { margin-bottom: 16px; }
+.login-form .btn { margin-top: 6px; }
+
+.result-card { max-width: 620px; margin: 0 auto; text-align: center; }
+.result-card h1 { font-size: 1.6rem; margin-bottom: 14px; }
+.result-card p  { margin-bottom: 16px; }
+.result-card .btn { margin-top: 8px; }
+
+.result-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+.result-icon.success { background: var(--success-bg); color: var(--success); }
+.result-icon.error   { background: var(--danger-bg);  color: var(--danger); }
+
+.result-errors {
+    list-style: disc;
+    text-align: left;
+    margin: 0 auto 22px;
+    padding-left: 22px;
+    max-width: 420px;
+    color: var(--danger);
+    font-size: .95rem;
+}
+.result-errors li { margin-bottom: 6px; }
+
+/* the reference / position summary on the confirmation page */
+.result-facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 18px;
+    text-align: left;
+    max-width: 420px;
+    margin: 0 auto 22px;
+    padding: 18px 20px;
+    background: var(--blue-50);
+    border-radius: var(--radius-sm);
+    font-size: .95rem;
+}
+.result-facts dt { font-weight: 700; color: var(--ink); }
+.result-facts dd { color: var(--body); }
+
+
+/* --- locate-us.html --- */
 .location-card {
     background: var(--white);
     border: 1px solid var(--line);
@@ -1191,11 +1208,6 @@ ul { list-style: none; }
        even when one branch has a longer address than another */
     display: flex;
     flex-direction: column;
-    transition: transform .25s ease, box-shadow .25s ease;
-}
-.location-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
 }
 
 /* works for the placeholder picture and for a Google Maps iframe */
@@ -1314,6 +1326,99 @@ ul { list-style: none; }
 .calc-disclaimer i { color: var(--blue-500); margin-top: 3px; }
 
 
+/* --- fees-calculator.html: the full price list table --- */
+
+.price-list { background: var(--off-white); }
+
+/* The table itself is drawn by Bootstrap. The rules below only put it in
+   our own colours and typeface. Bootstrap 5 reads these --bs-table-*
+   variables when it shades rows, so setting them is tidier than trying to
+   override its striping rules one by one. */
+.price-table {
+    --bs-table-bg:           var(--white);
+    --bs-table-striped-bg:   var(--blue-50);
+    --bs-table-hover-bg:     var(--blue-100);
+    --bs-table-border-color: var(--line);
+    margin-bottom: 0;
+    font-size: .93rem;
+}
+
+/* The rounded border sits on the scrolling wrapper, not the table —
+   a table cannot clip its own corners reliably. */
+.price-list .table-responsive {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+/* Bootstrap sets cell padding with a selector of the same weight as this
+   one. style.css is loaded second, so these win. */
+.price-table th,
+.price-table td {
+    padding: 13px 16px;
+    white-space: nowrap;
+}
+
+.price-table thead th {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--blue-700);
+    border-bottom: none;
+}
+
+/* The treatment name is a <th> too, so it needs heading styling back */
+.price-table tbody th {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .93rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* Money reads better right-aligned, and tabular-nums keeps the digits in
+   straight columns */
+.price-table tbody td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Each heading has to sit the same way as the figures underneath it,
+   otherwise "Clinic fee" hugs the left while $45.00 hugs the right.
+   Column 1 (Treatment) stays left; the money columns go right; the
+   tick / cross column is centred. */
+.price-table thead th:not(:first-child) { text-align: right; }
+
+/* last column holds the tick or the cross */
+.price-table tbody td:last-child,
+.price-table thead th:last-child { text-align: center; }
+
+.price-table .price-none { color: var(--muted); }
+
+/* tick = this scheme can be used, cross = it cannot.
+   Deliberately brighter than --success / --danger so the column can be
+   read at a glance. */
+.price-table .price-yes { color: #16a34a; }   /* bright green */
+.price-table .price-no  { color: #e02424; }   /* bright red   */
+
+
+
+
+/* Tighter on a phone. The table keeps its full width and scrolls sideways
+   inside .table-responsive rather than squashing the columns.
+   This sits directly beneath the rules it overrides — the same media query
+   placed up in section 11 would lose to them. */
+@media (max-width: 768px) {
+    .price-table { font-size: .88rem; }
+    .price-table th,
+    .price-table td { padding: 11px 13px; }
+    .price-table thead th { font-size: .7rem; }
+    .price-table tbody th { font-size: .88rem; }
+}
+
+
 /* --- services.html: picture beside the description --- */
 
 /* every second service swaps the picture to the right-hand side */
@@ -1424,11 +1529,6 @@ ul { list-style: none; }
     grid-template-columns: 1fr auto;
     gap: 24px;
     align-items: center;
-    transition: box-shadow .25s ease, border-color .25s ease;
-}
-.job-card:hover {
-    box-shadow: var(--shadow);
-    border-color: transparent;
 }
 
 .job-card h3 { margin-bottom: 12px; }
@@ -1852,7 +1952,7 @@ ul { list-style: none; }
 }
 
 
-/* ---------- Log-in modal (js/login-modal.jsx) ---------- */
+/* ---------- Log-in modal (js/login-modal.js) ---------- */
 body.modal-open { overflow: hidden; }
 
 .modal-backdrop {
@@ -1878,6 +1978,12 @@ body.modal-open { overflow: hidden; }
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     padding: 40px 36px 32px;
+
+    /* fees-calculator.html loads Bootstrap, which also has a .modal class:
+       hidden (display: none), full-screen and clipped. Undo those three. */
+    display: block;
+    height: auto;
+    overflow: visible;
 }
 
 .modal-close {
@@ -2639,6 +2745,12 @@ body.modal-open { overflow: hidden; }
     border-color: var(--blue-500);
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
+}
+/* The thank-you box (apply / booking result pages) is not a link, so no hover */
+.form-card.result-card:hover {
+    border-color: var(--line);
+    transform: none;
+    box-shadow: var(--shadow);
 }
 .result-page {
     font-size: .75rem;

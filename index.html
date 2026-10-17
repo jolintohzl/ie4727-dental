@@ -28,9 +28,7 @@
     <div class="nav-top">
         <div class="container nav-top-inner">
 
-            <!-- Logo (left).
-                 TO REPLACE: put your PNG at images/logo.png
-                 The text next to it is the fallback / wordmark. -->
+            <!-- Logo (left). -->
             <a href="index.html" class="logo">
                 <img src="images/dental group.png" alt="Smile Dental Group logo" class="logo-img">
                 <span class="logo-text">
@@ -41,8 +39,8 @@
 
             <!-- Icons + main call-to-action (right) -->
             <div class="nav-actions">
-                <!-- Search box (sends ?q= to search.html) -->
-                <form class="nav-search" action="search.html" method="get" role="search">
+                <!-- Search box (sends ?q= to search.php) -->
+                <form class="nav-search" action="search.php" method="get" role="search">
                     <input type="search" name="q" placeholder="Search the site…"
                            aria-label="Search the website" autocomplete="off" maxlength="80">
                     <button type="submit" aria-label="Search">
@@ -72,7 +70,7 @@
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
             <!-- phones only: the top row has no room for the search box -->
-            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+            <form class="nav-search nav-search-mobile" action="search.php" method="get" role="search">
                 <input type="search" name="q" placeholder="Search the site…"
                        aria-label="Search the website" autocomplete="off" maxlength="80">
                 <button type="submit" aria-label="Search">
@@ -132,12 +130,7 @@
                 </a>
             </div>
 
-            <!-- Small reassurance strip -->
-            <ul class="hero-points">
-                <li><i class="fa-solid fa-circle-check"></i> Same-day emergency slots</li>
-                <li><i class="fa-solid fa-circle-check"></i> Transparent pricing</li>
-                <li><i class="fa-solid fa-circle-check"></i> Open 7 days</li>
-            </ul>
+            
         </div>
 
         
@@ -202,10 +195,7 @@
              TO REPLACE: <img src="images/team.jpg" alt="Our team" class="why-photo"> -->
         <div class="why-visual">
             <img src="images/dental team.png" alt="Our Team" class="why-photo">
-            <div class="why-badge">
-                <strong>20+</strong>
-                <span>Years serving<br>our community</span>
-            </div>
+            
         </div>
 
         <!-- Right: reasons -->
@@ -783,12 +773,9 @@
 <!-- ==========================================================
      Log in, search and account scripts (shared by every page)
      ========================================================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
 <script src="js/validators.js"></script>
 <script src="js/site.js"></script>
-<script type="text/babel" src="js/login-modal.jsx"></script>
+<script src="js/login-modal.js"></script>
 
 </body>
 </html>

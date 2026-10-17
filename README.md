@@ -21,7 +21,7 @@ If your MySQL user or password is not XAMPP's default (`root`, no password), cha
 | Feature | Page | Front end | Server |
 | --- | --- | --- | --- |
 | Search icon | `search.html` | `js/search.js` — reads the site's own pages and ranks matches | none (no database) |
-| Profile icon → log-in modal | every page | `js/login-modal.jsx` (React, via CDN + Babel) | `api/login.php`, `api/session.php` |
+| Profile icon → log-in modal | every page | `js/login-modal.js` | `api/login.php`, `api/session.php` |
 | Account dashboard | `dashboard.html` | `js/dashboard.js` | `api/profile.php`, `api/appointments.php`, `api/reschedule.php`, `api/cancel.php`, `api/logout.php` |
 | Book Appointment | `appointment.html` | `js/appointment.js` | `api/options.php`, `api/slots.php`, `api/book.php`, `api/draft.php` (saves progress) |
 

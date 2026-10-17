@@ -1,5 +1,5 @@
 /* ==========================================================
-   Form validation rules — shared by the login modal (React),
+   Form validation rules — shared by the login modal,
    the booking page and the dashboard.
 
    Every rule takes the field's value and returns an error message,

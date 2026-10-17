@@ -1,10 +1,12 @@
 <?php
-/* POST api/apply.php   (multipart/form-data — it carries a file)
+/* POST apply.php   (multipart/form-data — it carries a file)
    fullName, email, contact, position, message, resume
 
-   Takes the careers form on about-us.html: checks everything again on the
-   server, saves the resume to storage/resumes/ under a random name, records
-   the application, and emails the applicant a confirmation.
+   The careers form on about-us.html posts straight here with a normal HTML
+   form action — no JavaScript involved in the submission. This script checks
+   everything, saves the resume to storage/resumes/ under a random name,
+   records the application, emails the applicant, then RENDERS the outcome
+   as an HTML page.
 
    The rules here deliberately mirror js/validators.js. Anything in the
    browser can be bypassed, so the browser copy is a convenience and this
@@ -15,11 +17,12 @@
    that protection does not apply here. The worst a forged post can do is
    lodge a junk application — no login state changes — but if this ever holds
    anything sensitive, add a token. */
-require __DIR__ . '/bootstrap.php';
-require __DIR__ . '/mail.php';
+require __DIR__ . '/api/bootstrap.php';
+require __DIR__ . '/api/mail.php';
+require __DIR__ . '/includes/result-page.php';
 require_method('POST');
 
-const RESUME_DIR       = __DIR__ . '/../storage/resumes';
+const RESUME_DIR       = __DIR__ . '/storage/resumes';
 const RESUME_MAX_BYTES = 5 * 1024 * 1024;              // 5 MB, as the form says
 const RESUME_TYPES     = ['pdf', 'doc', 'docx'];
 const CAREERS_INBOX    = 'careers@smiledental.local';
@@ -39,8 +42,26 @@ const POSITIONS = [
    reports nothing at all. Without this check the user would be told their
    name is missing, which is baffling. */
 if (!$_POST && !$_FILES && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
-    fail('That upload was too large for the server to accept.', 413,
-         ['resume' => 'Resume must be 5 MB or smaller.']);
+    show_errors(['That upload was too large for the server to accept. Resumes must be 5 MB or smaller.'], 413);
+}
+
+/* Renders the list of problems and stops. The /api endpoints answer a
+   fetch() call with JSON; this script answers a browser, so it draws a page. */
+function show_errors(array $errors, int $status = 422)
+{
+    $items = '';
+    foreach ($errors as $message) {
+        $items .= '<li>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</li>';
+    }
+    render_result_page(
+        'Please check your application',
+        'error',
+        '<p>We could not accept the form because of the following:</p>'
+        . '<ul class="result-errors">' . $items . '</ul>'
+        . '<p><a href="about-us.html#apply" class="btn btn-primary btn-lg">'
+        . '<i class="fa-solid fa-arrow-left"></i> Back to the form</a></p>',
+        $status
+    );
 }
 
 
@@ -109,7 +130,7 @@ if (!$file || !is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPL
 }
 
 if ($errors) {
-    fail('Please fix the highlighted fields.', 422, $errors);
+    show_errors($errors);
 }
 
 
@@ -118,11 +139,11 @@ if ($errors) {
    filesystem, and two people uploading "cv.pdf" cannot collide. */
 if (!is_dir(RESUME_DIR) && !@mkdir(RESUME_DIR, 0775, true)) {
     error_log('[apply] cannot create ' . RESUME_DIR);
-    fail('We could not store your resume. Please try again later.', 500);
+    show_errors(['We could not store your resume. Please try again later.'], 500);
 }
 if (!is_writable(RESUME_DIR)) {
     error_log('[apply] ' . RESUME_DIR . ' is not writable by ' . (get_current_user() ?: 'the web server'));
-    fail('We could not store your resume. Please try again later.', 500);
+    show_errors(['We could not store your resume. Please try again later.'], 500);
 }
 
 $storedName = date('Ymd-His') . '-' . bin2hex(random_bytes(8)) . '.' . $extension;
@@ -130,7 +151,7 @@ $storedPath = RESUME_DIR . '/' . $storedName;
 
 if (!move_uploaded_file($file['tmp_name'], $storedPath)) {
     error_log('[apply] move_uploaded_file failed for ' . $storedName);
-    fail('We could not store your resume. Please try again later.', 500);
+    show_errors(['We could not store your resume. Please try again later.'], 500);
 }
 @chmod($storedPath, 0640);
 
@@ -167,7 +188,21 @@ try {
 $reference = 'SDG-APP-' . str_pad((string) $applicationId, 5, '0', STR_PAD_LEFT);
 send_application_emails($clean, POSITIONS[$clean['position']], $reference, $file['name'], CAREERS_INBOX);
 
-respond([
-    'reference' => $reference,
-    'position'  => POSITIONS[$clean['position']],
-], 201);
+$name     = htmlspecialchars($clean['fullName'], ENT_QUOTES, 'UTF-8');
+$role     = htmlspecialchars(POSITIONS[$clean['position']], ENT_QUOTES, 'UTF-8');
+$mailedTo = htmlspecialchars($clean['email'], ENT_QUOTES, 'UTF-8');
+
+render_result_page(
+    'Application received',
+    'success',
+    "<p>Thank you, {$name}. Your application for <strong>{$role}</strong> has reached us.</p>"
+    . '<dl class="result-facts">'
+    . "<dt>Reference</dt><dd>{$reference}</dd>"
+    . "<dt>Position</dt><dd>{$role}</dd>"
+    . "<dt>Confirmation sent to</dt><dd>{$mailedTo}</dd>"
+    . '</dl>'
+    . '<p>We reply to every applicant within 5 working days.</p>'
+    . '<p><a href="about-us.html" class="btn btn-primary btn-lg">'
+    . '<i class="fa-solid fa-arrow-left"></i> Back to About Us</a></p>',
+    201
+);

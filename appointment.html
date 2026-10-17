@@ -37,8 +37,8 @@
             </a>
 
             <div class="nav-actions">
-                <!-- Search box (sends ?q= to search.html) -->
-                <form class="nav-search" action="search.html" method="get" role="search">
+                <!-- Search box (sends ?q= to search.php) -->
+                <form class="nav-search" action="search.php" method="get" role="search">
                     <input type="search" name="q" placeholder="Search the site…"
                            aria-label="Search the website" autocomplete="off" maxlength="80">
                     <button type="submit" aria-label="Search">
@@ -68,7 +68,7 @@
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
             <!-- phones only: the top row has no room for the search box -->
-            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+            <form class="nav-search nav-search-mobile" action="search.php" method="get" role="search">
                 <input type="search" name="q" placeholder="Search the site…"
                        aria-label="Search the website" autocomplete="off" maxlength="80">
                 <button type="submit" aria-label="Search">
@@ -529,12 +529,9 @@
 <!-- ==========================================================
      Log in, search and account scripts (shared by every page)
      ========================================================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
 <script src="js/validators.js"></script>
 <script src="js/site.js"></script>
-<script type="text/babel" src="js/login-modal.jsx"></script>
+<script src="js/login-modal.js"></script>
 <script src="js/appointment.js"></script>
 
 </body>

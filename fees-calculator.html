@@ -13,6 +13,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Bootstrap 5.3 (CSS only) — used for the price list table lower down.
+         Version 5 needs no jQuery, unlike Bootstrap 4.
+         It is loaded BEFORE style.css on purpose: where both files style the
+         same class name (.container, .btn, .modal) the later file wins, so our
+         own look is kept and only the table picks up Bootstrap's styling. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
     <!-- stylesheet shared with index.html -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -37,8 +44,8 @@
             </a>
 
             <div class="nav-actions">
-                <!-- Search box (sends ?q= to search.html) -->
-                <form class="nav-search" action="search.html" method="get" role="search">
+                <!-- Search box (sends ?q= to search.php) -->
+                <form class="nav-search" action="search.php" method="get" role="search">
                     <input type="search" name="q" placeholder="Search the site…"
                            aria-label="Search the website" autocomplete="off" maxlength="80">
                     <button type="submit" aria-label="Search">
@@ -68,7 +75,7 @@
     <nav class="nav-bottom" id="mainNav">
         <div class="container">
             <!-- phones only: the top row has no room for the search box -->
-            <form class="nav-search nav-search-mobile" action="search.html" method="get" role="search">
+            <form class="nav-search nav-search-mobile" action="search.php" method="get" role="search">
                 <input type="search" name="q" placeholder="Search the site…"
                        aria-label="Search the website" autocomplete="off" maxlength="80">
                 <button type="submit" aria-label="Search">
@@ -117,8 +124,10 @@
 
 <!-- ==========================================================
      2. THE CALCULATOR
-     The prices and subsidy rates all live in one place, in the
-     script at the bottom of this page. Update them there.
+     The choices and the estimate panel are written below;
+     js/fees-calculator.js fills in the treatment and scheme lists
+     and works out the estimate. That file also holds the price
+     list and the subsidy rates — update them there.
      ========================================================== -->
 <section class="section" id="calculator">
     <div class="container">
@@ -216,6 +225,157 @@
                 on the amounts shown here. Your final bill is confirmed at your appointment.
             </span>
         </p>
+
+    </div>
+</section>
+
+
+<!-- ==========================================================
+     3. FULL PRICE LIST
+     The calculator above answers one question at a time. This
+     table shows every treatment at once so the figures can be
+     compared side by side.
+
+     The look comes from Bootstrap's table classes (see the
+     Bootstrap link in <head>):
+       .table             the base table styling
+       .table-striped     shades every other row
+       .table-hover       highlights the row under the pointer
+       .align-middle      centres the text in each cell vertically
+       .table-responsive  on the wrapper, lets the table scroll
+                          sideways on a phone instead of squashing
+       .visually-hidden   gives the tick / cross a word a screen
+                          reader can announce
+
+     NOTE: these are the same numbers held in js/fees-calculator.js.
+     If a price changes, update it in BOTH places.
+     ========================================================== -->
+<section class="section price-list" id="price-list">
+    <div class="container">
+
+        <div class="section-head">
+            <p class="section-label">For reference</p>
+            <h2>Full price list</h2>
+            <p class="section-sub">
+                Every treatment we offer, with the subsidy each scheme covers.
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle price-table">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Treatment</th>
+                        <th scope="col">Clinic fee</th>
+                        <th scope="col">CHAS Blue</th>
+                        <th scope="col">CHAS Orange</th>
+                        <th scope="col">MediSave</th>
+                        <th scope="col">Flexi-MediSave</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                        <tr>
+                            <th scope="row">Consultation &amp; Check-up</th>
+                            <td>$45.00</td>
+                            <td>$11.50</td>
+                            <td>$8.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Scaling &amp; Polishing</th>
+                            <td>$110.00</td>
+                            <td>$50.50</td>
+                            <td>$25.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Filling</th>
+                            <td>$140.00</td>
+                            <td>$75.50</td>
+                            <td>$52.50</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Simple Extraction</th>
+                            <td>$130.00</td>
+                            <td>$75.50</td>
+                            <td>$52.50</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Surgical Extraction (wisdom tooth)</th>
+                            <td>$1,200.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td>$950.00</td>
+                            <td><i class="fa-solid fa-xmark price-no" aria-hidden="true"></i><span class="visually-hidden">No</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Root Canal Treatment</th>
+                            <td>$1,100.00</td>
+                            <td>$170.00</td>
+                            <td>$100.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dental Crown</th>
+                            <td>$1,300.00</td>
+                            <td>$190.00</td>
+                            <td>$130.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dental Bridge (3 units)</th>
+                            <td>$2,400.00</td>
+                            <td>$190.00</td>
+                            <td>$130.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dental Implant</th>
+                            <td>$4,500.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td>$1,150.00</td>
+                            <td><i class="fa-solid fa-xmark price-no" aria-hidden="true"></i><span class="visually-hidden">No</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Full Denture (per arch)</th>
+                            <td>$1,200.00</td>
+                            <td>$260.00</td>
+                            <td>$190.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Partial Denture</th>
+                            <td>$700.00</td>
+                            <td>$150.00</td>
+                            <td>$110.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-check price-yes" aria-hidden="true"></i><span class="visually-hidden">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Braces / Invisalign</th>
+                            <td>$5,500.00</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td class="price-none">&mdash;</td>
+                            <td><i class="fa-solid fa-xmark price-no" aria-hidden="true"></i><span class="visually-hidden">No</span></td>
+                        </tr>
+                </tbody>
+
+            </table>
+        </div>
 
     </div>
 </section>
@@ -381,282 +541,14 @@
 <!-- ==========================================================
      CALCULATOR SCRIPT
      ========================================================== -->
-<script>
-(function () {
-
-    /* ----------------------------------------------------------
-       1. THE PRICE LIST
-       One entry per treatment. Update the numbers here and the
-       whole calculator follows.
-
-         price      what the clinic charges, in SGD
-         chasBlue   dollars off for a CHAS Blue cardholder
-         chasOrange dollars off for a CHAS Orange cardholder
-         medisave   most you may withdraw from MediSave (0 = not claimable;
-                    MediSave only covers surgical dental work)
-         flexi      true if Flexi-MediSave can be used on it
-       ---------------------------------------------------------- */
-    const TREATMENTS = [
-        { id: "consult",   name: "Consultation & Check-up",      price: 45,   chasBlue: 11.5, chasOrange: 8,   medisave: 0,    flexi: true  },
-        { id: "scaling",   name: "Scaling & Polishing",          price: 110,  chasBlue: 50.5, chasOrange: 25,  medisave: 0,    flexi: true  },
-        { id: "filling",   name: "Filling",                      price: 140,  chasBlue: 75.5, chasOrange: 52.5, medisave: 0,   flexi: true  },
-        { id: "extract",   name: "Simple Extraction",            price: 130,  chasBlue: 75.5, chasOrange: 52.5, medisave: 0,   flexi: true  },
-        { id: "surgical",  name: "Surgical Extraction (wisdom tooth)", price: 1200, chasBlue: 0, chasOrange: 0, medisave: 950, flexi: false },
-        { id: "rootcanal", name: "Root Canal Treatment",         price: 1100, chasBlue: 170,  chasOrange: 100, medisave: 0,    flexi: true  },
-        { id: "crown",     name: "Dental Crown",                 price: 1300, chasBlue: 190,  chasOrange: 130, medisave: 0,    flexi: true  },
-        { id: "bridge",    name: "Dental Bridge (3 units)",      price: 2400, chasBlue: 190,  chasOrange: 130, medisave: 0,    flexi: true  },
-        { id: "implant",   name: "Dental Implant",               price: 4500, chasBlue: 0,    chasOrange: 0,   medisave: 1150, flexi: false },
-        { id: "denturef",  name: "Full Denture (per arch)",      price: 1200, chasBlue: 260,  chasOrange: 190, medisave: 0,    flexi: true  },
-        { id: "denturep",  name: "Partial Denture",              price: 700,  chasBlue: 150,  chasOrange: 110, medisave: 0,    flexi: true  },
-        { id: "braces",    name: "Braces / Invisalign",          price: 5500, chasBlue: 0,    chasOrange: 0,   medisave: 0,    flexi: false }
-    ];
-
-    /* ----------------------------------------------------------
-       2. THE SCHEMES
-       "ages" lists the age groups that may pick each scheme.
-       ---------------------------------------------------------- */
-    const FLEXI_CAP = 200;   // Flexi-MediSave allows up to $200 a year
-
-    const SCHEMES = [
-        { id: "none",        name: "No scheme (pay in full)",
-          ages: ["under21", "21to59", "60to64", "65plus"],
-          hint: "The full clinic fee, with nothing deducted." },
-
-        { id: "chasBlue",    name: "CHAS Blue",
-          ages: ["under21", "21to59", "60to64", "65plus"],
-          hint: "For lower-income households. The higher of the two CHAS subsidy tiers." },
-
-        { id: "chasOrange",  name: "CHAS Orange",
-          ages: ["under21", "21to59", "60to64", "65plus"],
-          hint: "For middle-income households. Covers dental and chronic conditions only." },
-
-        { id: "merdeka",     name: "Merdeka Generation",
-          ages: ["65plus"],
-          hint: "Merdeka Generation cardholders receive more than the CHAS Blue rate." },
-
-        { id: "pioneer",     name: "Pioneer Generation",
-          ages: ["65plus"],
-          hint: "Pioneer Generation cardholders receive the highest rate of subsidy." },
-
-        { id: "medisave",    name: "MediSave",
-          ages: ["21to59", "60to64", "65plus"],
-          hint: "Only for surgical procedures such as implants and surgical extractions." },
-
-        { id: "flexi",       name: "Flexi-MediSave",
-          ages: ["60to64", "65plus"],
-          hint: "From age 60 you may use up to $" + FLEXI_CAP + " of MediSave a year on outpatient treatment." }
-    ];
-
-    /* Merdeka and Pioneer build on the CHAS Blue rate.
-       Adjust these two multipliers if the published rates change. */
-    const MERDEKA_MULTIPLIER = 1.25;
-    const PIONEER_MULTIPLIER = 1.50;
-
-
-    /* ---------- Grab the elements once ---------- */
-    const serviceSelect = document.getElementById("service");
-    const ageSelect     = document.getElementById("ageGroup");
-    const schemeSelect  = document.getElementById("scheme");
-    const serviceHint   = document.getElementById("serviceHint");
-    const schemeHint    = document.getElementById("schemeHint");
-
-    const outTreatment  = document.getElementById("outTreatment");
-    const outPrice      = document.getElementById("outPrice");
-    const outSubsidy    = document.getElementById("outSubsidy");
-    const outTotal      = document.getElementById("outTotal");
-    const outMessage    = document.getElementById("outMessage");
-    const outSchemeLabel = document.getElementById("outSchemeLabel");
-
-
-    /* ---------- Fill the treatment dropdown from the list above ---------- */
-    TREATMENTS.forEach(function (t) {
-        const option = document.createElement("option");
-        option.value = t.id;
-        option.textContent = t.name + " — " + money(t.price);
-        serviceSelect.appendChild(option);
-    });
-
-
-    /* Show money the same way everywhere: $1,234.50 */
-    function money(amount) {
-        return "$" + amount.toLocaleString("en-SG", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-
-    function findTreatment(id) {
-        return TREATMENTS.filter(function (t) { return t.id === id; })[0];
-    }
-
-    function findScheme(id) {
-        return SCHEMES.filter(function (s) { return s.id === id; })[0];
-    }
-
-
-    /* ----------------------------------------------------------
-       Work out the subsidy for one treatment under one scheme.
-       Returns the dollar amount and a line explaining it.
-       ---------------------------------------------------------- */
-    function calculateSubsidy(treatment, schemeId) {
-        let amount = 0;
-        let note = "";
-
-        if (schemeId === "chasBlue") {
-            amount = treatment.chasBlue;
-            note = amount > 0
-                ? "CHAS Blue covers " + money(amount) + " of this treatment."
-                : "CHAS does not cover this treatment.";
-
-        } else if (schemeId === "chasOrange") {
-            amount = treatment.chasOrange;
-            note = amount > 0
-                ? "CHAS Orange covers " + money(amount) + " of this treatment."
-                : "CHAS does not cover this treatment.";
-
-        } else if (schemeId === "merdeka" || schemeId === "pioneer") {
-            const multiplier = (schemeId === "pioneer") ? PIONEER_MULTIPLIER : MERDEKA_MULTIPLIER;
-            amount = treatment.chasBlue * multiplier;
-            note = amount > 0
-                ? "You receive the CHAS Blue rate plus the extra "
-                  + (schemeId === "pioneer" ? "Pioneer" : "Merdeka") + " Generation subsidy."
-                : "This treatment is not on the subsidised list.";
-
-        } else if (schemeId === "medisave") {
-            if (treatment.medisave > 0) {
-                amount = treatment.medisave;
-                note = "MediSave covers up to " + money(treatment.medisave)
-                     + " of this procedure. The rest is paid in cash.";
-            } else {
-                note = "MediSave can only be used for surgical procedures, so it does "
-                     + "not apply to this treatment.";
-            }
-
-        } else if (schemeId === "flexi") {
-            if (treatment.flexi) {
-                amount = FLEXI_CAP;
-                note = "Flexi-MediSave covers up to " + money(FLEXI_CAP)
-                     + " a year towards outpatient treatment.";
-            } else {
-                note = "Flexi-MediSave is for routine outpatient treatment and does not "
-                     + "apply to this procedure.";
-            }
-
-        } else {
-            note = "No scheme applied — this is the full clinic fee.";
-        }
-
-        // round to whole cents first, otherwise the subsidy and the amount
-        // payable can display as a cent more than the fee they came from
-        amount = Math.round(amount * 100) / 100;
-
-        // never give back more than the treatment costs
-        if (amount > treatment.price) {
-            amount = treatment.price;
-            note += " The subsidy is capped at the cost of the treatment.";
-        }
-
-        return { amount: amount, note: note };
-    }
-
-
-    /* ----------------------------------------------------------
-       Rebuild the scheme dropdown whenever the age group changes,
-       so only the schemes that person can hold are offered.
-       ---------------------------------------------------------- */
-    function refreshSchemes() {
-        const age = ageSelect.value;
-        const previous = schemeSelect.value;
-
-        schemeSelect.innerHTML = "";
-
-        if (!age) {
-            schemeSelect.disabled = true;
-            schemeSelect.innerHTML = '<option value="">-- Choose an age group first --</option>';
-            schemeHint.textContent = "";
-            return;
-        }
-
-        schemeSelect.disabled = false;
-        const placeholder = document.createElement("option");
-        placeholder.value = "";
-        placeholder.textContent = "-- Please select a scheme --";
-        schemeSelect.appendChild(placeholder);
-
-        SCHEMES.forEach(function (s) {
-            if (s.ages.indexOf(age) === -1) { return; }
-            const option = document.createElement("option");
-            option.value = s.id;
-            option.textContent = s.name;
-            schemeSelect.appendChild(option);
-        });
-
-        // keep the previous choice if it is still allowed at this age
-        schemeSelect.value = previous;
-        updateSchemeHint();
-    }
-
-    function updateSchemeHint() {
-        const scheme = findScheme(schemeSelect.value);
-        schemeHint.textContent = scheme ? scheme.hint : "";
-    }
-
-
-    /* ---------- Redraw the estimate panel ---------- */
-    function updateEstimate() {
-        const treatment = findTreatment(serviceSelect.value);
-        const scheme    = findScheme(schemeSelect.value);
-
-        serviceHint.textContent = treatment
-            ? "Clinic fee for this treatment: " + money(treatment.price)
-            : "";
-
-        // nothing to show until all three questions are answered
-        if (!treatment || !ageSelect.value || !scheme) {
-            outTreatment.innerHTML = "&mdash;";
-            outPrice.innerHTML     = "&mdash;";
-            outSubsidy.innerHTML   = "&mdash;";
-            outTotal.innerHTML     = "&mdash;";
-            outSchemeLabel.textContent = "Subsidy applied";
-            outMessage.textContent = "Choose a treatment, an age group and a scheme to see your estimate.";
-            return;
-        }
-
-        const subsidy = calculateSubsidy(treatment, scheme.id);
-        const payable = treatment.price - subsidy.amount;
-
-        outTreatment.textContent   = treatment.name;
-        outPrice.textContent       = money(treatment.price);
-        outSchemeLabel.textContent = scheme.id === "none" ? "Subsidy applied" : scheme.name;
-        outSubsidy.textContent     = subsidy.amount > 0 ? "− " + money(subsidy.amount) : money(0);
-        outTotal.textContent       = money(payable);
-        outMessage.textContent     = subsidy.note;
-    }
-
-
-    /* ---------- Wire the three dropdowns up ---------- */
-    ageSelect.addEventListener("change", function () {
-        refreshSchemes();
-        updateEstimate();
-    });
-    serviceSelect.addEventListener("change", updateEstimate);
-    schemeSelect.addEventListener("change", function () {
-        updateSchemeHint();
-        updateEstimate();
-    });
-
-})();
-</script>
 
 <!-- ==========================================================
      Log in, search and account scripts (shared by every page)
      ========================================================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js"></script>
 <script src="js/validators.js"></script>
 <script src="js/site.js"></script>
-<script type="text/babel" src="js/login-modal.jsx"></script>
+<script src="js/login-modal.js"></script>
+<script src="js/fees-calculator.js"></script>
 
 </body>
 </html>

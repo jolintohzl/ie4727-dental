@@ -129,7 +129,7 @@ ul, ol { padding-left: 0; }
                 background .2s ease, color .2s ease, border-color .2s ease;
 }
 
-.btn:hover { transform: translateY(-2px); }
+.btn:hover { transform: none; }
 
 .btn-lg    { padding: 15px 32px; font-size: 1rem; }
 .btn-block { width: 100%; }
@@ -142,7 +142,6 @@ ul, ol { padding-left: 0; }
 .btn-primary:hover {
     background: var(--blue-500);
     color: var(--white);
-    box-shadow: 0 10px 26px rgba(0, 74, 173, 0.35);
 }
 
 .btn-outline {
@@ -979,7 +978,7 @@ ul, ol { padding-left: 0; }
 }
 .social-links a:hover { 
     background: var(--blue-500); 
-    transform: translateY(-3px); 
+    transform: none; 
 }
 
 .footer-links   { 
@@ -2746,6 +2745,12 @@ body.modal-open { overflow: hidden; }
     border-color: var(--blue-500);
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
+}
+/* The thank-you box (apply / booking result pages) is not a link, so no hover */
+.form-card.result-card:hover {
+    border-color: var(--line);
+    transform: none;
+    box-shadow: var(--shadow);
 }
 .result-page {
     font-size: .75rem;

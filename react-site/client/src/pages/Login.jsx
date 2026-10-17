@@ -1,6 +1,8 @@
 /* Patient log-in page (React version of login.php). */
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { api } from '../api'
+import { useAuth } from '../auth'
 import Validators from '../validators'
 
 export default function Login() {
@@ -8,8 +10,11 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
   const [message, setMessage] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const { setPatient } = useAuth()
+  const navigate = useNavigate()
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     const found = Validators.check({ email, password }, {
       email: Validators.email,
@@ -18,8 +23,19 @@ export default function Login() {
     setErrors(found)
     if (Object.keys(found).length > 0) return
 
-    // TODO (step 2 of the project): POST to the Express API, then go to /dashboard.
-    setMessage('Logging in is not connected to the server yet.')
+    setSubmitting(true)
+    setMessage('')
+    try {
+      const data = await api('login', { body: { email: email.trim(), password } })
+      setPatient(data.patient)
+      navigate('/dashboard')
+    } catch (error) {
+      setMessage(error.message)
+      setErrors(error.fields)
+      setPassword('')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -52,7 +68,9 @@ export default function Login() {
               {errors.password && <span className="field-error">{errors.password}</span>}
             </div>
 
-            <button type="submit" className="btn btn-primary btn-lg btn-block">Log in</button>
+            <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={submitting}>
+              {submitting ? <><i className="fa-solid fa-spinner fa-spin"></i> Logging in…</> : 'Log in'}
+            </button>
           </form>
 
           <p className="modal-foot">

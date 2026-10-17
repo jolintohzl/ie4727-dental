@@ -8,6 +8,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Validators from '../validators'
+import { api } from '../api'
 
 const APPLY_RULES = {
     fullName: Validators.name,
@@ -51,6 +52,8 @@ export default function ApplyForm() {
     const [values, setValues]   = useState(blank);
     const [touched, setTouched] = useState({});     // fields the user has left
     const [submitting, setSubmitting] = useState(false);
+    const [serverError, setServerError] = useState('');
+    const [serverFields, setServerFields] = useState({});   // e.g. { email: '...' } from the server
     const navigate = useNavigate();
 
     const refs = {
@@ -66,17 +69,18 @@ export default function ApplyForm() {
     // has been visited — nobody wants to be told the name is wrong
     // before they have finished typing it.
     const errors = Validators.check(values, APPLY_RULES);
-    const showError = (field) => (touched[field] ? errors[field] : '');
+    const showError = (field) => (touched[field] ? errors[field] : '') || serverFields[field] || '';
 
     function update(field, value) {
         setValues((prev) => ({ ...prev, [field]: value }));
+        setServerFields((prev) => ({ ...prev, [field]: '' }));
     }
 
     function markTouched(field) {
         setTouched((prev) => ({ ...prev, [field]: true }));
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         const all = {};
@@ -93,10 +97,18 @@ export default function ApplyForm() {
             return;
         }
 
-        // TODO (step 2 of the project): send the form to the Express API
-        // as FormData (it has a file in it) and only then show the thank-you page.
+        // FormData, not JSON, because the resume is a file
+        const form = new FormData(event.currentTarget);
         setSubmitting(true);
-        navigate('/apply', { state: { name: values.fullName.trim() } });
+        setServerError('');
+        try {
+            const data = await api('apply', { body: form });
+            navigate('/apply', { state: { name: values.fullName.trim(), reference: data.reference } });
+        } catch (error) {
+            setServerError(error.message);
+            setServerFields(error.fields);
+            setSubmitting(false);
+        }
     }
 
     const invalidProps = (field) => ({
@@ -107,6 +119,11 @@ export default function ApplyForm() {
 
     return (
         <form className="form-card" onSubmit={handleSubmit} noValidate>
+            {serverError && (
+                <div className="alert alert-error" role="alert">
+                    <i className="fa-solid fa-circle-exclamation"></i> {serverError}
+                </div>
+            )}
 
             <div className="form-grid">
 

@@ -25,8 +25,8 @@ Shared with the base site, not copied: `../../images/`, `../../style.css` and
 
 Bootstrap 5 comes from npm and loads before `style.css`.
 
-## Not connected yet
+## The server
 
-Booking, dashboard, log in and the job application form show their UI and validate,
-but do not send anything. They are marked `TODO (step 2)` and will talk to the
-Express + MongoDB server in `react-site/server`.
+Booking, log in, the dashboard and the job application form talk to the Express +
+MongoDB server in `react-site/server` (see its README). Start that first; `vite.config.js`
+forwards every `/api/...` request to it.

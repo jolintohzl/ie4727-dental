@@ -5,6 +5,10 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   server: {
+    // Send every /api request to the Express server (react-site/server)
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
     // The React site re-uses the base site's images, style.css and
     // validators.js instead of keeping copies, so Vite must be allowed
     // to read those few things from two folders up.

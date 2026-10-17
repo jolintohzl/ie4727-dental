@@ -5,6 +5,12 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { img } from '../images'
+import { useAuth } from '../auth'
+
+// "Jaslyn Tan" → "JT"
+function initials(name) {
+  return name.trim().split(/\s+/).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('')
+}
 
 /* The search box. Appears twice: in the top row, and in the menu on phones. */
 function SearchBox({ className }) {
@@ -45,6 +51,7 @@ function SearchBox({ className }) {
 
 export default function Header() {
   const { pathname } = useLocation()
+  const { patient } = useAuth()
 
   // Each remembers the page it was opened on, so going to
   // another page closes the mobile menu and the dropdown by itself.
@@ -96,10 +103,17 @@ export default function Header() {
           <div className="nav-actions">
             <SearchBox className="nav-search" />
 
-            {/* TODO (step 2): show the patient's initials once logged in via Express */}
-            <Link to="/login" className="icon-btn" id="accountBtn" aria-label="Log in" title="Log in">
-              <i className="fa-regular fa-user"></i>
-            </Link>
+            {/* Logged in: their initials, linking to the dashboard. Otherwise: log in. */}
+            {patient ? (
+              <Link to="/dashboard" className="icon-btn is-signed-in" id="accountBtn"
+                    aria-label={'My account (' + patient.name + ')'} title="My account">
+                <span className="account-initials">{initials(patient.name)}</span>
+              </Link>
+            ) : (
+              <Link to="/login" className="icon-btn" id="accountBtn" aria-label="Log in" title="Log in">
+                <i className="fa-regular fa-user"></i>
+              </Link>
+            )}
 
             <Link to="/appointment" className="btn btn-primary btn-book">
               <i className="fa-regular fa-calendar-check"></i>

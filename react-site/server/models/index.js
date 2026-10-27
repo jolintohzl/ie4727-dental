@@ -33,6 +33,10 @@ export const Doctor = model('Doctor', new Schema({
   bio: String,
   photo: String,
   serviceIds: [Number],   // which services this doctor treats
+  // Doctor log-in (/doctor/login). The hash is left out of every query
+  // unless asked for with .select('+passwordHash'), so /api/options never sends it.
+  email: { type: String, unique: true, sparse: true },
+  passwordHash: { type: String, select: false },
 }))
 
 export const Patient = model('Patient', new Schema({

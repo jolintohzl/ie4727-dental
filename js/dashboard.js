@@ -27,9 +27,6 @@
         $('dashLoading').hidden = true;
         $('dashMember').hidden = true;
         $('dashGuest').hidden = false;
-        $('logoutBtn').hidden = true;
-        $('dashTitle').textContent = 'My account';
-        $('dashSub').textContent = 'Your profile and appointments in one place.';
     }
 
     function showMember(patient) {
@@ -37,9 +34,6 @@
         $('dashLoading').hidden = true;
         $('dashGuest').hidden = true;
         $('dashMember').hidden = false;
-        $('logoutBtn').hidden = false;
-        $('dashTitle').textContent = 'Hi, ' + patient.name.split(' ')[0];
-        $('dashSub').textContent = 'Manage your profile and appointments.';
         fillProfile(patient);
         loadAppointments();
     }
@@ -52,15 +46,6 @@
     }
 
     $('dashLoginBtn').addEventListener('click', askToLogIn);
-
-    $('logoutBtn').addEventListener('click', async function () {
-        try {
-            await Smile.logout();
-            window.location.href = 'index.html';
-        } catch (error) {
-            alert(error.message);
-        }
-    });
 
     // logged out in another tab, etc.
     document.addEventListener('smile:auth', function (event) {
@@ -136,7 +121,6 @@
             const data = await Smile.api('profile.php', { body: values });
             fillProfile(data.patient);
             Smile.setPatient(data.patient);   // navbar initials update too
-            $('dashTitle').textContent = 'Hi, ' + data.patient.name.split(' ')[0];
             $('saveStatus').innerHTML = '<i class="fa-solid fa-circle-check"></i> Saved';
         } catch (error) {
             if (error.status === 401) return showGuest();

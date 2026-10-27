@@ -16,6 +16,36 @@ HTML file — the log-in, booking and dashboard pages need PHP to talk to the da
 If your MySQL user or password is not XAMPP's default (`root`, no password), change it in
 `api/config.php`.
 
+### Extra steps on a Mac
+
+Git does not carry folder permissions or XAMPP's settings, so each Mac needs these once.
+
+**Resume uploads (careers form).** XAMPP's Apache runs as the `daemon` user, which cannot
+write to a folder you own. Without this, `apply.php` answers "We could not store your resume".
+Run in this folder:
+
+```bash
+chmod 777 storage/resumes
+```
+
+**Emails (booking and application confirmations).** `api/mail.php` sends through PHP's
+`mail()`. Mailpit catches those emails locally so nothing is really sent.
+
+1. Install and start it: `brew install mailpit`, then `brew services start mailpit`.
+2. In `/Applications/XAMPP/xamppfiles/etc/php.ini`, find `;sendmail_path =` and replace it with
+   `sendmail_path = "/opt/homebrew/bin/mailpit sendmail -t"`
+   (on an Intel Mac the path is `/usr/local/bin/mailpit`).
+3. Restart Apache in the XAMPP control panel.
+4. Caught emails appear at <http://localhost:8025>.
+
+Without Mailpit the forms still work; the emails just go nowhere.
+
+To read the emails in Thunderbird instead, Mailpit's POP3 server has to be switched on, and it
+needs a password file: create one with
+`mkdir -p ~/.mailpit && htpasswd -cB ~/.mailpit/pop3.htpasswd mailpit`, run
+Mailpit with `--pop3-auth-file ~/.mailpit/pop3.htpasswd`, then add a POP3 account in
+Thunderbird on `localhost` port `1110` (no encryption, username `mailpit`).
+
 ## How the pieces fit together
 
 | Feature | Page | Front end | Server |
@@ -24,6 +54,7 @@ If your MySQL user or password is not XAMPP's default (`root`, no password), cha
 | Profile icon → log-in modal | every page | `js/login-modal.js` | `api/login.php`, `api/session.php` |
 | Account dashboard | `dashboard.html` | `js/dashboard.js` | `api/profile.php`, `api/appointments.php`, `api/reschedule.php`, `api/cancel.php`, `api/logout.php` |
 | Book Appointment | `appointment.html` | `js/appointment.js` | `api/options.php`, `api/slots.php`, `api/book.php`, `api/draft.php` (saves progress) |
+| Doctor log-in + schedule | `doctor-login.php`, `doctor-dashboard.php` | none (plain PHP forms) | the pages themselves + `includes/doctor.php` |
 
 - `js/site.js` is loaded on every page: navbar search bar, profile icon, and the
   `Smile.api()` helper that every script uses to call PHP.
@@ -35,3 +66,10 @@ If your MySQL user or password is not XAMPP's default (`root`, no password), cha
   before this table existed, import `database/add_booking_drafts.sql` (it doesn't wipe data).
 - Every timeslot is 30 minutes. A doctor cannot be double-booked — the database enforces it
   with a unique index, so two people clicking at the same moment can't both get the slot.
+- **Doctors** log in at `doctor-login.php` (linked from the patient log-in page) and see their
+  own upcoming appointments by day, and can cancel or move them to another free time at the
+  same branch. Like `login.php`, these pages are plain forms that post back to themselves —
+  no fetch() and no JSON. A doctor's login is kept apart from a patient's in the session.
+  Each doctor's email is their name, e.g. `tan.wei.ling@smiledental.local`; the shared **test**
+  password is in `database/schema.sql`. If your database was created before doctor log-ins
+  existed, import `database/add_doctor_logins.sql` (it doesn't wipe data).

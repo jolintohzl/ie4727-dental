@@ -206,7 +206,7 @@ function AppointmentCard({ appt, onChanged }) {
 }
 
 export default function Dashboard() {
-  const { patient, setPatient, logout } = useAuth()
+  const { patient, setPatient } = useAuth()
   const [appointments, setAppointments] = useState(null)
   const [loadError, setLoadError] = useState('')
   const [notice, setNotice] = useState('')
@@ -239,15 +239,8 @@ export default function Dashboard() {
 
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <h1>{patient ? 'Hello, ' + patient.name.split(' ')[0] : 'My account'}</h1>
-            <p className="section-sub">Your profile and appointments in one place.</p>
-            {patient && (
-              <button type="button" className="btn btn-outline" onClick={logout}>
-                <i className="fa-solid fa-arrow-right-from-bracket"></i> Log out
-              </button>
-            )}
-          </div>
+          {/* the heading is for screen readers; the breadcrumb above shows "My Account" */}
+          <h1 className="sr-only">My account</h1>
 
           <div className="page-column">
             {patient === undefined && (

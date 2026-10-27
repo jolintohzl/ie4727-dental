@@ -214,34 +214,84 @@
     };
 
 
-    /* ---------- 4. Navbar: profile icon ---------- */
+    /* ---------- 4. Navbar: profile icon ----------
+       Logged out: the icon goes to login.php.
+       Logged in:  it shows the patient's initials and opens a small menu —
+                   Profile Dashboard and Log out. The menu is built here so
+                   the HTML pages don't each need a copy of it. */
 
     const accountBtn = document.getElementById('accountBtn');
+    let accountMenu = null;
+
+    function setMenuOpen(open) {
+        if (!accountMenu) return;
+        accountMenu.hidden = !open;
+        accountBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
 
     function paintAccountButton(patient) {
         if (!accountBtn) return;
         if (patient) {
             accountBtn.classList.add('is-signed-in');
             accountBtn.innerHTML = '<span class="account-initials">' + Smile.escapeHtml(Smile.initials(patient.name)) + '</span>';
-            accountBtn.setAttribute('aria-label', 'My account (' + patient.name + ')');
+            accountBtn.setAttribute('aria-label', 'Account menu (' + patient.name + ')');
+            accountBtn.setAttribute('aria-haspopup', 'menu');
             accountBtn.title = 'My account';
         } else {
+            setMenuOpen(false);
             accountBtn.classList.remove('is-signed-in');
             accountBtn.innerHTML = '<i class="fa-regular fa-user"></i>';
             accountBtn.setAttribute('aria-label', 'Log in');
+            accountBtn.removeAttribute('aria-haspopup');
+            accountBtn.removeAttribute('aria-expanded');
             accountBtn.title = 'Log in';
         }
     }
 
     if (accountBtn) {
-        // The link already points at dashboard.html. When nobody is logged in
-        // we send them to login.php instead — a real page with a real form
-        // that posts to PHP. (The pop-up modal is still used on the booking
-        // and dashboard screens, where logging in must not reload the page.)
+        // Wrap the icon so the menu can sit right underneath it
+        const wrap = document.createElement('div');
+        wrap.className = 'account-menu';
+        accountBtn.before(wrap);
+        wrap.appendChild(accountBtn);
+
+        accountMenu = document.createElement('div');
+        accountMenu.className = 'account-dropdown';
+        accountMenu.id = 'accountMenu';
+        accountMenu.setAttribute('role', 'menu');
+        accountMenu.hidden = true;
+        accountMenu.innerHTML =
+            '<a href="dashboard.html" role="menuitem"><i class="fa-regular fa-id-card"></i> Profile Dashboard</a>' +
+            '<button type="button" role="menuitem" class="account-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</button>';
+        wrap.appendChild(accountMenu);
+
         accountBtn.addEventListener('click', function (event) {
-            if (!accountBtn.classList.contains('is-signed-in')) {
-                event.preventDefault();
+            event.preventDefault();
+            if (accountBtn.classList.contains('is-signed-in')) {
+                setMenuOpen(accountMenu.hidden);
+            } else {
+                // a real page with a real form that posts to PHP
                 window.location.href = 'login.php?next=dashboard.html';
+            }
+        });
+
+        accountMenu.querySelector('.account-logout').addEventListener('click', async function () {
+            try {
+                await Smile.logout();
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // Clicking anywhere else, or pressing Escape, closes the menu
+        document.addEventListener('click', function (event) {
+            if (!wrap.contains(event.target)) setMenuOpen(false);
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !accountMenu.hidden) {
+                setMenuOpen(false);
+                accountBtn.focus();
             }
         });
 

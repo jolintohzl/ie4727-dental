@@ -18,6 +18,12 @@ export function requireLogin(req, res, next) {
   next()
 }
 
+// Doctors log in separately (routes/doctor.js) and are kept in req.session.doctorId
+export function requireDoctor(req, res, next) {
+  if (!req.session.doctorId) return fail(res, 401, 'Please log in as a doctor first.')
+  next()
+}
+
 // Date → "2026-10-20" in local time
 export function isoDate(d) {
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')

@@ -2713,6 +2713,91 @@ body.modal-open { overflow: hidden; }
 }
 .reschedule-box .form-field { max-width: 260px; margin-bottom: 14px; }
 .reschedule-box .slot-grid { margin-bottom: 16px; }
+.reschedule-box .alert { margin-bottom: 14px; }
+
+/* doctor dashboard, PHP version: date box + "Show times" on one line */
+.reschedule-date {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.reschedule-date .form-field { flex: 1; margin: 0; }
+
+/* navbar: a logged-in patient's initials open a small menu (js/site.js,
+   components/Header.jsx) — Profile Dashboard and Log out */
+.account-menu { position: relative; }
+.account-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 200px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    padding: 8px;
+    z-index: 130;
+    animation: account-in .18s ease;
+}
+.account-dropdown a,
+.account-dropdown button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.account-dropdown i { width: 16px; color: var(--blue-700); }
+.account-dropdown a:hover,
+.account-dropdown button:hover,
+.account-dropdown a:focus-visible,
+.account-dropdown button:focus-visible { background: var(--blue-50); color: var(--blue-700); }
+@keyframes account-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* doctor dashboards: Log out sits in the header's top row, the same
+   height as Book Appointment, and shrinks to its icon on phones */
+.btn-logout {
+    height: 42px;
+    padding: 0 20px;
+}
+@media (max-width: 768px) {
+    .btn-logout { padding: 0 14px; }
+    .btn-logout span { display: none; }
+}
+@media (max-width: 420px) {
+    .btn-logout { height: 38px; padding: 0 12px; }
+}
+
+/* doctor dashboard: one heading per day of the schedule */
+.schedule-day {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 1.05rem;
+    margin: 28px 0 12px;
+}
+.schedule-day span {
+    font-family: 'Inter', sans-serif;
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+/* jumping to #appt-12 stops below the sticky navbar */
+.appt-card { scroll-margin-top: 120px; }
 
 .past-toggle { margin-top: 22px; }
 .past-toggle summary {

@@ -85,7 +85,9 @@ CREATE TABLE doctors (
     specialty VARCHAR(40)  NOT NULL,   -- matches the section ids on doctors.html
     role      VARCHAR(60)  NOT NULL,
     bio       VARCHAR(255) NOT NULL,
-    photo     VARCHAR(120) NOT NULL
+    photo     VARCHAR(120) NOT NULL,
+    email         VARCHAR(255) NULL UNIQUE,   -- doctor-login.php; NULL = cannot log in
+    password_hash VARCHAR(255) NULL           -- from PHP password_hash()
 ) ENGINE=InnoDB;
 
 CREATE TABLE doctor_services (
@@ -247,6 +249,12 @@ INSERT INTO doctors (id, name, specialty, role, bio, photo) VALUES
 (16, 'Dr. Goh Shu Fen',    'prosthodontics', 'Crowns & Bridges', 'Trained in Japan; sixteen years in full-mouth rehabilitation and shade matching.',       'images/doctor-prosthodontics-1.jpg'),
 (17, 'Dr. Jonathan Neo',   'prosthodontics', 'Dental Implants',  'Over a decade placing and restoring implants, with advanced bone-grafting training.',   'images/doctor-prosthodontics-2.jpg'),
 (18, 'Dr. Bryan Seah',     'prosthodontics', 'Dentures',         'Twelve years on removable prosthetics; known for making a difficult denture fit.',       'images/doctor-prosthodontics-3.jpg');
+
+-- Doctor log-ins for doctor-login.php: "Dr. Tan Wei Ling" → tan.wei.ling@smiledental.local
+-- TEST PASSWORD for every doctor: Doctor123   (change these before going live)
+UPDATE doctors
+   SET email = CONCAT(LOWER(REPLACE(REPLACE(name, 'Dr. ', ''), ' ', '.')), '@smiledental.local'),
+       password_hash = '$2y$10$GrSS8PH91GG1gKBXCzxnfugDjAkLZ51hW5tFyxFFzE7465LdwboMe';
 
 -- Who can be booked for which service
 INSERT INTO doctor_services (doctor_id, service_id) VALUES

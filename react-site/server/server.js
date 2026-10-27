@@ -11,6 +11,7 @@ import { connectDb, MONGO_URL } from './db.js'
 import authRoutes from './routes/auth.js'
 import bookingRoutes from './routes/booking.js'
 import applyRoutes from './routes/apply.js'
+import doctorRoutes from './routes/doctor.js'
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -29,6 +30,7 @@ app.use(session({
 app.use('/api', authRoutes)
 app.use('/api', bookingRoutes)
 app.use('/api', applyRoutes)
+app.use('/api', doctorRoutes)
 
 app.use('/api', (req, res) => res.status(404).json({ ok: false, error: 'Not found.' }))
 

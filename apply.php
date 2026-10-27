@@ -142,7 +142,9 @@ if (!is_dir(RESUME_DIR) && !@mkdir(RESUME_DIR, 0775, true)) {
     show_errors(['We could not store your resume. Please try again later.'], 500);
 }
 if (!is_writable(RESUME_DIR)) {
-    error_log('[apply] ' . RESUME_DIR . ' is not writable by ' . (get_current_user() ?: 'the web server'));
+    // get_current_user() names the script's owner, not the process — ask POSIX who we really run as
+    $runAs = function_exists('posix_geteuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? 'the web server') : 'the web server';
+    error_log('[apply] ' . RESUME_DIR . ' is not writable by ' . $runAs);
     show_errors(['We could not store your resume. Please try again later.'], 500);
 }
 

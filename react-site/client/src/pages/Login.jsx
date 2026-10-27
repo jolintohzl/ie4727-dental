@@ -80,6 +80,9 @@ export default function Login() {
             Forgotten your password? For your privacy we reset passwords over the
             phone — call <a href="tel:+6561234567">+65 6123 4567</a>.
           </p>
+          <p className="modal-foot">
+            One of our dentists? <Link to="/doctor/login">Doctor log in</Link>
+          </p>
 
         </div>
       </div>

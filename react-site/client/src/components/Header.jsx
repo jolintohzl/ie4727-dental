@@ -51,24 +51,38 @@ function SearchBox({ className }) {
 
 export default function Header() {
   const { pathname } = useLocation()
-  const { patient } = useAuth()
+  const { patient, logout } = useAuth()
 
   // Each remembers the page it was opened on, so going to
   // another page closes the mobile menu and the dropdown by itself.
   const [menuOpenOn, setMenuOpenOn] = useState(null)
   const [dropdownOpenOn, setDropdownOpenOn] = useState(null)
+  const [accountOpenOn, setAccountOpenOn] = useState(null)
+  const navigate = useNavigate()
   const menuOpen = menuOpenOn === pathname
   const dropdownOpen = dropdownOpenOn === pathname
+  const accountOpen = !!patient && accountOpenOn === pathname
   const setMenuOpen = (open) => setMenuOpenOn(open ? pathname : null)
   const setDropdownOpen = (open) => setDropdownOpenOn(open ? pathname : null)
+  const setAccountOpen = (open) => setAccountOpenOn(open ? pathname : null)
 
-  // Clicking elsewhere, or pressing Escape, closes the dropdown
+  async function handleLogout() {
+    setAccountOpenOn(null)
+    await logout()
+    navigate('/')
+  }
+
+  // Clicking elsewhere, or pressing Escape, closes the dropdowns
   useEffect(() => {
     function onClick(event) {
       if (!event.target.closest('.has-dropdown')) setDropdownOpenOn(null)
+      if (!event.target.closest('.account-menu')) setAccountOpenOn(null)
     }
     function onKey(event) {
-      if (event.key === 'Escape') setDropdownOpenOn(null)
+      if (event.key === 'Escape') {
+        setDropdownOpenOn(null)
+        setAccountOpenOn(null)
+      }
     }
     document.addEventListener('click', onClick)
     document.addEventListener('keydown', onKey)
@@ -103,12 +117,23 @@ export default function Header() {
           <div className="nav-actions">
             <SearchBox className="nav-search" />
 
-            {/* Logged in: their initials, linking to the dashboard. Otherwise: log in. */}
+            {/* Logged in: their initials, opening Profile Dashboard / Log out. Otherwise: log in. */}
             {patient ? (
-              <Link to="/dashboard" className="icon-btn is-signed-in" id="accountBtn"
-                    aria-label={'My account (' + patient.name + ')'} title="My account">
-                <span className="account-initials">{initials(patient.name)}</span>
-              </Link>
+              <div className="account-menu">
+                <button type="button" className="icon-btn is-signed-in" id="accountBtn"
+                        aria-label={'Account menu (' + patient.name + ')'} title="My account"
+                        aria-haspopup="menu" aria-expanded={accountOpen} onClick={() => setAccountOpen(!accountOpen)}>
+                  <span className="account-initials">{initials(patient.name)}</span>
+                </button>
+                {accountOpen && (
+                  <div className="account-dropdown" role="menu">
+                    <Link to="/dashboard" role="menuitem"><i className="fa-regular fa-id-card"></i> Profile Dashboard</Link>
+                    <button type="button" role="menuitem" onClick={handleLogout}>
+                      <i className="fa-solid fa-arrow-right-from-bracket"></i> Log out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link to="/login" className="icon-btn" id="accountBtn" aria-label="Log in" title="Log in">
                 <i className="fa-regular fa-user"></i>

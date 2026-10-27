@@ -10,8 +10,13 @@ brew tap mongodb/brew
 brew install mongodb-community
 brew services start mongodb-community
 npm install
-npm run seed        # loads the clinics, services and doctors
+npm run seed        # loads the clinics, services and doctors (with their log-ins)
 ```
+
+Seeded before doctor log-ins were added? Run `npm run seed` again — it replaces only the
+clinics, services and doctors, never patients or appointments. Each doctor logs in at
+http://localhost:5173/doctor/login as e.g. `tan.wei.ling@smiledental.local`, with the
+**test** password in `seed-data.js`.
 
 ## Run it
 
@@ -32,6 +37,7 @@ The React dev server forwards `/api/...` to this server.
 | `routes/auth.js` | `session`, `login`, `logout`, `profile` |
 | `routes/booking.js` | `options`, `slots`, `book`, `appointments`, `cancel`, `reschedule` |
 | `routes/apply.js` | `apply` (job application + resume upload → `uploads/`) |
+| `routes/doctor.js` | `doctor/session`, `doctor/login`, `doctor/logout`, `doctor/appointments`, `doctor/cancel`, `doctor/reschedule` |
 | `lib/validators.js` | re-uses the base site's `js/validators.js`, so both sides check the same rules |
 | `seed-data.js` | clinics, services and doctors (same as `database/schema.sql`) |
 

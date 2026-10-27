@@ -135,6 +135,9 @@ $e = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
                 Forgotten your password? For your privacy we reset passwords over the
                 phone — call <a href="tel:+6561234567">+65 6123 4567</a>.
             </p>
+            <p class="modal-foot">
+                One of our dentists? <a href="doctor-login.php">Doctor log in</a>
+            </p>
 
         </div>
     </div>

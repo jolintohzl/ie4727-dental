@@ -12,6 +12,8 @@ import Dashboard from './pages/Dashboard'
 import ApplyResult from './pages/ApplyResult'
 import Login from './pages/Login'
 import Search from './pages/Search'
+import DoctorLogin from './pages/DoctorLogin'
+import DoctorDashboard from './pages/DoctorDashboard'
 
 export default function App() {
   return (
@@ -29,6 +31,10 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/search" element={<Search />} />
       </Route>
+
+      {/* The doctor pages bring their own small header (components/DoctorHeader) */}
+      <Route path="/doctor/login" element={<DoctorLogin />} />
+      <Route path="/doctor" element={<DoctorDashboard />} />
     </Routes>
   )
 }

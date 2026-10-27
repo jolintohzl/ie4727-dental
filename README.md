@@ -54,6 +54,7 @@ Thunderbird on `localhost` port `1110` (no encryption, username `mailpit`).
 | Profile icon → log-in modal | every page | `js/login-modal.js` | `api/login.php`, `api/session.php` |
 | Account dashboard | `dashboard.html` | `js/dashboard.js` | `api/profile.php`, `api/appointments.php`, `api/reschedule.php`, `api/cancel.php`, `api/logout.php` |
 | Book Appointment | `appointment.html` | `js/appointment.js` | `api/options.php`, `api/slots.php`, `api/book.php`, `api/draft.php` (saves progress) |
+| Doctor log-in + schedule | `doctor-login.php`, `doctor-dashboard.php` | none (plain PHP forms) | the pages themselves + `includes/doctor.php` |
 
 - `js/site.js` is loaded on every page: navbar search bar, profile icon, and the
   `Smile.api()` helper that every script uses to call PHP.
@@ -65,3 +66,10 @@ Thunderbird on `localhost` port `1110` (no encryption, username `mailpit`).
   before this table existed, import `database/add_booking_drafts.sql` (it doesn't wipe data).
 - Every timeslot is 30 minutes. A doctor cannot be double-booked — the database enforces it
   with a unique index, so two people clicking at the same moment can't both get the slot.
+- **Doctors** log in at `doctor-login.php` (linked from the patient log-in page) and see their
+  own upcoming appointments by day, and can cancel or move them to another free time at the
+  same branch. Like `login.php`, these pages are plain forms that post back to themselves —
+  no fetch() and no JSON. A doctor's login is kept apart from a patient's in the session.
+  Each doctor's email is their name, e.g. `tan.wei.ling@smiledental.local`; the shared **test**
+  password is in `database/schema.sql`. If your database was created before doctor log-ins
+  existed, import `database/add_doctor_logins.sql` (it doesn't wipe data).

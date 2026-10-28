@@ -159,6 +159,7 @@ export default function DoctorDashboard() {
   }, [doctorId])
 
   async function logout() {
+    if (!window.confirm('Are you sure you want to log out?')) return
     await api('doctor/logout', { body: {} })
     navigate('/doctor/login')
   }

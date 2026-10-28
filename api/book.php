@@ -1,8 +1,9 @@
 <?php
 /* POST api/book.php
-   { serviceId, branchId, doctorId, date, time }
-   + { name, nric, phone, email, password } when nobody is logged in —
-   in that case the account is created and logged in as part of the booking. */
+   { serviceId, branchId, doctorId, date, time, name, nric, phone, email }
+   + { password } when nobody is logged in —
+   in that case the account is created and logged in as part of the booking.
+   A logged-in patient's details are saved to their profile instead. */
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/mail.php';
 require_method('POST');
@@ -18,6 +19,12 @@ if ($patientId === null) {
     $errors += uniqueness_errors($patient);
     if (isset($errors['email']) && strpos($errors['email'], 'already exists') !== false) {
         $errors['email'] .= ' Log in to book with it.';
+    }
+} else {
+    // logged in: the form is filled in from their profile, and any edits update it
+    [$patient, $errors] = validate_patient($in, false);
+    if (!$errors) {
+        $errors = uniqueness_errors($patient, $patientId);
     }
 }
 
@@ -70,6 +77,9 @@ try {
             password_hash($patient['password'], PASSWORD_DEFAULT),
         ]);
         $patientId = (int) $pdo->lastInsertId();
+    } else {
+        $stmt = $pdo->prepare('UPDATE patients SET name = ?, nric = ?, phone = ?, email = ? WHERE id = ?');
+        $stmt->execute([$patient['name'], $patient['nric'], $patient['phone'], $patient['email'], $patientId]);
     }
 
     $stmt = $pdo->prepare(
@@ -107,4 +117,5 @@ send_booking_email($patientId, $appointment);
 respond([
     'appointment' => $appointment,
     'newAccount'  => $isNewAccount,
+    'patient'     => find_patient($patientId),
 ], 201);

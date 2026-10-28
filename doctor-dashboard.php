@@ -235,7 +235,9 @@ function doctor_appointment_card(array $a, int $rescheduleId, string $reschedule
                 </span>
             </a>
 
-            <form method="post" action="doctor-dashboard.php" class="nav-actions">
+            <form method="post" action="doctor-dashboard.php" class="nav-actions"
+                  data-confirm="Are you sure you want to log out?"
+                  onsubmit="return confirm(this.dataset.confirm)">
                 <input type="hidden" name="action" value="logout">
                 <button type="submit" class="btn btn-outline btn-logout" aria-label="Log out">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>

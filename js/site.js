@@ -276,6 +276,7 @@
         });
 
         accountMenu.querySelector('.account-logout').addEventListener('click', async function () {
+            if (!confirm('Are you sure you want to log out?')) return;
             try {
                 await Smile.logout();
                 window.location.href = 'index.html';

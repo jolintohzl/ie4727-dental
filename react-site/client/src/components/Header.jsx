@@ -67,6 +67,7 @@ export default function Header() {
   const setAccountOpen = (open) => setAccountOpenOn(open ? pathname : null)
 
   async function handleLogout() {
+    if (!window.confirm('Are you sure you want to log out?')) return
     setAccountOpenOn(null)
     await logout()
     navigate('/')

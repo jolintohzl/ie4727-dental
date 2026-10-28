@@ -123,6 +123,32 @@
         return values;
     }
 
+    // The details as the server wants them (no password)
+    function patientBody() {
+        const details = readDetails();
+        return {
+            name: details.name.trim(),
+            nric: details.nric.trim().toUpperCase(),
+            phone: Validators.cleanPhone(details.phone),
+            email: details.email.trim()
+        };
+    }
+
+    // Before leaving step 1, ask the server whether the email or NRIC
+    // already belongs to another account. Returns true (and shows the
+    // message) if so. If the server can't be reached, carry on —
+    // book.php checks it all again at the end anyway.
+    async function detailsTaken() {
+        try {
+            await Smile.api('check-details.php', { body: patientBody() });
+            return false;
+        } catch (error) {
+            if (!Object.keys(error.fields).length) return false;
+            showErrors(error.fields);
+            return true;
+        }
+    }
+
     // Check a field as soon as the user leaves it, then keep it live
     // while they fix it — but don't nag while they are typing it the first time.
     PATIENT_FIELDS.concat(ACCOUNT_FIELDS).forEach(function (field) {
@@ -543,20 +569,15 @@
             return;
         }
 
-        const details = readDetails();
-        const body = {
+        const body = Object.assign({
             serviceId: state.serviceId,
             branchId: state.branchId,
             doctorId: state.doctorId,
             date: state.date,
-            time: state.time,
-            name: details.name.trim(),
-            nric: details.nric.trim().toUpperCase(),
-            phone: Validators.cleanPhone(details.phone),
-            email: details.email.trim()
-        };
+            time: state.time
+        }, patientBody());
         if (!state.patient) {
-            body.password = details.password;
+            body.password = $('password').value;
         }
 
         const button = $('confirmBtn');
@@ -732,13 +753,15 @@
     }
 
     // Next only works when the current step is filled in properly.
-    function goNext() {
-        const errors = stepErrors(state.step);
+    async function goNext() {
+        const from = state.step;
+        const errors = stepErrors(from);
         if (Object.keys(errors).length) {
             showErrors(errors);
             return;
         }
-        goToStep(state.step + 1, 'push');
+        if (from === 1 && await detailsTaken()) return;
+        goToStep(from + 1, 'push');
     }
 
     $('nextBtn').addEventListener('click', goNext);
@@ -747,14 +770,14 @@
     });
 
     // Clicking the timeline jumps to any step that is already unlocked.
-    stepsBar.addEventListener('click', function (event) {
+    stepsBar.addEventListener('click', async function (event) {
         const li = event.target.closest('li');
         if (!li) return;
         event.preventDefault();
         const step = Array.prototype.indexOf.call(stepItems, li) + 1;
-        if (step !== state.step && canOpen(step)) {
-            goToStep(step, 'push');
-        }
+        if (step === state.step || !canOpen(step)) return;
+        if (state.step === 1 && await detailsTaken()) return;
+        goToStep(step, 'push');
     });
 
     // Browser back / forward between steps.

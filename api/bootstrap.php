@@ -216,6 +216,19 @@ function uniqueness_errors(array $clean, ?int $exceptId = null): array
     return $errors;
 }
 
+// Step 1 of booking. Guests are creating an account; a logged-in patient may be
+// editing their own details, so their own email and NRIC don't count as taken.
+// Returns [cleanValues, errors].
+function booking_details(array $in, ?int $patientId, bool $withPassword): array
+{
+    [$clean, $errors] = validate_patient($in, $withPassword);
+    $errors += uniqueness_errors($clean, $patientId);
+    if ($patientId === null && isset($errors['email']) && strpos($errors['email'], 'already exists') !== false) {
+        $errors['email'] .= ' Log in to book with it.';
+    }
+    return [$clean, $errors];
+}
+
 
 /* ---------- Dates and timeslots ---------- */
 

@@ -6,7 +6,7 @@ import {
   fail, handle, requireLogin, isoDate, dateError, branchSlots, patientBusy,
   findAppointment, shapeAppointment, isDuplicate, BOOKING_WINDOW_DAYS,
 } from '../lib/helpers.js'
-import { validatePatient, uniquenessErrors, publicPatient } from '../lib/patients.js'
+import { bookingDetails, publicPatient } from '../lib/patients.js'
 
 const router = Router()
 
@@ -45,6 +45,15 @@ router.get('/slots', handle(async (req, res) => {
   res.json({ ok: true, date, slots })
 }))
 
+// POST /api/check-details  { name, nric, phone, email }
+// Step 1 of booking asks this before moving on, so an email or NRIC that already
+// has an account is caught straight away. /book checks it all again at the end.
+router.post('/check-details', handle(async (req, res) => {
+  const [, errors] = await bookingDetails(req.body, req.session.patientId || null, false)
+  if (Object.keys(errors).length) return fail(res, 422, 'Please fix the highlighted fields.', errors)
+  res.json({ ok: true })
+}))
+
 // POST /api/book  { serviceId, branchId, doctorId, date, time, name, nric, phone, email }
 //   + { password } when nobody is logged in —
 //   then the account is created and logged in as part of the booking.
@@ -52,18 +61,9 @@ router.get('/slots', handle(async (req, res) => {
 router.post('/book', handle(async (req, res) => {
   const body = req.body
   let patientId = req.session.patientId || null
-  let errors = {}
-  let clean = null
 
-  if (!patientId) {
-    [clean, errors] = validatePatient(body, true)
-    Object.assign(errors, await uniquenessErrors(clean))
-    if (errors.email && errors.email.includes('already exists')) errors.email += ' Log in to book with it.'
-  } else {
-    // logged in: the form is filled in from their profile, and any edits update it
-    [clean, errors] = validatePatient(body, false)
-    if (!Object.keys(errors).length) errors = await uniquenessErrors(clean, patientId)
-  }
+  // logged in: the form is filled in from their profile, and any edits update it
+  const [clean, errors] = await bookingDetails(body, patientId, !patientId)
 
   const serviceId = Number(body.serviceId)
   const branchId = Number(body.branchId)

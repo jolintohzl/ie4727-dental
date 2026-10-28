@@ -14,19 +14,8 @@ $patientId = current_patient_id();
 $errors = [];
 
 // ---- 1. Who is booking ----
-if ($patientId === null) {
-    [$patient, $errors] = validate_patient($in, true);
-    $errors += uniqueness_errors($patient);
-    if (isset($errors['email']) && strpos($errors['email'], 'already exists') !== false) {
-        $errors['email'] .= ' Log in to book with it.';
-    }
-} else {
-    // logged in: the form is filled in from their profile, and any edits update it
-    [$patient, $errors] = validate_patient($in, false);
-    if (!$errors) {
-        $errors = uniqueness_errors($patient, $patientId);
-    }
-}
+// logged in: the form is filled in from their profile, and any edits update it
+[$patient, $errors] = booking_details($in, $patientId, $patientId === null);
 
 // ---- 2. What, where, who and when ----
 $serviceId = int_field($in, 'serviceId');

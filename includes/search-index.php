@@ -27,13 +27,13 @@ const SEARCH_EXTRA = [
         'page'  => 'Book an Appointment',
         'title' => 'Book an appointment online',
         'text'  => 'Choose a treatment, a clinic, a dentist and a timeslot. New patients get an account as part of booking.',
-        'url'   => 'appointment.html',
+        'url'   => 'appointment.php',
     ],
     [
         'page'  => 'My Account',
         'title' => 'My account — log in, profile and appointments',
         'text'  => 'Log in to your patient account to edit your profile details, see upcoming appointments, reschedule or cancel an appointment.',
-        'url'   => 'dashboard.html',
+        'url'   => 'dashboard.php',
     ],
 ];
 

@@ -20,13 +20,6 @@ if (!$doctor) {
 }
 $doctorId = (int) $doctor['id'];
 
-function go_to(string $url)
-{
-    header('Location: ' . $url);
-    exit;
-}
-
-
 /* ---------- Form posts ---------- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = str_field($_POST, 'action');
@@ -56,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $time = str_field($_POST, 'time');
         $retry = 'doctor-dashboard.php?reschedule=' . $appt['id'] . '&date=' . urlencode($date) . '#appt-' . $appt['id'];
 
-        // Same checks as api/reschedule.php, but the busy patient is the appointment's patient
+        // Same checks as dashboard.php's reschedule, but the busy patient is the appointment's patient
         $error = date_error($date);
         if (!$error && !in_array($time, branch_slots($appt['branchId'], $date), true)) {
             $error = 'Please choose one of the available times.';

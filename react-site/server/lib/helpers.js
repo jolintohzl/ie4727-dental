@@ -10,6 +10,13 @@ export function fail(res, status, error, fields = {}) {
   return res.status(status).json({ ok: false, error, fields })
 }
 
+// An id from the request as a number, or 0 if it isn't one (like the PHP site's int_field).
+// Mongoose throws on NaN, so 'abc' must become 0 and fail the lookup instead.
+export function toId(value) {
+  const n = Number(value)
+  return Number.isInteger(n) && n > 0 ? n : 0
+}
+
 // Wraps an async route so a thrown error reaches the error handler in server.js
 export const handle = (fn) => (req, res, next) => fn(req, res, next).catch(next)
 

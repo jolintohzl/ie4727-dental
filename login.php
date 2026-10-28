@@ -7,11 +7,10 @@
    and redirects, or draws the page again with the mistake shown.
    No JavaScript is involved and nothing here is JSON.
 
-   The pop-up modal in js/login-modal.js still exists, but only
-   for the booking and dashboard screens, where logging in has to
-   happen without leaving the page.
+   It is the only patient log-in: the navbar icon, the booking
+   form and the dashboard all send people here with ?next=.
    ========================================================== */
-require __DIR__ . '/api/bootstrap.php';
+require __DIR__ . '/includes/app.php';
 
 $email  = '';
 $error  = '';
@@ -21,7 +20,12 @@ $fields = [];
 // URL here would let someone use this form as a redirect to their own site.
 $next = isset($_GET['next']) ? (string) $_GET['next'] : (string) ($_POST['next'] ?? '');
 if ($next === '' || !preg_match('/^[A-Za-z0-9_-]+\.(?:html|php)(?:#[A-Za-z0-9_-]+)?$/', $next)) {
-    $next = 'dashboard.html';
+    $next = 'dashboard.php';
+}
+
+// Already logged in? Straight on.
+if (current_patient() !== null) {
+    go_to($next);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -54,11 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// This page is HTML; bootstrap.php set a JSON header for the /api endpoints.
-header_remove('Content-Type');
-header('Content-Type: text/html; charset=utf-8');
-
-$e = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,19 +98,19 @@ $e = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
             <?php if ($error !== ''): ?>
                 <div class="alert alert-error" role="alert">
                     <i class="fa-solid fa-circle-exclamation"></i>
-                    <span><?= $e($error) ?></span>
+                    <span><?= e($error) ?></span>
                 </div>
             <?php endif; ?>
 
             <form action="login.php" method="post" class="login-form">
-                <input type="hidden" name="next" value="<?= $e($next) ?>">
+                <input type="hidden" name="next" value="<?= e($next) ?>">
 
                 <div class="form-field<?= isset($fields['email']) ? ' has-error' : '' ?>">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="you@example.com"
-                           value="<?= $e($email) ?>" maxlength="255" autocomplete="email" autofocus>
+                           value="<?= e($email) ?>" maxlength="255" autocomplete="email" autofocus>
                     <?php if (isset($fields['email'])): ?>
-                        <span class="field-error"><?= $e($fields['email']) ?></span>
+                        <span class="field-error"><?= e($fields['email']) ?></span>
                     <?php endif; ?>
                 </div>
 
@@ -120,7 +119,7 @@ $e = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
                     <input type="password" id="password" name="password"
                            placeholder="Your password" autocomplete="current-password">
                     <?php if (isset($fields['password'])): ?>
-                        <span class="field-error"><?= $e($fields['password']) ?></span>
+                        <span class="field-error"><?= e($fields['password']) ?></span>
                     <?php endif; ?>
                 </div>
 
@@ -129,7 +128,7 @@ $e = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
 
             <p class="modal-foot">
                 New patient? Your account is created when you
-                <a href="appointment.html">book your first appointment</a>.
+                <a href="appointment.php">book your first appointment</a>.
             </p>
             <p class="modal-foot">
                 Forgotten your password? For your privacy we reset passwords over the

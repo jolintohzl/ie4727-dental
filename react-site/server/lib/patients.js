@@ -27,6 +27,18 @@ export async function uniquenessErrors(clean, exceptId = null) {
   return errors
 }
 
+// Step 1 of booking. Guests are creating an account; a logged-in patient may be
+// editing their own details, so their own email and NRIC don't count as taken.
+// Returns [clean, errors].
+export async function bookingDetails(body, patientId, withPassword) {
+  const [clean, errors] = validatePatient(body, withPassword)
+  for (const [field, message] of Object.entries(await uniquenessErrors(clean, patientId))) {
+    errors[field] ??= message
+  }
+  if (!patientId && errors.email && errors.email.includes('already exists')) errors.email += ' Log in to book with it.'
+  return [clean, errors]
+}
+
 // What the browser is allowed to see — never the password hash
 export function publicPatient(p) {
   return p && { id: String(p._id), name: p.name, nric: p.nric, phone: p.phone, email: p.email }

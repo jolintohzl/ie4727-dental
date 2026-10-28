@@ -85,13 +85,12 @@
 
         $('accountGuest').hidden = loggedIn;
         $('accountMember').hidden = !loggedIn;
+        $('memberNote').hidden = !loggedIn;
         $('memberName').textContent = loggedIn ? patient.name : '';
 
-        // logged in: details come from the account and can't be edited here
+        // logged in: filled in from the account; edits are saved to it when booking
         PATIENT_FIELDS.forEach(function (field) {
-            const input = $(field);
-            input.readOnly = loggedIn;
-            input.value = loggedIn ? patient[field] : '';
+            $(field).value = loggedIn ? patient[field] : '';
             Smile.setFieldError(field, '');
         });
 
@@ -129,7 +128,7 @@
     PATIENT_FIELDS.concat(ACCOUNT_FIELDS).forEach(function (field) {
         const input = $(field);
         input.addEventListener('blur', function () {
-            if (state.patient || !input.value) return;
+            if (!input.value) return;
             Smile.setFieldError(field, rules[field](input.value, readDetails()));
         });
         input.addEventListener('input', function () {
@@ -159,6 +158,7 @@
     });
 
     $('bookingLogoutBtn').addEventListener('click', async function () {
+        if (!confirm('Are you sure you want to log out?')) return;
         try {
             await Smile.logout();
         } catch (error) {
@@ -485,8 +485,12 @@
     // Returns { field: message } for everything missing or wrong on one step.
     function stepErrors(step) {
         const errors = {};
-        if (step === 1 && !state.patient) {
-            Object.assign(errors, Validators.check(readDetails(), rules));
+        if (step === 1) {
+            // logged-in patients already have a password, so only their details are checked
+            const fields = state.patient ? PATIENT_FIELDS : PATIENT_FIELDS.concat(ACCOUNT_FIELDS);
+            const stepRules = {};
+            fields.forEach(function (field) { stepRules[field] = rules[field]; });
+            Object.assign(errors, Validators.check(readDetails(), stepRules));
         }
         if (step === 2) {
             if (!state.serviceId) errors.serviceId = 'Please choose a service.';
@@ -539,19 +543,19 @@
             return;
         }
 
+        const details = readDetails();
         const body = {
             serviceId: state.serviceId,
             branchId: state.branchId,
             doctorId: state.doctorId,
             date: state.date,
-            time: state.time
+            time: state.time,
+            name: details.name.trim(),
+            nric: details.nric.trim().toUpperCase(),
+            phone: Validators.cleanPhone(details.phone),
+            email: details.email.trim()
         };
         if (!state.patient) {
-            const details = readDetails();
-            body.name = details.name.trim();
-            body.nric = details.nric.trim().toUpperCase();
-            body.phone = Validators.cleanPhone(details.phone);
-            body.email = details.email.trim();
             body.password = details.password;
         }
 
@@ -562,13 +566,9 @@
 
         try {
             const data = await Smile.api('book.php', { body: body });
-            if (data.newAccount) {
-                Smile.getSession(true).then(function (session) {
-                    // tell the navbar (and anything else) that we are now logged in
-                    Smile.setPatient(session.patient);
-                });
-            }
             showConfirmation(data.appointment, data.newAccount, body.email);
+            // tell the navbar (and anything else) about the new account or the edited details
+            Smile.setPatient(data.patient);
         } catch (error) {
             // the slot went while the form was open → show fresh availability
             if (error.status === 409 && error.fields.time) {

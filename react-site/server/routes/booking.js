@@ -45,9 +45,10 @@ router.get('/slots', handle(async (req, res) => {
   res.json({ ok: true, date, slots })
 }))
 
-// POST /api/book  { serviceId, branchId, doctorId, date, time }
-//   + { name, nric, phone, email, password } when nobody is logged in —
+// POST /api/book  { serviceId, branchId, doctorId, date, time, name, nric, phone, email }
+//   + { password } when nobody is logged in —
 //   then the account is created and logged in as part of the booking.
+//   A logged-in patient's details are saved to their profile instead.
 router.post('/book', handle(async (req, res) => {
   const body = req.body
   let patientId = req.session.patientId || null
@@ -58,6 +59,10 @@ router.post('/book', handle(async (req, res) => {
     [clean, errors] = validatePatient(body, true)
     Object.assign(errors, await uniquenessErrors(clean))
     if (errors.email && errors.email.includes('already exists')) errors.email += ' Log in to book with it.'
+  } else {
+    // logged in: the form is filled in from their profile, and any edits update it
+    [clean, errors] = validatePatient(body, false)
+    if (!Object.keys(errors).length) errors = await uniquenessErrors(clean, patientId)
   }
 
   const serviceId = Number(body.serviceId)
@@ -93,11 +98,14 @@ router.post('/book', handle(async (req, res) => {
     throw err
   }
 
+  // the slot is safely ours, so now save any edits to their details
+  const patient = isNewAccount ? newPatient : await Patient.findByIdAndUpdate(patientId, clean, { new: true })
+
   if (isNewAccount) req.session.patientId = patientId
   res.status(201).json({
     ok: true,
     newAccount: isNewAccount,
-    patient: publicPatient(newPatient),
+    patient: publicPatient(patient),
     appointment: await findAppointment(appt._id, patientId),
   })
 }))

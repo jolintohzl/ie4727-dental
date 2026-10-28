@@ -1,6 +1,6 @@
 /* ==========================================================
    Book an appointment — four steps, one at a time:
-     1. patient details (skipped if already logged in)
+     1. patient details (filled in from the account if logged in)
      2. service + branch
      3. date + time
      4. doctor, then review and confirm
@@ -15,13 +15,28 @@ import Validators from '../validators'
 
 const STEPS = ['Your details', 'Service & branch', 'Date & time', 'Doctor']
 const DETAIL_FIELDS = ['name', 'nric', 'phone', 'email', 'password', 'confirmPassword']
-const DETAIL_RULES = {
+const PROFILE_RULES = {
   name: Validators.name,
   nric: Validators.nric,
   phone: Validators.phone,
   email: Validators.email,
+}
+const DETAIL_RULES = {
+  ...PROFILE_RULES,
   password: Validators.newPassword,
   confirmPassword: (value, all) => Validators.confirmPassword(value, all.password),
+}
+
+// The step-1 form, empty or filled in from the logged-in patient
+function detailsFrom(patient) {
+  return {
+    name: patient ? patient.name : '',
+    nric: patient ? patient.nric : '',
+    phone: patient ? patient.phone : '',
+    email: patient ? patient.email : '',
+    password: '',
+    confirmPassword: '',
+  }
 }
 
 // Which step a field belongs to, so a server error can send the user back there
@@ -104,7 +119,8 @@ export default function Appointment() {
   const [options, setOptions] = useState(null)   // services, branches, doctors from the server
   const [loadError, setLoadError] = useState('')
   const [step, setStep] = useState(1)
-  const [details, setDetails] = useState({ name: '', nric: '', phone: '', email: '', password: '', confirmPassword: '' })
+  const [details, setDetails] = useState(() => detailsFrom(patient))
+  const [detailsFor, setDetailsFor] = useState(patient ? patient.id : null)
   const [choice, setChoice] = useState({ serviceId: '', branchId: '', date: '', time: '', doctorId: '' })
   const [slots, setSlots] = useState(null)
   const [slotsVersion, setSlotsVersion] = useState(0)   // bump to load the times again
@@ -128,6 +144,15 @@ export default function Appointment() {
   }, [choice.serviceId, choice.branchId, choice.date, slotsVersion])
 
   const loggedIn = !!patient
+
+  // Someone logged in or out (e.g. from the navbar): start the form again from their account
+  const patientId = patient ? patient.id : null
+  if (detailsFor !== patientId) {
+    setDetailsFor(patientId)
+    setDetails(detailsFrom(patient))
+    setErrors({})
+  }
+
   const service = options && options.services.find((s) => s.id === Number(choice.serviceId))
   const branch = options && options.branches.find((b) => b.id === Number(choice.branchId))
   const doctor = options && options.doctors.find((d) => d.id === Number(choice.doctorId))
@@ -155,7 +180,7 @@ export default function Appointment() {
 
   // Returns the problems with one step ({} when it is fine)
   function stepErrors(n) {
-    if (n === 1) return loggedIn ? {} : Validators.check(details, DETAIL_RULES)
+    if (n === 1) return Validators.check(details, loggedIn ? PROFILE_RULES : DETAIL_RULES)
     if (n === 2) {
       const e = {}
       if (!choice.serviceId) e.serviceId = 'Please choose a service.'
@@ -185,9 +210,10 @@ export default function Appointment() {
     setSubmitting(true)
     setServerError('')
     try {
-      const body = { ...choice, ...(loggedIn ? {} : details) }
+      const { name, nric, phone, email, password } = details
+      const body = { ...choice, name, nric, phone, email, ...(loggedIn ? {} : { password }) }
       const data = await api('book', { body })
-      if (data.patient) setPatient(data.patient)   // a new account was created and logged in
+      setPatient(data.patient)   // the new account, or the edited details
       setDone(data)
       window.scrollTo(0, 0)
     } catch (error) {
@@ -290,11 +316,14 @@ export default function Appointment() {
                       <div>
                         <h2>Fill in patient details</h2>
                         {loggedIn ? (
-                          <div className="account-switch">
-                            <span>Booking as <strong>{patient.name}</strong>.</span> <Link to="/dashboard">Edit details</Link>{' '}
-                            <span aria-hidden="true">·</span>{' '}
-                            <button type="button" className="link-button" onClick={logout}>Not you? Log out</button>
-                          </div>
+                          <>
+                            <div className="account-switch">
+                              <span>Booking as <strong>{patient.name}</strong>.</span>{' '}
+                              <button type="button" className="link-button"
+                                      onClick={() => window.confirm('Are you sure you want to log out?') && logout()}>Not you? Log out</button>
+                            </div>
+                            <p>Changes to personal details here will also update your profile.</p>
+                          </>
                         ) : (
                           <div className="account-switch">
                             <span>New patient? Register below, or <Link to="/login">Log in</Link></span>
@@ -303,8 +332,7 @@ export default function Appointment() {
                       </div>
                     </div>
 
-                    {!loggedIn && (
-                      <div className="form-grid">
+                    <div className="form-grid">
                         <Field id="name" label="Name" error={errors.name}>
                           <input type="text" id="name" autoComplete="name" placeholder="e.g. Jaslyn Tan" maxLength="100"
                                  value={details.name} onChange={(e) => updateDetail('name', e.target.value)} />
@@ -321,17 +349,21 @@ export default function Appointment() {
                           <input type="email" id="email" autoComplete="email" placeholder="you@example.com" maxLength="255"
                                  value={details.email} onChange={(e) => updateDetail('email', e.target.value)} />
                         </Field>
-                        <hr className="form-divider" />
-                        <Field id="password" label="Create a password" error={errors.password} hint="At least 8 characters, with a letter and a number.">
-                          <input type="password" id="password" autoComplete="new-password" placeholder="At least 8 characters" maxLength="72"
-                                 value={details.password} onChange={(e) => updateDetail('password', e.target.value)} />
-                        </Field>
-                        <Field id="confirmPassword" label="Confirm password" error={errors.confirmPassword}>
-                          <input type="password" id="confirmPassword" autoComplete="new-password" placeholder="Type it again" maxLength="72"
-                                 value={details.confirmPassword} onChange={(e) => updateDetail('confirmPassword', e.target.value)} />
-                        </Field>
-                      </div>
-                    )}
+                        {/* the password is only needed when creating a new account */}
+                        {!loggedIn && (
+                          <>
+                            <hr className="form-divider" />
+                            <Field id="password" label="Create a password" error={errors.password} hint="At least 8 characters, with a letter and a number.">
+                              <input type="password" id="password" autoComplete="new-password" placeholder="At least 8 characters" maxLength="72"
+                                     value={details.password} onChange={(e) => updateDetail('password', e.target.value)} />
+                            </Field>
+                            <Field id="confirmPassword" label="Confirm password" error={errors.confirmPassword}>
+                              <input type="password" id="confirmPassword" autoComplete="new-password" placeholder="Type it again" maxLength="72"
+                                     value={details.confirmPassword} onChange={(e) => updateDetail('confirmPassword', e.target.value)} />
+                            </Field>
+                          </>
+                        )}
+                    </div>
                   </div>
 
                   {/* ---------- STEP 2: service + branch ---------- */}

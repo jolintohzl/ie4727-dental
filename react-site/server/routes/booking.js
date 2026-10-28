@@ -3,7 +3,7 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import { Branch, Service, Doctor, Patient, Appointment } from '../models/index.js'
 import {
-  fail, handle, requireLogin, isoDate, dateError, branchSlots, patientBusy,
+  fail, handle, requireLogin, toId, isoDate, dateError, branchSlots, patientBusy,
   findAppointment, shapeAppointment, isDuplicate, BOOKING_WINDOW_DAYS,
 } from '../lib/helpers.js'
 import { bookingDetails, publicPatient } from '../lib/patients.js'
@@ -28,14 +28,14 @@ router.get('/options', handle(async (req, res) => {
 // → { slots: [ { time: "09:00", freeDoctors: [5, 7] }, … ] }
 router.get('/slots', handle(async (req, res) => {
   const { date } = req.query
-  const branchId = Number(req.query.branch)
+  const branchId = toId(req.query.branch)
   const error = dateError(date)
   if (error) return fail(res, 422, error)
   if (!branchId || (!req.query.service && !req.query.doctor)) return fail(res, 422, 'Choose a branch and a service first.')
 
   const doctorIds = req.query.doctor
-    ? [Number(req.query.doctor)]
-    : (await Doctor.find({ serviceIds: Number(req.query.service) })).map((d) => d._id)
+    ? [toId(req.query.doctor)]
+    : (await Doctor.find({ serviceIds: toId(req.query.service) })).map((d) => d._id)
   const booked = await Appointment.find({ status: 'booked', date, doctor: { $in: doctorIds } })
 
   const slots = (await branchSlots(branchId, date)).map((time) => ({
@@ -65,9 +65,9 @@ router.post('/book', handle(async (req, res) => {
   // logged in: the form is filled in from their profile, and any edits update it
   const [clean, errors] = await bookingDetails(body, patientId, !patientId)
 
-  const serviceId = Number(body.serviceId)
-  const branchId = Number(body.branchId)
-  const doctorId = Number(body.doctorId)
+  const serviceId = toId(body.serviceId)
+  const branchId = toId(body.branchId)
+  const doctorId = toId(body.doctorId)
   const { date, time } = body
 
   if (!(await Service.exists({ _id: serviceId }))) errors.serviceId = 'Please choose a service.'

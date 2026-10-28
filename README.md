@@ -50,19 +50,24 @@ Thunderbird on `localhost` port `1110` (no encryption, username `mailpit`).
 
 | Feature | Page | Front end | Server |
 | --- | --- | --- | --- |
-| Search icon | `search.html` | `js/search.js` — reads the site's own pages and ranks matches | none (no database) |
-| Profile icon → log-in modal | every page | `js/login-modal.js` | `api/login.php`, `api/session.php` |
-| Account dashboard | `dashboard.html` | `js/dashboard.js` | `api/profile.php`, `api/appointments.php`, `api/reschedule.php`, `api/cancel.php`, `api/logout.php` |
-| Book Appointment | `appointment.html` | `js/appointment.js` | `api/options.php`, `api/slots.php`, `api/book.php`, `api/draft.php` (saves progress) |
+| Search icon | `search.php` | none — a plain GET form | `includes/search-index.php` reads the site's own pages and ranks matches |
+| Profile icon | every page | a plain link to `dashboard.php` | `login.php` when logged out |
+| Account dashboard | `dashboard.php` | `js/dashboard.js` (profile form checks) | the page itself: profile, cancel, reschedule, log out |
+| Book Appointment | `appointment.php` | `js/appointment.js` (per-step checks) | the page itself: four steps, `?step=1` – `?step=4` |
 | Doctor log-in + schedule | `doctor-login.php`, `doctor-dashboard.php` | none (plain PHP forms) | the pages themselves + `includes/doctor.php` |
 
-- `js/site.js` is loaded on every page: navbar search bar, profile icon, and the
-  `Smile.api()` helper that every script uses to call PHP.
+- The base site has **no fetch(), no AJAX and no JSON**. Every form is a normal HTML form
+  that posts to a PHP page, which saves the change and redirects (Post/Redirect/Get).
+  The React version in `react-site/` is separate and has its own Node API.
+- `includes/app.php` is loaded by every PHP page: session, database, validation, timeslots.
+- `js/site.js` is loaded on every page: the navbar search bar and small form helpers.
+  It never talks to the server.
 - `js/validators.js` holds the form rules (email, NRIC/FIN, phone, password). PHP checks the
-  same rules again in `api/bootstrap.php`.
+  same rules again in `includes/app.php`.
 - The booking form saves progress after every step into the `booking_drafts` table, so a
-  refresh puts it back. Guests' drafts are tied to PHP's session cookie; logged-in patients'
-  to their account. The password is never saved in a draft. If your database was created
+  refresh or a later visit puts it back. Guests' drafts are tied to PHP's session cookie;
+  logged-in patients' to their account. The password is never saved in a draft — only its
+  hash, in the session, until the account is created. If your database was created
   before this table existed, import `database/add_booking_drafts.sql` (it doesn't wipe data).
 - Every timeslot is 30 minutes. A doctor cannot be double-booked — the database enforces it
   with a unique index, so two people clicking at the same moment can't both get the slot.

@@ -59,11 +59,11 @@ $results = $query !== '' ? search_run($query) : [];
                     </button>
                 </form>
 
-                <a href="dashboard.html" class="icon-btn" id="accountBtn" aria-label="My account">
+                <a href="dashboard.php" class="icon-btn" id="accountBtn" aria-label="My account">
                     <i class="fa-regular fa-user"></i>
                 </a>
 
-                <a href="appointment.html" class="btn btn-primary btn-book">
+                <a href="appointment.php" class="btn btn-primary btn-book">
                     <i class="fa-regular fa-calendar-check"></i>
                     <span>Book Appointment</span>
                 </a>
@@ -351,7 +351,6 @@ $results = $query !== '' ? search_run($query) : [];
      ========================================================== -->
 <script src="js/validators.js"></script>
 <script src="js/site.js"></script>
-<script src="js/login-modal.js"></script>
 
 </body>
 </html>

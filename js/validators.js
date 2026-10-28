@@ -1,11 +1,11 @@
 /* ==========================================================
-   Form validation rules — shared by the login modal,
-   the booking page and the dashboard.
+   Form validation rules — shared by the booking page,
+   the dashboard and the careers form.
 
    Every rule takes the field's value and returns an error message,
    or '' when the value is fine.
 
-   The PHP side (api/bootstrap.php → validate_patient) checks the
+   The PHP side (includes/app.php → validate_patient) checks the
    same rules again, because anything in the browser can be bypassed.
    ========================================================== */
 

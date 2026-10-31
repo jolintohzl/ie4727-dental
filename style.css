@@ -1699,8 +1699,8 @@ ul, ol { padding-left: 0; }
 
 /* ==========================================================
    13. ACCOUNT, BOOKING & SEARCH
-       (navbar search + log in, appointment.html,
-        dashboard.html, search.html)
+       (navbar search, login.php, appointment.php,
+        dashboard.php, search.php)
    ========================================================== */
 
 /* the hidden attribute always wins, even over display: flex/grid below */
@@ -1952,7 +1952,7 @@ ul, ol { padding-left: 0; }
 }
 
 
-/* ---------- Log-in modal (js/login-modal.js) ---------- */
+/* ---------- Log-in card (login.php reuses the old modal's styles) ---------- */
 body.modal-open { overflow: hidden; }
 
 .modal-backdrop {
@@ -2119,7 +2119,7 @@ body.modal-open { overflow: hidden; }
 .loading-note { color: var(--muted); font-size: .92rem; }
 
 
-/* ---------- appointment.html ---------- */
+/* ---------- appointment.php ---------- */
 
 .req { color: var(--danger); }
 
@@ -2317,6 +2317,8 @@ body.modal-open { overflow: hidden; }
 }
 .wizard-nav #nextBtn,
 .wizard-nav #confirmBtn { margin-left: auto; }
+/* Back comes after Next in the HTML (so Enter submits Next) but sits on the left */
+.wizard-nav #backBtn { order: -1; }
 
 /* "Progress saved" under the Back / Next buttons */
 .draft-status {
@@ -2622,7 +2624,7 @@ body.modal-open { overflow: hidden; }
 .confirmation-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
 
-/* ---------- dashboard.html ---------- */
+/* ---------- dashboard.php ---------- */
 /* label on the left, box on the right — like the wireframe */
 .profile-form .form-field {
     display: grid;

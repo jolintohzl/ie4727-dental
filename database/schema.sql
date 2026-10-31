@@ -133,7 +133,7 @@ CREATE TABLE appointments (
 -- ----------------------------------------------------------
 -- 6. BOOKING DRAFTS  (a booking that has been started but not confirmed)
 --
--- appointment.html saves what has been filled in after every step, so a
+-- appointment.php saves what has been filled in after every step, so a
 -- refresh can put it all back. Nothing here is a real booking — that only
 -- happens in `appointments` once "Confirm booking" is clicked, and then the
 -- draft is deleted. Drafts untouched for 7 days are deleted automatically.

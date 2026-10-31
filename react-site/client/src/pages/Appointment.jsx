@@ -195,10 +195,25 @@ export default function Appointment() {
     return choice.doctorId ? {} : { doctorId: 'Please choose a doctor.' }
   }
 
-  function next() {
+  async function next() {
     const found = stepErrors(step)
     setErrors(found)
-    if (Object.keys(found).length === 0) setStep(step + 1)
+    if (Object.keys(found).length) return
+
+    // Before leaving step 1, ask the server whether the email or NRIC already
+    // has an account. If it can't be reached, carry on: /book checks again at the end.
+    if (step === 1) {
+      const { name, nric, phone, email } = details
+      try {
+        await api('check-details', { body: { name, nric, phone, email } })
+      } catch (error) {
+        if (Object.keys(error.fields).length) {
+          setErrors(error.fields)
+          return
+        }
+      }
+    }
+    setStep(step + 1)
   }
 
   async function handleSubmit(event) {

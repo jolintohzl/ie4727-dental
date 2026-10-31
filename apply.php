@@ -12,15 +12,16 @@
    browser can be bypassed, so the browser copy is a convenience and this
    one is the real gate.
 
-   NOTE ON CSRF: every other endpoint insists on a JSON content type, which
-   a cross-site HTML form cannot send. A file upload has to be multipart, so
-   that protection does not apply here. The worst a forged post can do is
-   lodge a junk application — no login state changes — but if this ever holds
-   anything sensitive, add a token. */
-require __DIR__ . '/api/bootstrap.php';
+   NOTE ON CSRF: no login is involved here, so the SameSite session cookie
+   that protects the other forms does not help. The worst a forged post can do
+   is lodge a junk application, but if this ever holds anything sensitive,
+   add a token. */
+require __DIR__ . '/includes/app.php';
 require __DIR__ . '/api/mail.php';
-require __DIR__ . '/includes/result-page.php';
-require_method('POST');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    go_to('about-us.html#apply');
+}
 
 const RESUME_DIR       = __DIR__ . '/storage/resumes';
 const RESUME_MAX_BYTES = 5 * 1024 * 1024;              // 5 MB, as the form says
@@ -45,8 +46,7 @@ if (!$_POST && !$_FILES && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     show_errors(['That upload was too large for the server to accept. Resumes must be 5 MB or smaller.'], 413);
 }
 
-/* Renders the list of problems and stops. The /api endpoints answer a
-   fetch() call with JSON; this script answers a browser, so it draws a page. */
+/* Renders the list of problems and stops. */
 function show_errors(array $errors, int $status = 422)
 {
     $items = '';

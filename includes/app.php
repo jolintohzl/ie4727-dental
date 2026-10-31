@@ -1,27 +1,31 @@
 <?php
 /* ==========================================================
-   Shared setup for every file in /api.
-   Each endpoint starts with:  require __DIR__ . '/bootstrap.php';
+   Shared setup for every PHP page on the site.
+   Each page starts with:  require __DIR__ . '/includes/app.php';
 
-   Every endpoint talks JSON: the browser sends JSON with fetch() and
-   gets JSON back, e.g. { "ok": true, ... } or { "ok": false, "error": "..." }.
+   Every page is a plain HTML form that posts back to PHP, which
+   does the work and draws the next page (or redirects). There is
+   no fetch(), no AJAX and no JSON anywhere in the base site.
    ========================================================== */
 
-require __DIR__ . '/config.php';
+require_once __DIR__ . '/../api/config.php';
+require_once __DIR__ . '/result-page.php';
 
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: text/html; charset=utf-8');
 header('Cache-Control: no-store');
 
-// Anything unexpected still answers in JSON instead of a PHP error page.
+// Anything unexpected draws a friendly page instead of a PHP error.
 // The details go to Apache's error log, not to the browser.
 set_exception_handler(function (Throwable $e) {
     error_log($e);
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'error' => 'Something went wrong on our side. Please try again.']);
+    render_result_page('Something went wrong', 'error',
+        '<p>Something went wrong on our side. Please try again.</p>'
+        . '<p><a href="index.html" class="btn btn-primary btn-lg">Back to the home page</a></p>', 500);
 });
 
 // The login lives in a PHP session cookie. HttpOnly keeps JavaScript away
-// from it; SameSite=Lax stops other websites from sending it with their forms.
+// from it; SameSite=Lax means another website's form cannot post here with it,
+// so every change is made on POST only.
 session_set_cookie_params([
     'lifetime' => 0,
     'path'     => '/',
@@ -31,47 +35,7 @@ session_set_cookie_params([
 session_start();
 
 
-/* ---------- Responses ---------- */
-
-function respond(array $data, int $status = 200)
-{
-    http_response_code($status);
-    echo json_encode(['ok' => $status < 400] + $data);
-    exit;
-}
-
-// $fields maps a form field name to its message, so the page can show
-// each error under the right input.
-function fail(string $message, int $status = 400, array $fields = [])
-{
-    respond(['error' => $message, 'fields' => (object) $fields], $status);
-}
-
-
-/* ---------- Requests ---------- */
-
-function require_method(string $method)
-{
-    if ($_SERVER['REQUEST_METHOD'] !== $method) {
-        fail('Method not allowed.', 405);
-    }
-}
-
-// Reads the JSON body of a POST.
-// Insisting on the JSON content type also blocks cross-site form posts:
-// a plain HTML form on another site cannot send application/json.
-function read_json(): array
-{
-    $type = $_SERVER['CONTENT_TYPE'] ?? '';
-    if (stripos($type, 'application/json') !== 0) {
-        fail('Expected a JSON request.', 415);
-    }
-    $data = json_decode(file_get_contents('php://input'), true);
-    if (!is_array($data)) {
-        fail('The request could not be read.', 400);
-    }
-    return $data;
-}
+/* ---------- Requests and responses ---------- */
 
 function str_field(array $in, string $key): string
 {
@@ -81,6 +45,33 @@ function str_field(array $in, string $key): string
 function int_field(array $in, string $key): int
 {
     return isset($in[$key]) && is_numeric($in[$key]) ? (int) $in[$key] : 0;
+}
+
+function e($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+// Post/Redirect/Get: after a form post, send the browser somewhere else
+// so a refresh never submits the form twice.
+function go_to(string $url)
+{
+    header('Location: ' . $url);
+    exit;
+}
+
+/* One-time messages. Set before a redirect, shown once on the next page load:
+     flash('notice', 'Appointment cancelled.');   // set
+     $notice = flash('notice');                   // read + forget */
+function flash(string $key, $value = null)
+{
+    if ($value !== null) {
+        $_SESSION['flash'][$key] = $value;
+        return null;
+    }
+    $value = $_SESSION['flash'][$key] ?? null;
+    unset($_SESSION['flash'][$key]);
+    return $value;
 }
 
 
@@ -102,7 +93,8 @@ function db(): PDO
                 ]
             );
         } catch (PDOException $e) {
-            fail('Could not connect to the database. Is MySQL running, and has database/schema.sql been imported?', 500);
+            render_result_page('Database unavailable', 'error',
+                '<p>Could not connect to the database. Is MySQL running, and has database/schema.sql been imported?</p>', 500);
         }
     }
     return $pdo;
@@ -115,20 +107,26 @@ function is_duplicate(PDOException $e): bool
 }
 
 
-/* ---------- Login ---------- */
+/* ---------- Patient login ---------- */
 
 function current_patient_id(): ?int
 {
     return isset($_SESSION['patient_id']) ? (int) $_SESSION['patient_id'] : null;
 }
 
-function require_login(): int
+// The logged-in patient's row, or null. Logs out a session whose
+// account has been removed from the database since logging in.
+function current_patient(): ?array
 {
     $id = current_patient_id();
     if ($id === null) {
-        fail('Please log in first.', 401);
+        return null;
     }
-    return $id;
+    $patient = find_patient($id);
+    if ($patient === null) {
+        log_out();
+    }
+    return $patient;
 }
 
 function log_in(int $patientId)
@@ -136,6 +134,12 @@ function log_in(int $patientId)
     // a fresh session id on login stops session-fixation attacks
     session_regenerate_id(true);
     $_SESSION['patient_id'] = $patientId;
+}
+
+function log_out()
+{
+    unset($_SESSION['patient_id']);
+    session_regenerate_id(true);
 }
 
 function find_patient(int $id): ?array
@@ -192,6 +196,15 @@ function validate_patient(array $in, bool $withPassword): array
         } elseif (strlen($password) > 72) {
             $errors['password'] = 'Password must be 72 characters or fewer.';
         }
+        // only checked when the form has a "type it again" box
+        if (array_key_exists('confirmPassword', $in) && !isset($errors['password'])) {
+            $confirm = is_string($in['confirmPassword']) ? $in['confirmPassword'] : '';
+            if ($confirm === '') {
+                $errors['confirmPassword'] = 'Please type your password again.';
+            } elseif ($confirm !== $password) {
+                $errors['confirmPassword'] = 'The passwords do not match.';
+            }
+        }
         $clean['password'] = $password;
     }
 
@@ -214,6 +227,19 @@ function uniqueness_errors(array $clean, ?int $exceptId = null): array
         }
     }
     return $errors;
+}
+
+// Step 1 of booking. Guests are creating an account; a logged-in patient may be
+// editing their own details, so their own email and NRIC don't count as taken.
+// Returns [cleanValues, errors].
+function booking_details(array $in, ?int $patientId, bool $withPassword): array
+{
+    [$clean, $errors] = validate_patient($in, $withPassword);
+    $errors += uniqueness_errors($clean, $patientId);
+    if ($patientId === null && isset($errors['email']) && strpos($errors['email'], 'already exists') !== false) {
+        $errors['email'] .= ' Log in to book with it.';
+    }
+    return [$clean, $errors];
 }
 
 
@@ -318,6 +344,14 @@ function find_appointment(int $id, int $patientId): ?array
     return $row ? shape_appointment($row) : null;
 }
 
+// Every appointment this patient has, earliest first.
+function patient_appointments(int $patientId): array
+{
+    $stmt = db()->prepare(APPOINTMENT_SELECT . ' WHERE a.patient_id = ? ORDER BY a.appt_date, a.appt_time');
+    $stmt->execute([$patientId]);
+    return array_map('shape_appointment', $stmt->fetchAll());
+}
+
 function shape_appointment(array $row): array
 {
     foreach (['id', 'doctorId', 'branchId', 'serviceId'] as $key) {
@@ -338,4 +372,31 @@ function patient_busy(int $patientId, string $date, string $time, int $exceptId 
     );
     $stmt->execute([$patientId, $date, $time, $exceptId]);
     return (bool) $stmt->fetch();
+}
+
+// Each start time at the appointment's branch on $date → is its doctor free then?
+// The appointment's own current slot counts as taken.
+function doctor_free_slots(array $appt, string $date): array
+{
+    $booked = booked_times([$appt['doctorId']], $date);
+    $slots = [];
+    foreach (branch_slots($appt['branchId'], $date) as $time) {
+        $slots[$time] = !isset($booked[$time]);
+    }
+    return $slots;
+}
+
+
+/* ---------- Formatting ---------- */
+
+// "2026-10-28" → "Wed, 28 October 2026"
+function format_date(string $iso): string
+{
+    return date('D, j F Y', strtotime($iso));
+}
+
+// "13:30" → "1.30pm"
+function format_time(string $hhmm): string
+{
+    return date('g.ia', strtotime($hhmm));
 }

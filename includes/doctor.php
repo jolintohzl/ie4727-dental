@@ -8,28 +8,18 @@
    back to themselves — no JavaScript requests and no JSON.
 
    Every form changes something only on POST, and the session cookie
-   is SameSite=Lax (api/bootstrap.php), so another website cannot
+   is SameSite=Lax (includes/app.php), so another website cannot
    submit these forms with the doctor's login.
    ========================================================== */
-require_once __DIR__ . '/../api/bootstrap.php';
-require_once __DIR__ . '/result-page.php';
+require_once __DIR__ . '/app.php';
 
-// These pages are HTML; bootstrap.php set a JSON header for the /api endpoints.
-header_remove('Content-Type');
-header('Content-Type: text/html; charset=utf-8');
-
-// ...and anything unexpected should draw a page, not answer in JSON.
+// Anything unexpected sends a doctor back to their schedule.
 set_exception_handler(function (Throwable $e) {
     error_log($e);
     render_result_page('Something went wrong', 'error',
         '<p>Something went wrong on our side. Please try again.</p>'
         . '<p><a href="doctor-dashboard.php" class="btn btn-primary btn-lg">Back to my schedule</a></p>', 500);
 });
-
-function e($value): string
-{
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
-}
 
 
 /* ---------- Login ---------- */
@@ -60,21 +50,6 @@ function log_out_doctor()
     session_regenerate_id(true);
 }
 
-
-/* ---------- One-time messages ----------
-   Set before a redirect, shown once on the next page load:
-     flash('notice', 'Appointment cancelled.');   // set
-     $notice = flash('notice');                   // read + forget */
-function flash(string $key, $value = null)
-{
-    if ($value !== null) {
-        $_SESSION['flash'][$key] = $value;
-        return null;
-    }
-    $value = $_SESSION['flash'][$key] ?? null;
-    unset($_SESSION['flash'][$key]);
-    return $value;
-}
 
 
 /* ---------- The doctor's appointments ---------- */
@@ -119,29 +94,4 @@ function shape_doctor_appointment(array $row): array
     return $row;
 }
 
-// Each start time at the appointment's branch on $date → is this doctor free then?
-// The appointment's own current slot counts as taken.
-function doctor_free_slots(array $appt, string $date): array
-{
-    $booked = booked_times([$appt['doctorId']], $date);
-    $slots = [];
-    foreach (branch_slots($appt['branchId'], $date) as $time) {
-        $slots[$time] = !isset($booked[$time]);
-    }
-    return $slots;
-}
 
-
-/* ---------- Formatting (same as js/site.js) ---------- */
-
-// "2026-10-28" → "Wed, 28 October 2026"
-function format_date(string $iso): string
-{
-    return date('D, j F Y', strtotime($iso));
-}
-
-// "13:30" → "1.30pm"
-function format_time(string $hhmm): string
-{
-    return date('g.ia', strtotime($hhmm));
-}

@@ -14,7 +14,6 @@
 
 function render_result_page(string $title, string $kind, string $bodyHtml, int $status = 200)
 {
-    // These pages are HTML, not the JSON the /api endpoints return.
     header_remove('Content-Type');
     header('Content-Type: text/html; charset=utf-8');
     http_response_code($status);

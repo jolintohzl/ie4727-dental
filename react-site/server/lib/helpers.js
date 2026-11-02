@@ -64,6 +64,16 @@ export async function branchSlots(branchId, date) {
   return slots
 }
 
+// Each start time on a date with the doctors still free then:
+// [ { time: "09:00", freeDoctors: [5, 7] }, … ]
+export async function slotTable(doctorIds, branchId, date) {
+  const booked = await Appointment.find({ status: 'booked', date, doctor: { $in: doctorIds } })
+  return (await branchSlots(branchId, date)).map((time) => ({
+    time,
+    freeDoctors: doctorIds.filter((id) => !booked.some((b) => b.doctor === id && b.time === time)),
+  }))
+}
+
 // Does this patient already have something booked at that time?
 export async function patientBusy(patientId, date, time, exceptId = null) {
   const query = { patient: patientId, date, time, status: 'booked' }

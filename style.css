@@ -126,13 +126,18 @@ ul, ol { padding-left: 0; }
     cursor: pointer;
     white-space: nowrap;
     transition: transform .2s ease, box-shadow .2s ease,
-                background .2s ease, color .2s ease, border-color .2s ease;
+    background .2s ease, color .2s ease, border-color .2s ease;
 }
 
 .btn:hover { transform: none; }
 
-.btn-lg    { padding: 15px 32px; font-size: 1rem; }
-.btn-block { width: 100%; }
+.btn-lg    { 
+    padding: 15px 32px; 
+    font-size: 1rem; 
+}
+.btn-block { 
+    width: 100%; 
+}
 
 .btn-primary {
     background: var(--blue-700);
@@ -291,12 +296,7 @@ ul, ol { padding-left: 0; }
     border-color: var(--blue-500);
     color: var(--blue-700);
 }
-
-/* main conversion button.
-   Height is pinned to 42px so it lines up with the round search and
-   profile buttons next to it; the base .btn padding would make it 54px.
-   Vertical padding goes to 0 — .btn is a flex box, so the label stays
-   centred on its own. */
+/*book appt button*/
 .btn-book {
     margin-left: 6px;
     height: 42px;
@@ -349,13 +349,7 @@ ul, ol { padding-left: 0; }
     transition: transform .25s ease;
 }
 
-/* fees-calculator.html loads Bootstrap, which claims the class name
-   .dropdown-toggle and draws a little triangle with ::after. An element
-   has only ONE ::after, so on "Services" that triangle landed on the very
-   same box as the hover underline above — which is why a stray wedge
-   showed up there. Hiding the box would take the underline with it, so
-   only the three properties Bootstrap adds are undone here. We draw our
-   own chevron with the <i> below. */
+
 .dropdown-toggle::after {
     border: 0;
     margin-left: 0;
@@ -364,9 +358,7 @@ ul, ol { padding-left: 0; }
 .has-dropdown.open .dropdown-toggle i { 
     transform: rotate(180deg); }
 
-/* the panel itself.
-   display:none means the links take up NO space at all until the
-   script adds .open — they never affect the height of the navbar. */
+
 .dropdown {
     display: none;
     position: absolute;
@@ -382,17 +374,13 @@ ul, ol { padding-left: 0; }
     padding: 8px;
     z-index: 120;
 }
-/* the script adds .open when the word is tapped — this is what touch
-   screens and the mobile menu use */
+
 .has-dropdown.open .dropdown {
     display: block;
     animation: dropdown-in .22s ease;
 }
 
-/* On a screen with a mouse the panel opens on hover instead, so nothing has
-   to be clicked. :focus-within keeps it reachable by keyboard (Tab to it).
-   The guard matters: phones report (hover: none), and without it a tap would
-   open a panel that could never be closed again. */
+
 @media (hover: hover) and (min-width: 769px) {
 
     .has-dropdown:hover .dropdown,
@@ -406,12 +394,7 @@ ul, ol { padding-left: 0; }
         transform: rotate(180deg);
     }
 
-    /* The panel sits 12px below the word, and that gap used to belong to
-       neither the link nor the panel — the pointer left both on the way down
-       and the panel snapped shut. Growing the menu item downwards puts the gap
-       inside the thing being hovered. The negative margin cancels the padding
-       so the navbar height does not change, and the panel drops the margin it
-       no longer needs (top:100% now already sits 12px lower). */
+    
     .has-dropdown {
         padding-bottom: 12px;
         margin-bottom: -12px;
@@ -554,9 +537,9 @@ ul, ol { padding-left: 0; }
 .float-card-2 { bottom: 8%; right: -24px; }
 
 
-/* ==========================================================
+/* 
    3. TRUST / BENEFITS
-   ========================================================== */
+    */
 .benefits { background: var(--white); }
 
 .benefit-card {

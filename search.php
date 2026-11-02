@@ -1,8 +1,8 @@
 <?php
-/* Site search — rendered entirely by PHP.
+/* Site search — rendered by PHP.
    The form below arrives here as a plain GET with ?q=..., and the
-   results are printed straight into the page. There is no fetch(),
-   no AJAX and no JSON: includes/search-index.php reads the site's
+   results are printed straight into the page. 
+   includes/search-index.php reads the site's
    HTML files off the disk and ranks them. */
 require __DIR__ . '/includes/search-index.php';
 

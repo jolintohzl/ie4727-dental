@@ -3,10 +3,12 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import { Branch, Service, Doctor, Patient, Appointment } from '../models/index.js'
 import {
-  fail, handle, requireLogin, toId, isoDate, dateError, branchSlots, patientBusy,
+  fail, handle, requireLogin, toId, isoDate, dateError, branchSlots, slotTable, patientBusy,
   findAppointment, shapeAppointment, isDuplicate, BOOKING_WINDOW_DAYS,
 } from '../lib/helpers.js'
 import { bookingDetails, publicPatient } from '../lib/patients.js'
+import { loadDraft, saveDraft, clearDraft } from '../lib/drafts.js'
+import Validators from '../lib/validators.js'
 
 const router = Router()
 
@@ -36,13 +38,31 @@ router.get('/slots', handle(async (req, res) => {
   const doctorIds = req.query.doctor
     ? [toId(req.query.doctor)]
     : (await Doctor.find({ serviceIds: toId(req.query.service) })).map((d) => d._id)
-  const booked = await Appointment.find({ status: 'booked', date, doctor: { $in: doctorIds } })
+  res.json({ ok: true, date, slots: await slotTable(doctorIds, branchId, date) })
+}))
 
-  const slots = (await branchSlots(branchId, date)).map((time) => ({
-    time,
-    freeDoctors: doctorIds.filter((id) => !booked.some((b) => b.doctor === id && b.time === time)),
-  }))
-  res.json({ ok: true, date, slots })
+// GET /api/draft → { draft: { step, name, …, doctorId, exists, passwordSaved, restored, dropped } }
+// The booking this browser started earlier (or an empty one), so the form
+// can carry on where it was left.
+router.get('/draft', handle(async (req, res) => {
+  res.json({ ok: true, draft: await loadDraft(req) })
+}))
+
+// POST /api/draft  { step, name, nric, phone, email, serviceId, branchId, date, time, doctorId }
+//   + { password } from a guest leaving step 1: only its hash is kept, in the session.
+router.post('/draft', handle(async (req, res) => {
+  const password = String(req.body.password || '')
+  if (!req.session.patientId && password && !Validators.newPassword(password)) {
+    req.session.bookingPasswordHash = await bcrypt.hash(password, 10)
+  }
+  await saveDraft(req, req.body)
+  res.json({ ok: true, passwordSaved: !req.session.patientId && !!req.session.bookingPasswordHash })
+}))
+
+// POST /api/draft/clear — "Start over"
+router.post('/draft/clear', handle(async (req, res) => {
+  await clearDraft(req)
+  res.json({ ok: true })
 }))
 
 // POST /api/check-details  { name, nric, phone, email }
@@ -57,13 +77,15 @@ router.post('/check-details', handle(async (req, res) => {
 // POST /api/book  { serviceId, branchId, doctorId, date, time, name, nric, phone, email }
 //   + { password } when nobody is logged in —
 //   then the account is created and logged in as part of the booking.
+//   (A guest who already set one, saved with the draft, can leave it blank.)
 //   A logged-in patient's details are saved to their profile instead.
 router.post('/book', handle(async (req, res) => {
   const body = req.body
   let patientId = req.session.patientId || null
+  const savedHash = !patientId && !body.password ? req.session.bookingPasswordHash : null
 
   // logged in: the form is filled in from their profile, and any edits update it
-  const [clean, errors] = await bookingDetails(body, patientId, !patientId)
+  const [clean, errors] = await bookingDetails(body, patientId, !patientId && !savedHash)
 
   const serviceId = toId(body.serviceId)
   const branchId = toId(body.branchId)
@@ -86,7 +108,7 @@ router.post('/book', handle(async (req, res) => {
   const isNewAccount = !patientId
   let newPatient = null
   if (isNewAccount) {
-    newPatient = await Patient.create({ ...clean, passwordHash: await bcrypt.hash(clean.password, 10) })
+    newPatient = await Patient.create({ ...clean, passwordHash: savedHash || await bcrypt.hash(clean.password, 10) })
     patientId = String(newPatient._id)
   }
   let appt
@@ -102,6 +124,7 @@ router.post('/book', handle(async (req, res) => {
   const patient = isNewAccount ? newPatient : await Patient.findByIdAndUpdate(patientId, clean, { new: true })
 
   if (isNewAccount) req.session.patientId = patientId
+  await clearDraft(req)
   res.status(201).json({
     ok: true,
     newAccount: isNewAccount,

@@ -5,8 +5,13 @@
      3. date + time
      4. doctor, then review and confirm
    Talks to the Express API: options, slots and book.
+
+   Progress is saved to the server (api/draft) after every step and
+   every choice, so leaving and coming back puts the form back the
+   way it was. A guest's password is never saved there: the server
+   keeps only its hash, in the session, until the account is created.
    ========================================================== */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, formatDate, formatTime, parseDate, toIsoDate, MONTHS } from '../api'
 import { useAuth } from '../auth'
@@ -36,6 +41,21 @@ function detailsFrom(patient) {
     email: patient ? patient.email : '',
     password: '',
     confirmPassword: '',
+  }
+}
+
+// The form as the server saved it (empty boxes for anything not filled in yet)
+function formFrom(draft) {
+  const text = (value) => (value == null ? '' : String(value))
+  return {
+    details: {
+      name: text(draft.name), nric: text(draft.nric), phone: text(draft.phone), email: text(draft.email),
+      password: '', confirmPassword: '',
+    },
+    choice: {
+      serviceId: text(draft.serviceId), branchId: text(draft.branchId),
+      date: text(draft.date), time: text(draft.time), doctorId: text(draft.doctorId),
+    },
   }
 }
 
@@ -120,7 +140,6 @@ export default function Appointment() {
   const [loadError, setLoadError] = useState('')
   const [step, setStep] = useState(1)
   const [details, setDetails] = useState(() => detailsFrom(patient))
-  const [detailsFor, setDetailsFor] = useState(patient ? patient.id : null)
   const [choice, setChoice] = useState({ serviceId: '', branchId: '', date: '', time: '', doctorId: '' })
   const [slots, setSlots] = useState(null)
   const [slotsVersion, setSlotsVersion] = useState(0)   // bump to load the times again
@@ -128,6 +147,16 @@ export default function Appointment() {
   const [serverError, setServerError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(null)          // the reply after a successful booking
+  const [draftFor, setDraftFor] = useState(undefined)   // whose saved booking is on the form
+  const [passwordSaved, setPasswordSaved] = useState(false)   // a guest already set one for this booking
+  const [draftSaved, setDraftSaved] = useState(false)         // shows "Progress saved" under the buttons
+  const [notice, setNotice] = useState({ restored: false, dropped: false })
+  const saving = useRef(Promise.resolve())       // draft saves, one after another
+
+  const loggedIn = !!patient
+  const patientId = patient ? patient.id : null
+  const authChecked = patient !== undefined
+  const draftReady = authChecked && draftFor === patientId
 
   useEffect(() => {
     api('options').then(setOptions).catch((e) => setLoadError(e.message))
@@ -143,14 +172,52 @@ export default function Appointment() {
     return () => { current = false }
   }, [choice.serviceId, choice.branchId, choice.date, slotsVersion])
 
-  const loggedIn = !!patient
+  // Put back the booking this browser started earlier, once we know who is logged in,
+  // and again whenever that changes (e.g. logging out from the navbar).
+  // After booking, the confirmation stays as it is.
+  useEffect(() => {
+    if (!authChecked || done) return
+    let current = true
+    api('draft')
+      .then((data) => current && applyDraft(data.draft))
+      .catch(() => current && applyDraft({ step: 1, ...detailsFrom(patient) }))   // can't load it: start afresh
+    return () => { current = false }
+  }, [authChecked, patientId, done])
 
-  // Someone logged in or out (e.g. from the navbar): start the form again from their account
-  const patientId = patient ? patient.id : null
-  if (detailsFor !== patientId) {
-    setDetailsFor(patientId)
-    setDetails(detailsFrom(patient))
+  function applyDraft(draft) {
+    const form = formFrom(draft)
+    setDetails(form.details)
+    setChoice(form.choice)
+    setStep(draft.step)
+    setSlots(null)
     setErrors({})
+    setServerError('')
+    setPasswordSaved(!!draft.passwordSaved)
+    setDraftSaved(!!draft.exists)
+    setNotice({ restored: !!draft.restored, dropped: !!draft.dropped })
+    setDraftFor(patientId)
+  }
+
+  // Saves where the booking is up to. The requests go one after another so the
+  // last change always wins. If saving fails the booking itself still works.
+  function saveDraft({ toStep = step, toChoice = choice, password = '' } = {}) {
+    const { name, nric, phone, email } = details
+    const body = { step: toStep, ...toChoice, name, nric, phone, email, ...(password && { password }) }
+    saving.current = saving.current.then(() => api('draft', { body })).catch(() => null)
+    saving.current.then((reply) => setDraftSaved(!!reply))
+    return saving.current
+  }
+
+  // Moving between steps saves the step too (and, leaving step 1, a guest's password)
+  function goTo(n, password = '') {
+    setStep(n)
+    setNotice({ restored: false, dropped: false })
+    saveDraft({ toStep: n, password }).then((reply) => reply && setPasswordSaved(reply.passwordSaved))
+  }
+
+  function startOver() {
+    saving.current = saving.current.then(() => api('draft/clear', { body: {} })).catch(() => null)
+    applyDraft({ step: 1, ...detailsFrom(patient) })
   }
 
   const service = options && options.services.find((s) => s.id === Number(choice.serviceId))
@@ -176,11 +243,16 @@ export default function Appointment() {
     setChoice(next)
     setErrors({ ...errors, [field]: '' })
     setServerError('')
+    saveDraft({ toChoice: next })
   }
 
   // Returns the problems with one step ({} when it is fine)
   function stepErrors(n) {
-    if (n === 1) return Validators.check(details, loggedIn ? PROFILE_RULES : DETAIL_RULES)
+    if (n === 1) {
+      // a guest who already set a password for this booking can leave the boxes blank
+      const keepPassword = passwordSaved && !details.password && !details.confirmPassword
+      return Validators.check(details, loggedIn || keepPassword ? PROFILE_RULES : DETAIL_RULES)
+    }
     if (n === 2) {
       const e = {}
       if (!choice.serviceId) e.serviceId = 'Please choose a service.'
@@ -213,11 +285,13 @@ export default function Appointment() {
         }
       }
     }
-    setStep(step + 1)
+    goTo(step + 1, step === 1 && !loggedIn ? details.password : '')
   }
 
+  // Next and Confirm are both submit buttons, so pressing Enter moves the form on
   async function handleSubmit(event) {
     event.preventDefault()
+    if (step < 4) return next()
     const found = stepErrors(4)
     setErrors(found)
     if (Object.keys(found).length) return
@@ -306,14 +380,30 @@ export default function Appointment() {
               </div>
             )}
 
-            {!done && options && (
+            {!done && options && draftReady && (
               <>
+                {notice.restored && (
+                  <div className="alert alert-info" id="draftNotice" role="status">
+                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    <span>
+                      Welcome back — we've restored the booking you started.{' '}
+                      <button type="button" className="link-button" onClick={startOver}>Start over</button>
+                    </span>
+                  </div>
+                )}
+                {notice.dropped && (
+                  <div className="alert alert-info" role="status">
+                    <i className="fa-solid fa-circle-info"></i>
+                    <span>The date, time or doctor you picked is no longer available, so please choose again.</span>
+                  </div>
+                )}
+
                 {/* Progress timeline: 1 ── 2 ── 3 ── 4 */}
                 <nav className="booking-steps" aria-label="Booking progress">
                   <ol>
                     {STEPS.map((label, i) => (
                       <li key={label} className={stepClass(i + 1)}>
-                        <a href={'#step-' + (i + 1)} onClick={(e) => { e.preventDefault(); if (i + 1 < step) setStep(i + 1) }}>
+                        <a href={'#step-' + (i + 1)} onClick={(e) => { e.preventDefault(); if (i + 1 < step) goTo(i + 1) }}>
                           <span className="step-dot">{i + 1 < step ? <i className="fa-solid fa-check"></i> : i + 1}</span>
                           <span className="step-label">{label}</span>
                         </a>
@@ -368,8 +458,12 @@ export default function Appointment() {
                         {!loggedIn && (
                           <>
                             <hr className="form-divider" />
-                            <Field id="password" label="Create a password" error={errors.password} hint="At least 8 characters, with a letter and a number.">
-                              <input type="password" id="password" autoComplete="new-password" placeholder="At least 8 characters" maxLength="72"
+                            <Field id="password" label="Create a password" error={errors.password}
+                                   hint={passwordSaved
+                                     ? 'You have already set a password for this booking. Type a new one only to change it.'
+                                     : 'At least 8 characters, with a letter and a number.'}>
+                              <input type="password" id="password" autoComplete="new-password" maxLength="72"
+                                     placeholder={passwordSaved ? 'Leave blank to keep it' : 'At least 8 characters'}
                                      value={details.password} onChange={(e) => updateDetail('password', e.target.value)} />
                             </Field>
                             <Field id="confirmPassword" label="Confirm password" error={errors.confirmPassword}>
@@ -516,20 +610,30 @@ export default function Appointment() {
                     </p>
                   </div>
 
-                  {/* ---------- BACK / NEXT ---------- */}
+                  {/* ---------- NEXT / BACK ----------
+                      Next comes first so that pressing Enter submits it;
+                      the shared CSS puts Back on the left. */}
                   <div className="wizard-nav">
-                    <button type="button" className="btn btn-outline btn-lg" hidden={step === 1} onClick={() => setStep(step - 1)}>
-                      <i className="fa-solid fa-arrow-left"></i> Back
-                    </button>
-                    <button type="button" className="btn btn-primary btn-lg" hidden={step === 4} onClick={next}>
-                      Next <i className="fa-solid fa-arrow-right"></i>
-                    </button>
-                    <button type="submit" className="btn btn-primary btn-lg" hidden={step !== 4} disabled={submitting}>
-                      {submitting
-                        ? <><i className="fa-solid fa-spinner fa-spin"></i> Booking…</>
-                        : <><i className="fa-regular fa-calendar-check"></i> Confirm booking</>}
-                    </button>
+                    {step < 4 ? (
+                      <button type="submit" className="btn btn-primary btn-lg" id="nextBtn">
+                        <span>Next: {STEPS[step]}</span> <i className="fa-solid fa-arrow-right"></i>
+                      </button>
+                    ) : (
+                      <button type="submit" className="btn btn-primary btn-lg" id="confirmBtn" disabled={submitting}>
+                        {submitting
+                          ? <><i className="fa-solid fa-spinner fa-spin"></i> Booking…</>
+                          : <><i className="fa-regular fa-calendar-check"></i> Confirm booking</>}
+                      </button>
+                    )}
+                    {step > 1 && (
+                      <button type="button" className="btn btn-outline btn-lg" id="backBtn" onClick={() => goTo(step - 1)}>
+                        <i className="fa-solid fa-arrow-left"></i> Back
+                      </button>
+                    )}
                   </div>
+                  <p className="draft-status" role="status">
+                    {draftSaved && <><i className="fa-solid fa-cloud-arrow-up"></i> Progress saved</>}
+                  </p>
                 </form>
               </>
             )}

@@ -66,6 +66,30 @@ appointmentSchema.index(
 
 export const Appointment = model('Appointment', appointmentSchema)
 
+// A booking someone started but hasn't confirmed yet, so leaving and coming
+// back puts the form back the way it was (the base site's booking_drafts table).
+// It belongs to an account (patient) or, for a guest, to their browser
+// session (sessionKey) — see lib/drafts.js.
+const bookingDraftSchema = new Schema({
+  patient: { type: Schema.Types.ObjectId, ref: 'Patient', unique: true, sparse: true },
+  sessionKey: { type: String, unique: true, sparse: true },
+  step: { type: Number, default: 1 },
+  name: String,
+  nric: String,
+  phone: String,
+  email: String,
+  serviceId: Number,
+  branchId: Number,
+  date: String,
+  time: String,
+  doctorId: Number,
+}, { timestamps: true })
+
+// Housekeeping: MongoDB deletes drafts nobody has touched for a week
+bookingDraftSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 })
+
+export const BookingDraft = model('BookingDraft', bookingDraftSchema)
+
 export const JobApplication = model('JobApplication', new Schema({
   fullName: String,
   email: String,

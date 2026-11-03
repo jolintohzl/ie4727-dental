@@ -244,7 +244,11 @@ function doctor_appointment_card(array $a, int $rescheduleId, string $reschedule
 <section class="section">
     <div class="container">
 
-        <h1 class="sr-only">My schedule</h1>
+        <!-- greeting — names are stored with their "Dr." title already -->
+        <div class="section-head">
+            <h1>Hello, <?= e($doctor['name']) ?></h1>
+            <p class="section-sub">Here's your schedule.</p>
+        </div>
 
         <div class="page-column">
             <div class="panel">

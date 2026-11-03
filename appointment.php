@@ -739,7 +739,9 @@ function service_hint(array $s): string
 <section class="section">
     <div class="container">
 
-    <!-- page heading — same style as "About Smile Dental Group" -->
+    <!-- page heading — same style as "About Smile Dental Group"
+         (hidden once the booking is confirmed) -->
+    <?php if (!$booked): ?>
     <div class="section-head">
         <h1>Book an appointment</h1>
         <p class="section-sub">
@@ -747,6 +749,7 @@ function service_hint(array $s): string
             suits you, and the dentist you'd like to see.
         </p>
     </div>
+    <?php endif; ?>
 
     <!-- one centred column for the steps -->
     <div class="page-column booking-body">

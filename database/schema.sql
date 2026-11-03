@@ -1,11 +1,6 @@
 -- ==========================================================
 -- SMILE DENTAL GROUP — database schema + starter data
 --
--- HOW TO RUN (XAMPP):
---   phpMyAdmin → Import → choose this file → Go
---   or in a terminal:
---   /Applications/XAMPP/xamppfiles/bin/mysql -u root < database/schema.sql
---
 -- Running it again wipes every table and starts fresh.
 -- ==========================================================
 

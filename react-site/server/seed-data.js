@@ -2,7 +2,7 @@
    in the base site. `npm run seed` loads it into MongoDB. */
 
 // Every doctor can log in at /doctor/login with this TEST password (same as
-// the base site's schema.sql). Change it before going live.
+// the base site's schema.sql). 
 export const DOCTOR_TEST_PASSWORD = 'Doctor123'
 
 export const branches = [

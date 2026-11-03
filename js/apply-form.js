@@ -110,7 +110,7 @@
 
         const firstBad = FIELD_ORDER.find(function (field) { return errors[field]; });
         if (firstBad) {
-            event.preventDefault();
+            event.preventDefault(); //stop the form from being sent & move to the first wrong field
             const el = document.getElementById(firstBad);
             el.focus();
             el.scrollIntoView({ block: 'center', behavior: 'smooth' });

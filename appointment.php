@@ -67,10 +67,10 @@ function branch_open_on(array $branch, string $date): bool
     return isset($branch['hours'][(int) date('w', strtotime($date))]);
 }
 
-// Every timeslot that day → the doctors for this service still free in it.
+// Every timeslot that day shows the doctors that are free for this service.
 // [ "09:00" => [5, 7], "09:30" => [], ... ]  (an empty list = fully booked)
 // timeslot and doctors available
-//branch_slot looks at opening hours. shows which doctor is free for that timing
+//branch_slot (app.php) is 30 mins timeslot , booked_times shows which doctor is booked at each time.
 function slot_table(int $serviceId, int $branchId, string $date): array
 {
     $doctorIds = doctors_for_service($serviceId);
@@ -145,7 +145,7 @@ function save_draft(?int $patientId, array $d)
         "INSERT INTO booking_drafts
                 ($column, step, name, nric, phone, email, service_id, branch_id, appt_date, appt_time, doctor_id)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE
+         ON DUPLICATE KEY UPDATE 
                 step = VALUES(step), name = VALUES(name), nric = VALUES(nric),
                 phone = VALUES(phone), email = VALUES(email),
                 service_id = VALUES(service_id), branch_id = VALUES(branch_id),
@@ -440,7 +440,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 back_to_step($s, $errors);
             }
         }
-        //if patient booked 2 appts at the same time
+        //if patient booked 2 appts at the same time diff doctor patient_busy()
         $details = draft_details($draft, $patient);
         if ($patientId !== null && patient_busy($patientId, $draft['date'], $draft['time'])) {
             back_to_step(3, ['time' => 'You already have an appointment at this time.']);

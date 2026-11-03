@@ -3,7 +3,6 @@
 -- without wiping any accounts or bookings.
 --
 -- Only needed if you imported schema.sql before this table was added.
--- phpMyAdmin → click smile_dental → Import → choose this file → Go
 -- (schema.sql already includes the table for fresh installs.)
 -- ==========================================================
 

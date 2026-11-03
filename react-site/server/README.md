@@ -33,13 +33,14 @@ The React dev server forwards `/api/...` to this server.
 |---|---|
 | `server.js` | starts Express, sessions (stored in MongoDB), mounts the routes |
 | `db.js` | the MongoDB connection (`MONGO_URL`) |
-| `models/index.js` | every collection: Branch, Service, Doctor, Patient, Appointment, JobApplication |
+| `models/index.js` | every collection: Branch, Service, Doctor, Patient, Appointment, BookingDraft, JobApplication |
 | `routes/auth.js` | `session`, `login`, `logout`, `profile` |
-| `routes/booking.js` | `options`, `slots`, `book`, `appointments`, `cancel`, `reschedule` |
+| `routes/booking.js` | `options`, `slots`, `draft`, `draft/clear`, `check-details`, `book`, `appointments`, `cancel`, `reschedule` |
+| `lib/drafts.js` | saved booking progress (the base site's `booking_drafts`): load, save, clear, and hand a guest's draft over on login |
 | `routes/apply.js` | `apply` (job application + resume upload → `uploads/`) |
 | `routes/dbadmin.js` | the phpMyAdmin-style database admin at http://localhost:5173/db-admin (browse, filter, edit, insert, delete; answers this computer only) |
 | `routes/doctor.js` | `doctor/session`, `doctor/login`, `doctor/logout`, `doctor/appointments`, `doctor/cancel`, `doctor/reschedule` |
 | `lib/validators.js` | re-uses the base site's `js/validators.js`, so both sides check the same rules |
 | `seed-data.js` | clinics, services and doctors (same as `database/schema.sql`) |
 
-Not ported from PHP: booking drafts (`api/draft.php`) and the confirmation emails (`api/mail.php`).
+Not ported from PHP: the confirmation emails (`api/mail.php`).

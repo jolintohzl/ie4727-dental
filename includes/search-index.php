@@ -2,9 +2,7 @@
 /* ==========================================================
    Site search, done on the server.
 
-   js/search.js used to fetch() every page and pick it apart in
-   the browser. That was AJAX, so the work moved here: PHP reads
-   the same HTML files straight off the disk with DOMDocument,
+   PHP reads the HTML files straight off the disk with DOMDocument,
    builds the index, scores it and hands search.php a ranked list.
 
    Nothing is fetched and nothing is JSON — search.php renders
@@ -131,7 +129,7 @@ function search_build_index(): array
 
 
 /* Same scoring as the old JavaScript: every word has to appear somewhere,
-   then the whole phrase and title hits are worth the most. */
+   then the whole phrase and title hits are worth the most. search scoring */
 function search_score(array $piece, string $query, array $terms): int
 {
     $title = mb_strtolower($piece['title']);

@@ -6,7 +6,6 @@
 --   "Dr. Tan Wei Ling" → tan.wei.ling@smiledental.local
 -- TEST PASSWORD for every doctor: Doctor123
 --
--- phpMyAdmin → click smile_dental → Import → choose this file → Go
 -- (schema.sql already includes the columns for fresh installs.)
 -- ==========================================================
 

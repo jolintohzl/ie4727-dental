@@ -1,6 +1,5 @@
 /* ==========================================================
-   Fees calculator — plain JavaScript (fees-calculator.html)
-
+   Fees calculator 
    Loaded with:
      <script src="js/fees-calculator.js"></script>
 
@@ -8,7 +7,6 @@
    fees-calculator.html. This file fills in the treatment and
    scheme lists, and redraws the estimate whenever a choice changes.
 
-   Nothing here touches the network: no fetch, no AJAX, no JSON.
    The price list below is the whole data source.
    ========================================================== */
 
@@ -90,8 +88,7 @@
           hint: "From age 60 you may use up to $" + FLEXI_CAP + " of MediSave a year on outpatient treatment." }
     ];
 
-    /* Merdeka and Pioneer build on the CHAS Blue rate.
-       Adjust these two multipliers if the published rates change. */
+    /* Merdeka and Pioneer build on the CHAS Blue rate. */
     const MERDEKA_MULTIPLIER = 1.25;
     const PIONEER_MULTIPLIER = 1.50;
 
@@ -260,7 +257,7 @@
         out.total.textContent       = money(payable);
         out.message.textContent     = subsidy.note;
     }
-
+    //if age is changed, scheme is changed
     serviceSelect.addEventListener('change', update);
     ageSelect.addEventListener('change', function () {
         fillSchemes();     // changing age can make the chosen scheme ineligible

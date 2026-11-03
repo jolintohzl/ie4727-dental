@@ -4,8 +4,6 @@
 --
 -- Stores what the careers form on about-us.html sends. The resume file
 -- itself is written to storage/resumes/ — only its name is kept here.
---
--- phpMyAdmin → click smile_dental → Import → choose this file → Go
 -- (schema.sql already includes the table for fresh installs.)
 -- ==========================================================
 

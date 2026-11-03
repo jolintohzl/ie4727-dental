@@ -4,8 +4,7 @@
    Each page starts with:  require __DIR__ . '/includes/app.php';
 
    Every page is a plain HTML form that posts back to PHP, which
-   does the work and draws the next page (or redirects). There is
-   no fetch(), no AJAX and no JSON anywhere in the base site.
+   does the work and draws the next page (or redirects). 
    ========================================================== */
 
 require_once __DIR__ . '/../api/config.php';
@@ -366,7 +365,7 @@ function shape_appointment(array $row): array
     return $row;
 }
 
-// Same patient cannot book 2 appointments at same time
+// Same patient cannot book 2 appointments at same time. appointment.php
 function patient_busy(int $patientId, string $date, string $time, int $exceptId = 0): bool
 {
     $stmt = db()->prepare(

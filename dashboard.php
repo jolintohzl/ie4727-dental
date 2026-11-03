@@ -267,7 +267,7 @@ function appointment_card(array $a, int $rescheduleId, string $rescheduleDate, ?
 <body>
 
 <!-- ==========================================================
-     NAVIGATION BAR  (same two-row structure as index.html)
+     NAVIGATION BAR  
      ========================================================== -->
 <header class="site-header">
 

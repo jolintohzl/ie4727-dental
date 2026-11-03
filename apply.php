@@ -11,11 +11,7 @@
    The rules here deliberately mirror js/validators.js. Anything in the
    browser can be bypassed, so the browser copy is a convenience and this
    one is the real gate.
-
-   NOTE ON CSRF: no login is involved here, so the SameSite session cookie
-   that protects the other forms does not help. The worst a forged post can do
-   is lodge a junk application, but if this ever holds anything sensitive,
-   add a token. */
+*/
 require __DIR__ . '/includes/app.php';
 require __DIR__ . '/api/mail.php';
 
@@ -38,10 +34,6 @@ const POSITIONS = [
 ];
 
 
-/* ---- 0. Did the whole POST get thrown away for being too big? ----
-   When a request exceeds post_max_size, PHP discards $_POST and $_FILES and
-   reports nothing at all. Without this check the user would be told their
-   name is missing, which is baffling. */
 if (!$_POST && !$_FILES && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
     show_errors(['That upload was too large for the server to accept. Resumes must be 5 MB or smaller.'], 413);
 }

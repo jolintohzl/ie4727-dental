@@ -11,7 +11,7 @@
    Each step is ?step=N. Every button submits the form back to
    this page: PHP checks the step, saves it, and redirects to the
    next one (Post/Redirect/Get), so a refresh never submits twice.
-   There is no fetch(), no AJAX and no JSON.
+   
 
    Progress is saved to the booking_drafts table after every step,
    so leaving and coming back puts the form back the way it was.
@@ -638,7 +638,7 @@ function service_hint(array $s): string
 <body>
 
 <!-- ==========================================================
-     NAVIGATION BAR  (same two-row structure as index.html)
+     NAVIGATION BAR  
      ========================================================== -->
 <header class="site-header">
 
@@ -1122,7 +1122,7 @@ function service_hint(array $s): string
 
 
 <!-- ==========================================================
-     FOOTER  (same structure as index.html)
+     FOOTER  
      ========================================================== -->
 <footer class="site-footer">
     <div class="container footer-inner">

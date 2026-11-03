@@ -20,7 +20,7 @@
 <body>
 
 <!-- ==========================================================
-     NAVIGATION BAR  (same two-row structure as index.html)
+     NAVIGATION BAR  
      ========================================================== -->
 <header class="site-header">
 
@@ -123,7 +123,7 @@
     <div class="container">
 
         <div class="section-head">
-            <h2>About Smile Dental Group</h2>
+            <h1>About Smile Dental Group</h1>
             <p class="section-sub">
                 Smile Dental Group has cared for families
                 across Singapore for over 15 years. What began as a single
@@ -132,7 +132,7 @@
             </p>
         </div>
 
-        <!-- Our mission + values, reusing the benefit cards from the homepage -->
+        <!-- Our mission + values -->
         <div class="grid grid-3">
 
             <article class="benefit-card">
@@ -169,8 +169,6 @@
 
 <!-- ==========================================================
      3. MEET THE TEAM
-     Each card has the same structure — copy one to add a doctor.
-     Full profiles live on doctors.html.
      ========================================================== -->
 <section class="section doctors">
     <div class="container">
@@ -243,8 +241,6 @@
 
 <!-- ==========================================================
      4. CAREERS BAND
-     A dark band marks the switch from "about us" to "join us",
-     so the two halves of the page never blur into each other.
      ========================================================== -->
 <section class="cta-band section-divider" id="join">
     <div class="container">
@@ -293,8 +289,6 @@
 
 <!-- ==========================================================
      5. CURRENT JOB OPENINGS
-     Each opening is one .job-card — copy a block to add a role,
-     or delete one when the position is filled.
      ========================================================== -->
 <section class="section why" id="openings">
     <div class="container">
@@ -398,11 +392,7 @@
 
 <!-- ==========================================================
      6. APPLICATION FORM
-     A normal HTML form that posts to apply.php. js/apply-form.js
-     adds the as-you-type checks and the red messages under each
-     field; apply.php checks everything again on the server.
-     Validation rules are shared with the rest of the site via
-     js/validators.js. Resumes are stored in storage/resumes/.
+     Resumes are stored in storage/resumes/.
      ========================================================== -->
 <section class="section" id="apply">
     <div class="container">
@@ -416,9 +406,7 @@
             </p>
         </div>
 
-        <!-- novalidate turns off the browser's own pop-up bubbles so
-             js/apply-form.js can show our messages instead. Without
-             JavaScript, apply.php still rejects anything missing. -->
+        
         <form class="form-card" id="applyForm" action="apply.php" method="post"
               enctype="multipart/form-data" novalidate>
             <div class="form-grid">
@@ -493,7 +481,7 @@
 
 
 <!-- ==========================================================
-     FOOTER  (same structure as index.html)
+     FOOTER  
      ========================================================== -->
 <footer class="site-footer">
     <div class="container footer-inner">
@@ -510,7 +498,7 @@
                 <li><i class="fa-regular fa-envelope"></i> <a href="mailto:hello@smiledental.sg">hello@smiledental.sg</a></li>
             </ul>
 
-            <!-- social media icons sit under the contact details -->
+            <!-- social media icons under the contact details -->
             <ul class="social-links">
                 <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
                 <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>

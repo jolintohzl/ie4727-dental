@@ -2,9 +2,8 @@
 /* ==========================================================
    Email notifications.
 
-   PHP's mail() hands the message to whatever php.ini's
-   sendmail_path points at. On this machine that is Mailpit,
-   a local mail catcher — nothing ever leaves the computer.
+   PHP's mail() hands the message to Mailpit,
+   it catches the mail and shows it on localhost: 8025
    Thunderbird reads the caught mail over POP3.
 
    Nothing in here is allowed to break a booking: if the mail

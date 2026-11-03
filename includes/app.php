@@ -29,8 +29,8 @@ set_exception_handler(function (Throwable $e) {
 session_set_cookie_params([
     'lifetime' => 0,
     'path'     => '/',
-    'httponly' => true,
-    'samesite' => 'Lax',
+    'httponly' => true,  //javascript cannot read the cookie
+    'samesite' => 'Lax', //another website cant post a form to this site using this cookie
 ]);
 session_start();
 
@@ -99,8 +99,9 @@ function db(): PDO
     }
     return $pdo;
 }
-
-// MySQL error 1062 = a UNIQUE index rejected the row.
+//if 2 ppl 'confirm' at the same slot at the same moment/time. duplicate
+//the person who is faster will be able to book, but second person will get
+// MySQL error 1062 = a UNIQUE index rejected the row. appointment.php will show timeslot taken
 function is_duplicate(PDOException $e): bool
 {
     return isset($e->errorInfo[1]) && (int) $e->errorInfo[1] === 1062;
@@ -131,7 +132,8 @@ function current_patient(): ?array
 
 function log_in(int $patientId)
 {
-    // a fresh session id on login stops session-fixation attacks
+    // a fresh/ new session id given on login stops session-fixation attacks
+    //protects cookie
     session_regenerate_id(true);
     $_SESSION['patient_id'] = $patientId;
 }
@@ -246,6 +248,7 @@ function booking_details(array $in, ?int $patientId, bool $withPassword): array
 /* ---------- Dates and timeslots ---------- */
 
 // Returns an error message, or null if the date can be booked.
+//stop people from booking past dates/over 60 days ahead
 function date_error(string $date): ?string
 {
     $d = DateTime::createFromFormat('!Y-m-d', $date);
@@ -262,7 +265,7 @@ function date_error(string $date): ?string
     return null;
 }
 
-// Every bookable start time ("09:00", "09:30", ...) at a branch on a date.
+// take branch opening hours and split into 30 min interval.
 // Empty when the branch is closed. Times already gone today are left out.
 function branch_slots(int $branchId, string $date): array
 {
@@ -284,7 +287,7 @@ function branch_slots(int $branchId, string $date): array
     }
     return $slots;
 }
-
+//find doctors already booked at that time
 // For each time on $date, which of $doctorIds are already booked.
 // Returns e.g. [ "09:00" => [3, 5], "11:30" => [3] ]
 function booked_times(array $doctorIds, string $date): array
@@ -363,7 +366,7 @@ function shape_appointment(array $row): array
     return $row;
 }
 
-// Same patient cannot be in two chairs at once.
+// Same patient cannot book 2 appointments at same time
 function patient_busy(int $patientId, string $date, string $time, int $exceptId = 0): bool
 {
     $stmt = db()->prepare(

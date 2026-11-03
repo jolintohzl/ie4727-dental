@@ -12,6 +12,7 @@ import authRoutes from './routes/auth.js'
 import bookingRoutes from './routes/booking.js'
 import applyRoutes from './routes/apply.js'
 import doctorRoutes from './routes/doctor.js'
+import dbAdminRoutes from './routes/dbadmin.js'
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -31,6 +32,7 @@ app.use('/api', authRoutes)
 app.use('/api', bookingRoutes)
 app.use('/api', applyRoutes)
 app.use('/api', doctorRoutes)
+app.use('/api', dbAdminRoutes)   // the /db-admin page; answers this computer only
 
 app.use('/api', (req, res) => res.status(404).json({ ok: false, error: 'Not found.' }))
 

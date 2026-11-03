@@ -14,6 +14,7 @@ import Login from './pages/Login'
 import Search from './pages/Search'
 import DoctorLogin from './pages/DoctorLogin'
 import DoctorDashboard from './pages/DoctorDashboard'
+import DbAdmin from './pages/DbAdmin'
 
 export default function App() {
   return (
@@ -35,6 +36,9 @@ export default function App() {
       {/* The doctor pages bring their own small header (components/DoctorHeader) */}
       <Route path="/doctor/login" element={<DoctorLogin />} />
       <Route path="/doctor" element={<DoctorDashboard />} />
+
+      {/* phpMyAdmin-style view of the MongoDB database (server/routes/dbadmin.js) */}
+      <Route path="/db-admin" element={<DbAdmin />} />
     </Routes>
   )
 }

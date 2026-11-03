@@ -37,6 +37,7 @@ The React dev server forwards `/api/...` to this server.
 | `routes/auth.js` | `session`, `login`, `logout`, `profile` |
 | `routes/booking.js` | `options`, `slots`, `book`, `appointments`, `cancel`, `reschedule` |
 | `routes/apply.js` | `apply` (job application + resume upload → `uploads/`) |
+| `routes/dbadmin.js` | the phpMyAdmin-style database admin at http://localhost:5173/db-admin (browse, filter, edit, insert, delete; answers this computer only) |
 | `routes/doctor.js` | `doctor/session`, `doctor/login`, `doctor/logout`, `doctor/appointments`, `doctor/cancel`, `doctor/reschedule` |
 | `lib/validators.js` | re-uses the base site's `js/validators.js`, so both sides check the same rules |
 | `seed-data.js` | clinics, services and doctors (same as `database/schema.sql`) |

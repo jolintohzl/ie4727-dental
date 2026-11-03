@@ -1,6 +1,7 @@
 /* Converted from fees-calculator.html — edit this file, not the HTML, for the React site. */
 import { Link } from 'react-router-dom'
 import FeesCalculator from '../components/FeesCalculator'
+import './FeesPage.css'
 
 export default function FeesPage() {
     return (
@@ -50,8 +51,8 @@ export default function FeesPage() {
            table shows every treatment at once so the figures can be
            compared side by side.
 
-           The look comes from Bootstrap's table classes (see the
-           Bootstrap link in <head>):
+           The look comes from Bootstrap's table classes (Bootstrap is
+           imported in main.jsx; our colours are in FeesPage.css):
            .table             the base table styling
            .table-striped     shades every other row
            .table-hover       highlights the row under the pointer

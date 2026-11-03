@@ -1,0 +1,255 @@
+/* The database admin page (pages/DbAdmin.jsx). Laid out like phpMyAdmin:
+   a dark bar along the top, the collections down the left, and tabs over
+   a plain grid table. Every class starts with dba- so nothing here
+   clashes with style.css or Bootstrap. */
+
+.dba {
+    --dba-bg:      #eef1f5;
+    --dba-panel:   #ffffff;
+    --dba-ink:     #1f2933;
+    --dba-muted:   #66727f;
+    --dba-line:    #d5dbe3;
+    --dba-head:    #e3e8ef;
+    --dba-stripe:  #f6f8fb;
+    --dba-hover:   #fff6d6;
+    --dba-accent:  #1d6fb8;
+    --dba-green:   #13aa52;   /* MongoDB leaf */
+    --dba-danger:  #c53030;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--dba-bg);
+    color: var(--dba-ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+}
+
+.dba code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+
+/* ---------- Top bar ---------- */
+.dba-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 18px;
+    background: #22303c;
+    color: #dbe4ee;
+    flex-wrap: wrap;
+}
+.dba-logo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; color: #fff; white-space: nowrap; }
+.dba-logo i { color: var(--dba-green); margin-right: 4px; }
+
+.dba-crumbs { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; flex-wrap: wrap; }
+.dba-crumbs > i { font-size: .75rem; opacity: .6; }
+.dba-crumbs i + span, .dba-crumbs span i { margin-right: 4px; }
+.dba-crumb {
+    background: none; border: 0; padding: 0; color: #9fd0ff; cursor: pointer; font: inherit;
+}
+.dba-crumb:hover { text-decoration: underline; }
+.dba-crumb i { margin-right: 4px; }
+
+.dba-back { color: #dbe4ee; white-space: nowrap; }
+.dba-back:hover { color: #fff; }
+
+/* ---------- Sidebar + main ---------- */
+.dba-body { display: flex; flex: 1; min-height: 0; }
+
+.dba-side {
+    width: 230px;
+    flex-shrink: 0;
+    background: var(--dba-panel);
+    border-right: 1px solid var(--dba-line);
+    padding: 12px 0;
+}
+.dba-side button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 16px;
+    border: 0;
+    background: none;
+    color: var(--dba-ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.dba-side button:hover { background: var(--dba-stripe); }
+.dba-side button.is-active { background: #dcecfb; color: var(--dba-accent); font-weight: 600; }
+.dba-side i { color: var(--dba-muted); width: 14px; }
+.dba-side .is-active i { color: var(--dba-accent); }
+.dba-side-db { font-weight: 700; }
+.dba-side-db i { color: var(--dba-green) !important; }
+.dba-side ul { padding-left: 14px; }
+.dba-side-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dba-side-count {
+    font-size: .75rem; color: var(--dba-muted); background: var(--dba-head);
+    border-radius: 9px; padding: 0 7px;
+}
+
+.dba-main { flex: 1; min-width: 0; padding: 18px 22px 40px; }
+
+.dba-h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.3rem; margin: 0 0 14px; }
+.dba-h1 i { color: var(--dba-green); margin-right: 6px; }
+.dba-h3 { font-size: 1rem; font-weight: 700; margin: 22px 0 6px; }
+.dba-h3:first-child { margin-top: 0; }
+.dba-muted { color: var(--dba-muted); margin: 0 0 10px; }
+
+/* ---------- Tabs ---------- */
+.dba-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--dba-line); flex-wrap: wrap; }
+.dba-tabs button {
+    padding: 8px 16px;
+    border: 1px solid var(--dba-line);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: var(--dba-head);
+    color: var(--dba-ink);
+    font: inherit;
+    cursor: pointer;
+    margin-bottom: -1px;
+}
+.dba-tabs button:hover { background: #d6dde7; }
+.dba-tabs button.is-active { background: var(--dba-panel); font-weight: 600; }
+.dba-tabs i { margin-right: 5px; color: var(--dba-muted); }
+
+.dba-panel {
+    background: var(--dba-panel);
+    border: 1px solid var(--dba-line);
+    border-top: none;
+    padding: 16px;
+}
+
+/* ---------- Buttons and links ---------- */
+.dba-btn {
+    padding: 6px 12px;
+    border: 1px solid #b8c2cf;
+    border-radius: 4px;
+    background: linear-gradient(#fff, #e9edf2);
+    color: var(--dba-ink);
+    font: inherit;
+    cursor: pointer;
+}
+.dba-btn:hover:not(:disabled) { background: #e3e8ef; }
+.dba-btn:disabled { opacity: .45; cursor: default; }
+.dba-btn-primary { background: var(--dba-accent); border-color: #155a96; color: #fff; }
+.dba-btn-primary:hover:not(:disabled) { background: #155a96; }
+
+.dba-link {
+    border: 0; background: none; padding: 0; font: inherit;
+    color: var(--dba-accent); cursor: pointer; white-space: nowrap;
+}
+.dba-link:hover { text-decoration: underline; }
+.dba-link i { font-size: .8em; }
+.dba-link-danger { color: var(--dba-danger); }
+
+/* ---------- Query bar and pager ---------- */
+.dba-query { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.dba-query label { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 180px; }
+.dba-query label.dba-query-small { flex: 0 0 auto; min-width: 0; }
+.dba-query span { font-size: .78rem; font-weight: 600; color: var(--dba-muted); text-transform: uppercase; letter-spacing: .03em; }
+.dba-query input, .dba-query select {
+    padding: 6px 8px;
+    border: 1px solid #b8c2cf;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .9rem;
+    background: #fff;
+    color: var(--dba-ink);
+}
+
+.dba-pager { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.dba-pager .dba-btn { padding: 3px 10px; }
+.dba-pager-text { padding: 0 8px; }
+.dba-pager-query {
+    margin-left: auto; color: var(--dba-muted); background: var(--dba-stripe);
+    padding: 3px 8px; border-radius: 4px; overflow-wrap: anywhere;
+}
+
+/* ---------- The grid table ---------- */
+.dba-table-wrap { overflow-x: auto; border: 1px solid var(--dba-line); background: var(--dba-panel); }
+.dba-table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+.dba-table th, .dba-table td {
+    padding: 5px 10px;
+    border: 1px solid var(--dba-line);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+}
+.dba-table thead th, .dba-table tfoot th { background: var(--dba-head); font-weight: 700; }
+.dba-table tr > :first-child { border-left: 0; }
+.dba-table tr > :last-child { border-right: 0; }
+.dba-table thead tr:first-child th { border-top: 0; }
+.dba-table tbody tr:nth-child(even) { background: var(--dba-stripe); }
+.dba-table tbody tr:hover { background: var(--dba-hover); }
+
+.dba-actions-col button + button { margin-left: 12px; }
+.dba-table .dba-num, .dba-num { text-align: right; font-variant-numeric: tabular-nums; }
+.dba-subfield td:nth-child(2) { padding-left: 26px; font-weight: 400; }
+.dba-subfield td:nth-child(2) strong { font-weight: 500; color: var(--dba-muted); }
+
+/* value types in a cell */
+.dba-null { color: var(--dba-muted); font-style: italic; font-size: .85em; }
+.dba-missing { color: #b8c2cf; }
+.dba-oid { color: #8a5a00; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; }
+.dba-date { color: #0b7a55; }
+.dba-bool { color: #7b3fbf; }
+.dba-json { color: #45505c; }
+.dba-type {
+    display: inline-block; margin-right: 4px; padding: 0 7px; border-radius: 9px;
+    background: #dcecfb; color: var(--dba-accent); font-size: .8rem;
+}
+
+/* ---------- Messages ---------- */
+.dba-notice {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; margin-bottom: 14px; border: 1px solid; border-radius: 4px;
+}
+.dba-notice span { flex: 1; overflow-wrap: anywhere; }
+.dba-notice button { border: 0; background: none; font-size: 1.2rem; line-height: 1; cursor: pointer; color: inherit; }
+.dba-notice-success { background: #e6f6ec; border-color: #9fd8b4; color: #146c3b; }
+.dba-notice-error { background: #fdecec; border-color: #f0aaaa; color: #9b1c1c; }
+.dba-error { color: var(--dba-danger); margin: 8px 0 0; }
+.dba-hint { color: var(--dba-muted); font-size: .85rem; margin: 6px 0 0; }
+
+/* ---------- JSON editor and the edit dialog ---------- */
+.dba-code {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #b8c2cf;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .88rem;
+    line-height: 1.5;
+    background: #fbfcfd;
+    color: var(--dba-ink);
+    resize: vertical;
+}
+
+.dba-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    background: rgba(20, 30, 40, .5);
+}
+.dba-dialog {
+    width: 100%; max-width: 640px; max-height: calc(100vh - 32px); overflow-y: auto;
+    background: var(--dba-panel); border-radius: 6px; padding: 18px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+}
+.dba-dialog-head { display: flex; justify-content: space-between; align-items: center; }
+.dba-dialog-head h2 { font-size: 1.1rem; margin: 0; }
+.dba-dialog-head button { border: 0; background: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--dba-muted); }
+.dba-dialog-sub { color: var(--dba-muted); margin: 4px 0 10px; }
+.dba-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
+/* ---------- Phone ---------- */
+@media (max-width: 768px) {
+    .dba-body { flex-direction: column; }
+    .dba-side { width: auto; border-right: 0; border-bottom: 1px solid var(--dba-line); padding: 6px 0; }
+    .dba-side ul { display: flex; flex-wrap: wrap; padding: 0 10px; }
+    .dba-side li button { padding: 4px 8px; }
+    .dba-main { padding: 14px 16px 30px; }
+    .dba-pager-query { margin-left: 0; width: 100%; }
+}

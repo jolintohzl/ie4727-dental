@@ -1,0 +1,91 @@
+/* The full price list table on the React fees page (pages/FeesPage.jsx).
+   Only the React site uses Bootstrap for this table; the base site's
+   fees-calculator.html draws it with plain CSS (.fee-table in style.css). */
+
+/* The table itself is drawn by Bootstrap. The rules below only put it in
+   our own colours and typeface. Bootstrap 5 reads these --bs-table-*
+   variables when it shades rows, so setting them is tidier than trying to
+   override its striping rules one by one. */
+.price-table {
+    --bs-table-bg:           var(--white);
+    --bs-table-striped-bg:   var(--blue-50);
+    --bs-table-hover-bg:     var(--blue-100);
+    --bs-table-border-color: var(--line);
+    margin-bottom: 0;
+    font-size: .93rem;
+}
+
+/* The rounded border sits on the scrolling wrapper, not the table —
+   a table cannot clip its own corners reliably. */
+.price-list .table-responsive {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+/* Bootstrap sets cell padding with a selector of the same weight as this
+   one. This file is loaded after Bootstrap, so these win. */
+.price-table th,
+.price-table td {
+    padding: 13px 16px;
+    white-space: nowrap;
+}
+
+.price-table thead th {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--blue-700);
+    border-bottom: none;
+}
+
+/* The treatment name is a <th> too, so it needs heading styling back */
+.price-table tbody th {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .93rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* Money reads better right-aligned, and tabular-nums keeps the digits in
+   straight columns */
+.price-table tbody td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Each heading has to sit the same way as the figures underneath it,
+   otherwise "Clinic fee" hugs the left while $45.00 hugs the right.
+   Column 1 (Treatment) stays left; the money columns go right; the
+   tick / cross column is centred. */
+.price-table thead th:not(:first-child) { text-align: right; }
+
+/* last column holds the tick or the cross */
+.price-table tbody td:last-child,
+.price-table thead th:last-child { text-align: center; }
+
+.price-table .price-none { color: var(--muted); }
+
+/* tick = this scheme can be used, cross = it cannot.
+   Deliberately brighter than --success / --danger so the column can be
+   read at a glance. */
+.price-table .price-yes { color: #16a34a; }   /* bright green */
+.price-table .price-no  { color: #e02424; }   /* bright red   */
+
+
+
+
+/* Tighter on a phone. The table keeps its full width and scrolls sideways
+   inside .table-responsive rather than squashing the columns.
+   This sits directly beneath the rules it overrides — the same media query
+   placed earlier would lose to them. */
+@media (max-width: 768px) {
+    .price-table { font-size: .88rem; }
+    .price-table th,
+    .price-table td { padding: 11px 13px; }
+    .price-table thead th { font-size: .7rem; }
+    .price-table tbody th { font-size: .88rem; }
+}

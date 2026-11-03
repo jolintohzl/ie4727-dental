@@ -117,9 +117,10 @@ CREATE TABLE appointments (
     appt_date   DATE         NOT NULL,
     appt_time   TIME         NOT NULL,
     status      ENUM('booked', 'cancelled') NOT NULL DEFAULT 'booked',
-    active_slot TINYINT AS (IF(status = 'booked', 1, NULL)) PERSISTENT,
+    active_slot TINYINT AS (IF(status = 'booked', 1, NULL)) PERSISTENT, -- if slot cancelled, it is NULL, else booked is 1
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+-- unique index on doctor, date and time prevents double booking and 
+-- SQL rejects the second  booking for same doctor at same time and date
     UNIQUE KEY one_booking_per_slot (doctor_id, appt_date, appt_time, active_slot),
     KEY by_patient (patient_id, appt_date),
 

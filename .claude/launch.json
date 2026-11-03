@@ -6,6 +6,18 @@
       "runtimeExecutable": "/Applications/XAMPP/xamppfiles/bin/php",
       "runtimeArgs": ["-S", "localhost:8765"],
       "port": 8765
+    },
+    {
+      "name": "react-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "react-site/server", "run", "dev"],
+      "port": 3001
+    },
+    {
+      "name": "react-client",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "react-site/client", "run", "dev"],
+      "port": 5173
     }
   ]
 }

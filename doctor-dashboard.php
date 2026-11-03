@@ -15,7 +15,7 @@ require __DIR__ . '/includes/doctor.php';
 
 $doctor = current_doctor_id() !== null ? find_doctor(current_doctor_id()) : null;
 if (!$doctor) {
-    header('Location: doctor-login.php');
+    header('Location: doctor-login.php'); //redirect to login page if try to go doctor dashboard
     exit;
 }
 $doctorId = (int) $doctor['id'];
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             go_to($retry);
         }
 
-        try {
+        try {                                                            //every update checks the owner. cannot change someone else appt by changing id
             $stmt = db()->prepare('UPDATE appointments SET appt_date = ?, appt_time = ? WHERE id = ? AND doctor_id = ?');
             $stmt->execute([$date, $time, $appt['id'], $doctorId]);
         } catch (PDOException $e) {

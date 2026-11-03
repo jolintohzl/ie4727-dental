@@ -1,6 +1,6 @@
 <?php
 /* ==========================================================
-   dashboard.php — "My Account" for a logged-in patient
+   dashboard.php — a logged-in patient profile and appts
      • edit profile details
      • upcoming appointments: cancel, or reschedule
        (?reschedule=ID&date=...) — same doctor, same branch,
@@ -15,7 +15,7 @@
    ========================================================== */
 require __DIR__ . '/includes/app.php';
 
-$patient = current_patient();
+$patient = current_patient();  //cannot open dashboard without logging in. redirect to login page
 if (!$patient) {
     go_to('login.php?next=dashboard.php');
 }
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $when = format_date($appt['date']) . ' at ' . format_time($appt['time']);
 
-    if ($action === 'cancel') {
+    if ($action === 'cancel') {                            // cannot cancel someone else appt by changing id. every update checks the owner
         $stmt = db()->prepare("UPDATE appointments SET status = 'cancelled' WHERE id = ? AND patient_id = ?");
         $stmt->execute([$appt['id'], $patientId]);
         flash('notice', "Your appointment on $when has been cancelled.");

@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // One message for both cases, so the form never reveals which
         // email addresses have accounts.
+        //password verify compare what is typed with hash
         if (!$row || !password_verify($password, $row['password_hash'])) {
             $error = 'Incorrect email or password.';
         } else {

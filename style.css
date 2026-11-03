@@ -91,11 +91,11 @@ a:hover { color: var(--blue-700); }
 
 ul { list-style: none; }
 
-/* fees-calculator.html also loads Bootstrap, whose own reset gives <p> and
-   <ul> spacing of their own. It uses element selectors (p, ul), which outrank
-   the * rule at the top of this file no matter which file loads first, so the
-   spacing is cleared again here by name. Harmless on the pages without
-   Bootstrap — they are already at zero. */
+/* The React site (react-site/client) also loads Bootstrap, whose own reset
+   gives <p> and <ul> spacing of their own. It uses element selectors (p, ul),
+   which outrank the * rule at the top of this file no matter which file loads
+   first, so the spacing is cleared again here by name. Harmless on the base
+   site, which has no Bootstrap — they are already at zero. */
 p, ul, ol, dl, dd, figure, h5, h6 { margin: 0; }
 ul, ol { padding-left: 0; }
 
@@ -1313,36 +1313,41 @@ ul, ol { padding-left: 0; }
 
 .price-list { background: var(--off-white); }
 
-/* The table itself is drawn by Bootstrap. The rules below only put it in
-   our own colours and typeface. Bootstrap 5 reads these --bs-table-*
-   variables when it shades rows, so setting them is tidier than trying to
-   override its striping rules one by one. */
-.price-table {
-    --bs-table-bg:           var(--white);
-    --bs-table-striped-bg:   var(--blue-50);
-    --bs-table-hover-bg:     var(--blue-100);
-    --bs-table-border-color: var(--line);
-    margin-bottom: 0;
-    font-size: .93rem;
-}
+/* Plain CSS, no Bootstrap. (The React site draws the same table with
+   Bootstrap's .table classes instead; its colours are in
+   react-site/client/src/pages/FeesPage.css.) */
 
-/* The rounded border sits on the scrolling wrapper, not the table —
-   a table cannot clip its own corners reliably. */
-.price-list .table-responsive {
+/* The wrapper scrolls sideways on a phone instead of squashing the
+   columns, and carries the rounded border — a table cannot clip its own
+   corners reliably. */
+.fee-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     background: var(--white);
     border: 1px solid var(--line);
     border-radius: var(--radius);
 }
 
-/* Bootstrap sets cell padding with a selector of the same weight as this
-   one. style.css is loaded second, so these win. */
-.price-table th,
-.price-table td {
-    padding: 13px 16px;
-    white-space: nowrap;
+.fee-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .93rem;
+    color: var(--ink);
 }
 
-.price-table thead th {
+.fee-table th,
+.fee-table td {
+    padding: 13px 16px;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: left;              /* a <th> is centred by default */
+    border-bottom: 1px solid var(--line);
+}
+
+.fee-table tbody tr:last-child th,
+.fee-table tbody tr:last-child td { border-bottom: none; }
+
+.fee-table thead th {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: .78rem;
     font-weight: 700;
@@ -1353,8 +1358,13 @@ ul, ol { padding-left: 0; }
     border-bottom: none;
 }
 
+/* Striped rows, and the row under the pointer highlighted */
+.fee-table tbody tr { background: var(--white); transition: background .15s; }
+.fee-table tbody tr:nth-child(odd) { background: var(--blue-50); }
+.fee-table tbody tr:hover { background: var(--blue-100); }
+
 /* The treatment name is a <th> too, so it needs heading styling back */
-.price-table tbody th {
+.fee-table tbody th {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: .93rem;
     font-weight: 700;
@@ -1363,7 +1373,7 @@ ul, ol { padding-left: 0; }
 
 /* Money reads better right-aligned, and tabular-nums keeps the digits in
    straight columns */
-.price-table tbody td {
+.fee-table tbody td {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
@@ -1372,33 +1382,30 @@ ul, ol { padding-left: 0; }
    otherwise "Clinic fee" hugs the left while $45.00 hugs the right.
    Column 1 (Treatment) stays left; the money columns go right; the
    tick / cross column is centred. */
-.price-table thead th:not(:first-child) { text-align: right; }
+.fee-table thead th:not(:first-child) { text-align: right; }
 
 /* last column holds the tick or the cross */
-.price-table tbody td:last-child,
-.price-table thead th:last-child { text-align: center; }
+.fee-table tbody td:last-child,
+.fee-table thead th:last-child { text-align: center; }
 
-.price-table .price-none { color: var(--muted); }
+.fee-table .price-none { color: var(--muted); }
 
 /* tick = this scheme can be used, cross = it cannot.
    Deliberately brighter than --success / --danger so the column can be
    read at a glance. */
-.price-table .price-yes { color: #16a34a; }   /* bright green */
-.price-table .price-no  { color: #e02424; }   /* bright red   */
-
-
-
+.fee-table .price-yes { color: #16a34a; }   /* bright green */
+.fee-table .price-no  { color: #e02424; }   /* bright red   */
 
 /* Tighter on a phone. The table keeps its full width and scrolls sideways
-   inside .table-responsive rather than squashing the columns.
+   inside .fee-table-wrap rather than squashing the columns.
    This sits directly beneath the rules it overrides — the same media query
    placed up in section 11 would lose to them. */
 @media (max-width: 768px) {
-    .price-table { font-size: .88rem; }
-    .price-table th,
-    .price-table td { padding: 11px 13px; }
-    .price-table thead th { font-size: .7rem; }
-    .price-table tbody th { font-size: .88rem; }
+    .fee-table { font-size: .88rem; }
+    .fee-table th,
+    .fee-table td { padding: 11px 13px; }
+    .fee-table thead th { font-size: .7rem; }
+    .fee-table tbody th { font-size: .88rem; }
 }
 
 
@@ -1962,7 +1969,7 @@ body.modal-open { overflow: hidden; }
     box-shadow: var(--shadow-lg);
     padding: 40px 36px 32px;
 
-    /* fees-calculator.html loads Bootstrap, which also has a .modal class:
+    /* The React site loads Bootstrap, which also has a .modal class:
        hidden (display: none), full-screen and clipped. Undo those three. */
     display: block;
     height: auto;

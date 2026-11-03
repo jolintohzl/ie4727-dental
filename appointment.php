@@ -69,6 +69,8 @@ function branch_open_on(array $branch, string $date): bool
 
 // Every timeslot that day → the doctors for this service still free in it.
 // [ "09:00" => [5, 7], "09:30" => [], ... ]  (an empty list = fully booked)
+// timeslot and doctors available
+//branch_slot looks at opening hours. shows which doctor is free for that timing
 function slot_table(int $serviceId, int $branchId, string $date): array
 {
     $doctorIds = doctors_for_service($serviceId);
@@ -135,7 +137,7 @@ function load_draft(?int $patientId): array
     return ['exists' => true] + $row;
 }
 
-// One draft per owner: insert the first time, update after that.
+// One booking form draft per person: insert the first time, update after that.
 function save_draft(?int $patientId, array $d)
 {
     [$column, $value] = draft_owner($patientId);
@@ -156,7 +158,7 @@ function save_draft(?int $patientId, array $d)
         $d['serviceId'], $d['branchId'], $d['date'], $d['time'], $d['doctorId'],
     ]);
 
-    // housekeeping: forget drafts nobody has touched for a week
+    // after 7 days,  booking form drafts are deleted
     db()->exec('DELETE FROM booking_drafts WHERE updated_at < NOW() - INTERVAL 7 DAY');
 }
 
@@ -308,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($clean['password']);
             back_to_step(1, $errors, $clean);
         }
-        if ($withPassword) {
+        if ($withPassword) { //never store actual password. turn password into hash and only hash is saved.
             $_SESSION['booking_password_hash'] = password_hash($clean['password'], PASSWORD_DEFAULT);
         }
         foreach (DETAIL_FIELDS as $field) {
@@ -428,7 +430,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         save_draft($patientId, $draft);
 
-        // every step again, in order — the first one with a problem is reopened
+        // if another person booked the same dentist at same time
+        //every step again, in order — the first one with a problem is reopened
         for ($s = 1; $s <= TOTAL_STEPS; $s++) {
             if ($errors = step_errors($s, $draft, $patient)) {
                 if ($s === 4 && $doctorId) {
@@ -437,7 +440,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 back_to_step($s, $errors);
             }
         }
-
+        //if patient booked 2 appts at the same time
         $details = draft_details($draft, $patient);
         if ($patientId !== null && patient_busy($patientId, $draft['date'], $draft['time'])) {
             back_to_step(3, ['time' => 'You already have an appointment at this time.']);
@@ -470,11 +473,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->commit();
         } catch (PDOException $e) {
-            $pdo->rollBack();
+            $pdo->rollBack();  //rollback cancel the account so nvr get acct with missing booking
             if (!is_duplicate($e)) {
                 throw $e;
             }
-            // someone else took the slot (or the email/NRIC) a moment ago
+            // same slot same time, duplicate
+            //someone else took the slot (or the email/NRIC) a moment ago
             $draft['time'] = null;
             $draft['doctorId'] = null;
             $draft['step'] = 3;

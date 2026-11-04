@@ -74,7 +74,7 @@ export default function Home() {
             <div className="container why-inner">
                 {/*
                    Left: image placeholder.
-                   TO REPLACE: <img src="images/team.jpg" alt="Our team" class="why-photo">
+                   
                 */}
                 <div className="why-visual"><img src={img('dental team.png')} alt="Our Team" className="why-photo" /></div>
 

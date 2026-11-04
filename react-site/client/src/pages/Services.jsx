@@ -31,7 +31,7 @@ export default function Services() {
                 </div>
                 <div className="why-inner">
                     <div className="why-visual">
-                        {/* TO REPLACE: swap this src for a real photo, e.g. images/general-dentistry.jpg */}
+                        
                         <img src={img('service-general-dentistry.jpg')} alt="General Dentistry" className="why-photo" />
                     </div>
                     <div className="why-copy">

@@ -183,7 +183,15 @@ export default function DoctorDashboard() {
     <DoctorHeader onLogout={doctor ? logout : null} />
     <section className="section">
       <div className="container">
-        <h1 className="sr-only">My schedule</h1>
+        {/* greeting — names are stored with their "Dr." title already */}
+        {doctor ? (
+          <div className="section-head">
+            <h1>Hello, {doctor.name}</h1>
+            <p className="section-sub">Here&apos;s your schedule.</p>
+          </div>
+        ) : (
+          <h1 className="sr-only">My schedule</h1>
+        )}
 
         <div className="page-column">
           {doctor === undefined && (

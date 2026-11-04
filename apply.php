@@ -170,7 +170,7 @@ try {
     ]);
     $applicationId = (int) db()->lastInsertId();
 } catch (PDOException $e) {
-    // do not leave an orphan file behind if the row could not be written
+    // no resume left on server, deleted and unlinked if resume is saved but database insert fails
     @unlink($storedPath);
     throw $e;
 }
